@@ -1,4 +1,39 @@
 .approval-card{
-    width: 500px;
+    width: 700px;
+    height: 100px;
     background-color: #D9D9D9;
+    overflow: hidden;
+    display: flex;
+    border: black 1px solid;
+}
+.box-left{
+    background-color: #168021;
+    width: 3%;
+    height: 100px;
+}
+.box-right{
+    background-color: #168021;
+    width: 60%;
+    justify-content: center;
+    align-content: center;
+    text-align: center;
+}
+.box-right p{
+    color: #FFFFFF;
+    margin: 0px;
+}
+
+.text{
+    width: 90%;
+    padding: 15px;
+    display: grid;
+    padding-bottom: 20px;
+}
+.teacher{
+    font-size: 15px;
+    margin-bottom: 10px;
+}
+.details{
+    color: #168021;
+    font-size: 15px;
 }
