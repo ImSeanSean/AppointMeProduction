@@ -1,0 +1,34 @@
+<header>
+    <div class="title" (click)="redirectToHomePage()">
+        <img src="assets/appointmelogo.png">
+        <h1><span style="color: #228B22;">Appoint</span><span style="color: #F78914;">Me</span></h1>
+    </div>
+    <div class="navbar">
+        <div class="notifications">
+            <i class='bx bx-bell'></i>
+            <label>Notifications</label>
+        </div>
+        <div class="profile">
+            <i class='bx bx-user-circle' ></i>
+            <label>Welcome, {{firstName}} {{lastName}}</label>
+        </div>
+    </div>
+</header>
+<div class="body">
+    <div class="sidebar">
+        <ul>
+            <li *ngIf="usertype == 'user'"><a routerLink="./main"><i class='bx bx-list-ul'></i></a></li>
+            <li><a routerLink="./appointments"><i class='bx bx-bookmark-alt-minus'></i></a></li>
+            <li><a routerLink="./profile"><i class='bx bx-user'></i></a></li>
+        </ul>
+        <ul>
+            <li class="settings">
+                <i class='bx bx-cog' ></i>
+                <app-setting></app-setting>
+            </li>
+        </ul>
+    </div>
+    <div class="main">
+        <router-outlet></router-outlet>
+    </div>
+</div>
