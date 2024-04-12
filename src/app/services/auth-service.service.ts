@@ -23,7 +23,7 @@ export class AuthServiceService {
   logout(): void {
     localStorage.clear();
     console.log('logout')
-    this.router.navigate(['login'])
+    this.router.navigate([''])
   }
   getToken(): any{
     return localStorage.getItem('token');

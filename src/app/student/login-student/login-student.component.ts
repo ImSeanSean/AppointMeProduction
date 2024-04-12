@@ -44,7 +44,7 @@ export class LoginStudentComponent implements OnInit {
             console.log('Correct Authentication')
             localStorage.setItem('token', token);
             localStorage.setItem('user', 'user')
-            this.router.navigate(['/dashboard'])
+            this.router.navigate(['student/dashboard/main'])
           } else {
             console.log('Wrong Authentication')
           }
