@@ -1,0 +1,150 @@
+
+<body>
+    <app-navbar></app-navbar>
+    <section>
+        <div class="contentBx">
+            <div class="formBx">
+                <div class="row g-0">
+                    <div class="col text-center p-2 mb-3 logo-container">
+                        <img src="assets/appointmelogo.png" alt="Appoint Me Logo" class="logo-img">
+                        <span class="fs-3 blue-text bold-text">CREATE NEW ACCOUNT</span>
+                    </div>
+                </div>
+                <form [formGroup]="myForm" (ngSubmit)="onSubmit()">
+                    <div class="row email-container">
+                        <div class="coll">
+                            <input type="text" class="input-field" placeholder="Email" autocomplete="off" formControlName="email" required>
+                            <small *ngIf="myForm.get('email')?.invalid && myForm.get('email')?.touched">
+                                Enter a valid email.
+                            </small>
+                        </div>
+                        <!-- <div class="coll">
+                            <input type="text" class="input-field" placeholder="Email Code" autocomplete="off" required>
+                        </div> -->
+                    </div>                    
+                    <div class="row name-container">
+                        <div class="coll">
+                            <input type="text" class="input-field" placeholder="First Name" autocomplete="off" formControlName="fname" required>
+                            <small *ngIf="myForm.get('fname')?.invalid && myForm.get('fname')?.touched">
+                                Enter your first name.
+                            </small>
+                        </div>
+                        <!-- <div class="coll">
+                            <input type="text" class="input-field" placeholder="Middle Name" autocomplete="off" required>
+                        </div> -->
+                        <div class="coll">
+                            <input type="text" class="input-field" placeholder="Last Name" autocomplete="off" formControlName="lname" required>
+                            <small *ngIf="myForm.get('lname')?.invalid && myForm.get('lname')?.touched">
+                                Enter your last name.
+                            </small>
+                        </div>
+                    </div>                    
+                    <div class="row birthday-sex-container">
+                        <div class="coll">
+                            <label for="birthday" class="form-label"></label>
+                            <input type="date" class="form-control" formControlName="birthday" id="birthday">
+                            <small *ngIf="myForm.get('birthday')?.invalid && myForm.get('birthday')?.touched">
+                                Enter your birthday.
+                            </small>
+                        </div>
+                        <div class="coll">
+                            <label for="sex" class="form-label"></label>
+                            <select class="form-select" id="sex" formControlName="gender">
+                                <option value="" disabled selected>Gender</option>
+                                <option value="male">Male</option>
+                                <option value="female">Female</option>
+                                <option value="other">Other</option>
+                            </select>
+                            <small *ngIf="myForm.get('gender')?.invalid && myForm.get('gender')?.touched">
+                                Enter your gender.
+                            </small>
+                        </div>
+                    </div>
+                    <div class="row course-block-year">
+                        <div class="coll">
+                            <label for="course" class="form-label"></label>
+                            <select class="form-select" id="course" formControlName="course">
+                                <option value="" disabled selected>Course</option>
+                                <option value="course1">BSCS</option>
+                                <option value="course2">BSIT</option>
+                                <option value="course3">BSEMC</option>
+                                <!-- Add more options as needed -->
+                            </select>
+                            <small *ngIf="myForm.get('course')?.invalid && myForm.get('course')?.touched">
+                                Enter your course.
+                            </small>
+                        </div>
+                        <div class="coll">
+                            <label for="year" class="form-label"></label>
+                            <select class="form-select" id="year" formControlName="year">
+                                <option value="" disabled selected>Year</option>
+                                <option value="year1">1</option>
+                                <option value="year2">2</option>
+                                <option value="year3">3</option>
+                                <option value="year4">4</option>
+                                <!-- Add more options as needed -->
+                            </select>
+                            <small *ngIf="myForm.get('year')?.invalid && myForm.get('year')?.touched">'
+                                Enter your year.
+                            </small>
+                        </div>
+                        <div class="coll">
+                            <label for="block" class="form-label"></label>
+                            <select class="form-select" id="block" formControlName="block">
+                                <option value="" disabled selected>Block</option>
+                                <option value="block1">Block A</option>
+                                <option value="block2">Block B</option>
+                                <option value="block3">Block C</option>
+                                <option value="block3">Block D</option>
+                                <option value="block4">Block E</option>
+                                <!-- Add more options as needed -->
+                            </select>
+                            <small *ngIf="myForm.get('block')?.invalid && myForm.get('block')?.touched">
+                                Enter your block.
+                            </small>    
+                        </div>
+                    </div>                    
+                    <div class="row">
+                        <div class="coll">
+                            <input type="password" class="input-field" placeholder="Password" autocomplete="off" formControlName="password" required>
+                        </div>
+                        <small *ngIf="myForm.get('password')?.invalid && myForm.get('password')?.touched">
+                            Enter your password.
+                        </small>
+                    </div>
+                    <div class="row">
+                        <div class="coll">
+                            <input type="password" class="input-field" placeholder="Confirm Password" autocomplete="off" formControlName="confirmpassword" required>
+                        </div>
+                        <small *ngIf="myForm.get('confirmpassword')?.invalid && myForm.get('confirmpassword')?.touched">
+                            Confirm your password.
+                        </small>
+                    </div>
+                    <!-- <div class="row justify-content-center">
+                        <div class="col mb-3 text-center">
+                            <div class="form-check d-inline-block">
+                                <input class="form-check-input" type="checkbox" id="agreeTerms">
+                                <label class="form-check-label" for="agreeTerms">
+                                    I agree to the terms of service and privacy policy
+                                </label>
+                            </div>
+                        </div>
+                    </div> -->
+                    <div class="row justify-content-center">
+                        <div class="col mb-3 text-center">
+                            <button type="submit" class="btn btn-signup">Sign Up</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+        <div class="imgBx">
+            <div class="item">
+                <p>Effortless,</p>
+                <p>Seamless,</p>
+                <p>AppointMe</p>
+            </div>
+        </div>
+    </section>
+</body>
+

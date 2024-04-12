@@ -1,0 +1,56 @@
+.box{
+    display: flex;
+    flex-direction: column;
+}
+
+.content{
+    display: flex;
+    width: 100%;
+    padding: 0;
+    padding-left: 20px;
+    padding-right: 20px;
+    margin: 0;
+}
+
+.group{
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+    gap: 10px;
+    width: 100%;
+}
+
+button{
+    width: 80%;
+    height: 40px;
+    border: gainsboro 1px solid;
+    border-radius: 10px;
+    cursor: pointer;
+}
+
+.student{
+    background-color: #EAFAE5;
+}
+
+.student:hover{
+    background-color: #168021;
+}
+
+.teacher{
+    background-color: #FFEFD1;
+}
+
+.teacher:hover{
+    background-color: #F78914;
+    color: white;
+}
+
+button:hover{
+    background-color: rgb(183, 181, 181);
+    color: white;
+}
+
+.button-close{
+    width: 40%;
+    height: 30px;
+}

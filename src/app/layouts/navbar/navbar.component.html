@@ -1,0 +1,19 @@
+<header>
+    <div class="title" (click)="redirectToHomePage()">
+        <img src="assets/appointmelogo.png">
+        <h1><span style="color: #228B22;">Appoint</span><span style="color: #F78914;">Me</span></h1>
+    </div>
+    <div class="navbar">
+            <!-- <div class="nav">
+                <label>About</label>
+            </div> -->
+        <a class="nav" (click)="openLoginDialog()">
+            <i class='bx bx-log-in'></i>
+            <label>Login</label>
+        </a>
+        <a routerLink="./register" class="nav" (click)="openRegisterDialog()">
+            <i class='bx bx-user-plus'></i> 
+            <label>Register</label>
+        </a>
+    </div>
+  </header>

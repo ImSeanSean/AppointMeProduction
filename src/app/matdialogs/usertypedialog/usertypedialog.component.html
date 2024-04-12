@@ -1,0 +1,12 @@
+<div class="box">
+    <h1 mat-dialog-title>I am a...</h1>
+    <mat-dialog-content class="content">
+        <div class="group">
+            <button class="student" (click)="userTypeSelect('student')"><i class='bx bx-glasses-alt' ></i><span> Student</span></button>
+            <button class="teacher" (click)="userTypeSelect('teacher')"><i class='bx bx-book-reader'></i><span> Teacher</span></button>
+        </div>
+    </mat-dialog-content>
+    <mat-dialog-actions align="end">
+        <button mat-dialog-close class="button-close">Cancel</button>
+    </mat-dialog-actions>
+</div>

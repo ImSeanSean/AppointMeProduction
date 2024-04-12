@@ -1,0 +1,142 @@
+header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    /* Align items vertically */
+    background-color: white;
+    border-bottom: #D0D3D4 3px solid;
+    height: 10vh;
+    padding-left: 20px;
+    padding-right: 20px;
+}
+
+header .title {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    cursor: pointer;
+}
+
+header .title h1 {
+    font-size: 24px;
+    padding: 0;
+    margin: 0;
+    font-weight: bold;
+}
+
+header .title img {
+    height: 60px;
+}
+
+header .navbar {
+    display: flex;
+    align-items: center;
+    gap: 50px;
+    height: 100%;
+}
+
+header .navbar .nav {
+    display: flex;
+    align-items: center;
+    height: 100%;
+    padding: 10px;
+}
+
+header .navbar .nav:hover {
+    background-color: #D9D9D9;
+    cursor: pointer;
+}
+
+header i {
+    font-size: 30px;
+    margin-right: 8px;
+}
+
+/* Style for the content */
+.content {
+    display: flex;
+    flex-direction: column;
+    align-content: center;
+    justify-content: center;
+    height: 90vh;
+}
+
+h1 {
+    font-size: 60px;
+    font-weight: bold;
+}
+
+h2 {
+    font-size: 40px; /* Adjust the font size for the h2 element */
+}
+
+p {
+    font-size: 30px; /* Adjust the font size for paragraphs */
+    padding-top: 10px;
+}
+
+a{
+    text-decoration: none;
+    color: black;
+    cursor: pointer;
+}
+
+label{
+    cursor: pointer;
+}
+
+button {
+    font-size: 20px; /* Adjust the font size for buttons */
+    padding: 10px;
+}
+
+.side-content {
+    display: flex;
+    justify-content: center;
+    margin-left: 150px;
+    margin: 0;
+    gap: 40px;
+}
+
+.text-content {
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+.side-image {
+    max-width: 480px;
+}
+
+.text-content .title{
+    height: auto;
+}
+
+.text-content div{
+    display: flex;
+    flex-direction: column;
+    align-content: center;
+    margin-bottom: 20px;
+}
+
+.text-content h1,h2,p{
+    margin: 0;
+}
+
+.sign-up-button {
+    width: 500px;
+    height: 50px;
+    border: none;
+    border-radius: 50px;
+    background: #168021;
+    color: #fff;
+    font-weight: 600;
+    margin: 10px 0;
+    text-transform: uppercase;
+    cursor: pointer;
+}
+
+.sign-up-button:hover {
+    background-color: #45a049; /* Darker green background on hover */
+}

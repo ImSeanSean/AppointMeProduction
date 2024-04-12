@@ -1,0 +1,258 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Montserrat', sans-serif;
+}
+
+body, html {
+    overflow: hidden;
+    margin: 0;
+    padding: 0;
+    height: 100vh;
+}
+
+section {
+    position: relative;
+    width: 100vw;
+    height: 90vh;
+    display: flex;
+}
+
+section .imgBx {
+    position: relative;
+    width: 35%;
+    height: 100%;
+    background-color: #F08000;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.item {
+    background-color: #F08000;
+    display: flex;
+    flex-direction: column;
+    font-size: 50px;
+    color: #ffff;
+    gap: 30px;
+    font-weight: bold;
+}
+
+section .imgBx::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(225deg, #ed9d1d63, #00a00d74);
+    z-index: 1;
+    mix-blend-mode: screen;
+}
+
+section .contentBx {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 65%;
+    height: 90vh;
+    background-color: #FFEFD1;
+    padding: 10px;
+}
+
+section .contentBx .formBx {
+    width: 50%;
+}
+
+.logo-img {
+    width: 100px;
+    height: auto;
+
+}
+
+.logo-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+.blue-text {
+    color: #06572A;
+    font-size: 35px;
+}
+
+.bold-text {
+    font-weight: 800;
+}
+
+.text-center {
+    text-align: center;
+}
+
+
+.btn-signup {
+    width: 150px;
+    height: 50px;
+    border: none;
+    border-radius: 50px;
+    background: #06572A;
+    color: #fff;
+    font-weight: 600;
+    margin: 10px 0;
+    text-transform: uppercase;
+    cursor: pointer;
+}
+
+.btn-signup:hover {
+    background-color: #06572A;
+    border-color: #06572A;
+}
+
+.coll input {
+    width: 100%;
+    height: 50px;
+    background: #f0f0f0;
+    margin: 10px 0;
+    border: 2px solid #06572A;
+    border-radius: 50px;
+    display: flex;
+    align-items: center;
+    padding: 12px 30px;
+    font-size: 20px;
+}
+
+.btn-secondary {
+    position: absolute;
+    top: 0;
+    border-radius: 5px;
+    right: 0px;
+    z-index: 2;
+    border: none;
+    height: 30px;
+    cursor: pointer;
+    color: white;
+    background-color: #1e90ff;
+    transform: translateX(2px);
+}
+
+.custom-checkbox {
+    display: flex;
+    align-items: center;
+}
+.email-container {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    width: 100%;
+}
+
+.email-container .input-group {
+    position: relative;
+    flex: 1;
+}
+
+.email-container .input-group .form-control {
+    border-radius: 50px 50 0 50px;
+}
+
+
+.coll select {
+    width: 100%;
+    height: 50px;
+    background: #f0f0f0;
+    margin: 10px 0;
+    border: 2px solid #06572A;
+    border-radius: 50px;
+    display: flex;
+    align-items: center;
+    padding: 12px 30px;
+    font-size: 20px;
+    appearance: none; /* Remove default arrow */
+}
+
+.coll select:focus {
+    outline: none;
+    border-color: #1e90ff; /* Change border color on focus */
+}
+
+.form-check-input[type="radio"] {
+    width: 20px; /* Adjust the width */
+    height: 20px; /* Adjust the height */
+}
+
+.birthday-sex-container .coll {
+    display: inline-block;
+    width: 50%;
+}
+
+.birthday-sex-container .coll #birthday,
+.birthday-sex-container .coll #sex {
+    width: calc(100% - 10px);
+    height: 50px;
+    background: #f0f0f0;
+    margin: 10px 0;
+    border: 2px solid #06572A;
+    border-radius: 50px;
+    display: flex;
+    align-items: center;
+    padding: 12px 30px;
+    font-size: 20px;
+}
+
+.birthday-sex-container .coll #birthday {
+    margin-right: 10px;
+}
+
+.row.course-block-year {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px; /* Adjust the gap between elements */
+}
+
+.row.course-block-year .coll {
+    flex-grow: 1;
+    max-width: calc(33.33% - 10px); /* Limit the maximum width of each container */
+}
+
+/* Adjust margin for the last element to avoid overflow */
+.row.course-block-year .coll:last-child {
+    margin-right: 0;
+}
+
+.name-container {
+    display: flex;
+    gap: 10px; /* Adjust the gap between input fields */
+}
+
+.name-container .coll {
+    flex-grow: 1;
+}
+
+
+.name-container .coll:last-child {
+    margin-right: 0;
+}
+
+
+small{
+    padding: 0; 
+    margin-left: 20px;
+    color: red;
+}
+
+.email-container {
+    display: flex;
+    align-items: center;
+    flex-grow: 1;
+}
+
+.email-container .coll {
+    width: 100%; 
+
+}
+.email-container .coll input {
+    width: 100%; 
+    
+}

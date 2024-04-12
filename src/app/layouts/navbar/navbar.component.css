@@ -1,0 +1,53 @@
+header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    /* Align items vertically */
+    background-color: white;
+    border-bottom: #D0D3D4 3px solid;
+    height: 10vh;
+    padding-left: 20px;
+    padding-right: 20px;
+}
+
+header .title {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    cursor: pointer;
+}
+
+header .title h1 {
+    font-size: 24px;
+    padding: 0;
+    margin: 0;
+    font-weight: bold;
+}
+
+header .title img {
+    height: 60px;
+}
+
+header .navbar {
+    display: flex;
+    align-items: center;
+    gap: 50px;
+    height: 100%;
+}
+
+header .navbar .nav {
+    display: flex;
+    align-items: center;
+    height: 100%;
+    padding: 10px;
+}
+
+header .navbar .nav:hover {
+    background-color: #D9D9D9;
+    cursor: pointer;
+}
+
+header i {
+    font-size: 30px;
+    margin-right: 8px;
+}
