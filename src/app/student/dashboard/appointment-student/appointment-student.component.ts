@@ -12,7 +12,7 @@ import { HttpClientModule } from '@angular/common/http';
     imports: [AppointmentCardComponent, AppointmentCardConfirmedComponent, HttpClientModule, RouterModule]
 })
 export class AppointmentStudentComponent {
-  constructor(private router: Router){}
+  constructor(private router: Router){} 
 
   changeRoute() {
       this.router.navigate(['/dashboard/teacher-appointment-view']);

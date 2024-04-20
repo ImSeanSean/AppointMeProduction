@@ -1,0 +1,68 @@
+<div class="main">
+    <div class="title">
+      <h2>Appointment Details</h2>
+    </div>
+    <div class="content">
+      <div class="top">
+        <div class="textName">
+          <p>Appointment</p>
+          <h1>{{appointments[0]?.appointment_title}}</h1>
+        </div>
+      </div>
+      <div class="group">
+        <div class="date">
+          <div class="box">
+            <h4>Teacher</h4>
+          </div>
+          <div class="textDate">
+            <p>{{appointments[0]?.ConsultantFirstName}} {{appointments[0]?.ConsultantLastName}}</p>
+          </div>
+        </div>
+  
+        <div class="date">
+          <div class="box">
+            <h4>Student</h4>
+          </div>
+          <div class="textDate">
+            <p>{{appointments[0]?.UserName}} {{appointments[0]?.UserLastName}}</p>
+          </div>
+        </div>
+  
+        <div class="date">
+          <div class="box">
+            <h4>Date</h4>
+          </div>
+          <div class="textDate">
+            <p>{{getFormattedDate(this.appointments[0]?.AppointmentDate)}}</p>
+          </div>
+        </div>
+  
+        <div class="date">
+          <div class="box">
+            <h4>Time</h4>
+          </div>
+          <div class="textDate">
+            <p>{{getFormattedTime(this.appointments[0]?.AppointmentDate)}}</p>
+          </div>
+        </div>
+        
+      </div>
+      <div class="body">
+        <div class="purpose">
+          <p>Appointment Purpose/Concerns:</p>
+        </div>
+        <div class="textarea-container">
+          <textarea placeholder="Leave a Concerns/purpose" readonly>{{appointments[0]?.AppointmentInfo}}</textarea>
+        </div>
+      </div>
+      <div class="buttons">
+        <div class="close">
+          <p (click)="closeWindow()">CLOSE APPOINTMENT</p>
+        </div>
+        <div *ngIf="usertype == 'teacher'" class="reject">
+          <p (click)="rejectAppointment()">CANCEL APPOINTMENT</p>
+        </div>
+      </div>
+    </div>
+  </div>
+  

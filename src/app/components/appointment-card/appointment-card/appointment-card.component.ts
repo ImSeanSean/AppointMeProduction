@@ -16,7 +16,7 @@ export class AppointmentCardComponent {
   constructor(private http: HttpClient, private router: Router) {};
 
   changeRoute(id:string) {
-    this.router.navigate(['/dashboard/appointments', id]);
+    this.router.navigate(['teacher/dashboard/appointments/pending', id]);
   }
 
   appointments: Appointment[] = [];

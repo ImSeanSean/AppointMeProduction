@@ -186,8 +186,20 @@
 .ftf:hover, .online:hover{
     background-color: #0D4913;
 }
-mat-slide-toggle{
-    color: #F78914;
+.online{
+    background-color: #a3a3a3;
+    height: 45px;
+    width: 30vh;
+    text-align: center;
+    color: white;
+    right: 3%;
+    border-radius: 20px;
+    box-shadow: 7px 9px 8px rgba(0, 0, 0, 0.1);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+    margin: auto;
 }
 .icons{
     display: flex;

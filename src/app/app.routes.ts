@@ -12,6 +12,8 @@ import { AppointmentView2Component } from './student/dashboard/teacher-list/appo
 import { AppointmentStudentComponent } from './student/dashboard/appointment-student/appointment-student.component';
 import { TeacherLoginComponent } from './teacher/teacher-login/teacher-login.component';
 import { DashboardTeacherComponent } from './layouts/dashboard-teacher/dashboard-teacher.component';
+import { AppointmentViewComponent } from './components/appointment-view/appointment-view.component';
+import { AppointmentViewConfirmedComponent } from './components/appointment-view-confirmed/appointment-view-confirmed.component';
 
 export const routes: Routes = [
     {path: '', component: HomepageComponent},
@@ -37,10 +39,11 @@ export const routes: Routes = [
             {path: 'dashboard', component: DashboardTeacherComponent,
                 children: [
                     {path: 'appointments', component: AppointmentStudentComponent},
+                    {path: 'appointments/pending/:appointmentId', component: AppointmentViewComponent},
+                    {path: 'appointments/confirmed/:appointmentId', component: AppointmentViewConfirmedComponent},
                     {path: 'profile', component: ProfileStudentComponent}
                 ]
             }
-            // {path: 'dashboard'}
         ]
     }
 ];
