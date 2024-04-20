@@ -8,5 +8,5 @@ import { provideHttpClient, withFetch } from '@angular/common/http';
 import { DatePipe } from '@angular/common';
 
 export const appConfig: ApplicationConfig = {
-  providers: [provideRouter(routes), provideAnimationsAsync(), provideClientHydration(), provideHttpClient(withFetch()), DatePipe]
+  providers: [provideRouter(routes), provideAnimationsAsync(), provideClientHydration(), provideHttpClient(withFetch()), DatePipe, provideAnimationsAsync()]
 };

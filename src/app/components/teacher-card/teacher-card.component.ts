@@ -23,7 +23,7 @@ export class TeacherCardComponent implements OnInit{
   }
 
   changeRoute(teacherId: number): void {
-    this.router.navigate(['/dashboard/appointment-view', teacherId]);
+    this.router.navigate(['student/dashboard/appointment-view', teacherId]);
   }
 
   ngOnInit(): void {

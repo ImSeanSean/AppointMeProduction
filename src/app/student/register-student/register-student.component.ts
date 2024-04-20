@@ -49,8 +49,8 @@ export class RegisterStudentComponent {
             const description = "Redirected to Dashboard"
             this.openDialogtemplate(title, description);
             localStorage.setItem('token', token);
-            localStorage.setItem('user', 'student')
-            this.router.navigate(['/dashboard'])
+            localStorage.setItem('user', 'user')
+            this.router.navigate(['/student/dashboard/main'])
           }
         },
           error => {

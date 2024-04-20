@@ -1,0 +1,24 @@
+<div class="main">
+    <div class="title">
+        <h2>Appointment Purpose/Concerns</h2>
+    </div>
+    <div class="content">
+        <div class="top">
+            <div class="date">
+                <div class="box">
+                    <h4>Schedule of the Appointment</h4>
+                </div>
+                <div class="text">
+                    <p>{{selectedDate}}</p>
+                    <p>{{selectedTime}}</p>
+                </div>
+            </div>
+        </div>
+        <div class="body">
+            <textarea [(ngModel)]="appointmentDetails" placeholder="Provide appointment details..."></textarea>
+        </div>
+        <div class="confirmation" (click)="createAppointment()">
+            <p>GET AN APPOINTMENT</p>
+        </div>
+    </div>
+</div>

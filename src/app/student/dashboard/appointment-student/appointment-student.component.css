@@ -1,0 +1,77 @@
+.main{
+    height: 90vh;
+    width: 94vw;
+    overflow: auto;
+}
+
+.title{
+    background-color: #D9D9D9;
+    width: 100%;    
+    height: 10vh;
+    display: flex;
+    align-items: center;
+    font-weight: normal;
+}
+
+.main h2{
+    padding-left: 30px;
+    color: #000000;
+    font-size: 30px;
+}
+
+.appointment-list{
+    padding-top: 35px;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    padding-top: 20px;
+}
+
+.pending label{
+    color: #F78914;
+    padding-left: 120px;
+    padding-top: 25px;
+    padding-bottom: 10px;
+    font-size: 25px;
+}
+
+.pending hr {
+    width: 75%;
+    border: 0;
+    height: 2.6px;
+    background-color: #F78914;
+    margin: 10px 0;
+    margin: auto;
+}
+
+.confirmed label{
+    color: #168021;
+    padding-left: 120px;
+    padding-top: 25px;
+    padding-bottom: 10px;
+    font-size: 25px;
+}
+
+.confirmed hr {
+    width: 75%;
+    border: 0;
+    height: 2.6px;
+    background-color: #168021;
+    margin: 10px 0;
+    margin: auto;
+}
+
+.appointment-pending-list{
+    width: 100%;
+    height: 70vh;
+    display: grid;
+    justify-content: center;
+    overflow-y: scroll;
+}
+
+.appointment-confirmed-list{
+    width: 100%;
+    height: 70vh;
+    display: grid;
+    justify-content: center;
+    overflow-y: scroll;
+}

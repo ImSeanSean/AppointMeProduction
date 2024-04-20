@@ -1,20 +1,18 @@
 import { Component } from '@angular/core';
-import { NavbarComponent } from "../navbar/navbar.component";
-import { Router, RouterModule } from '@angular/router';
-import { NgIf } from '@angular/common';
-import { User } from '../../interfaces/User';
 import { Teacher } from '../../interfaces/Teacher';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { Router, RouterModule, RouterOutlet } from '@angular/router';
+import { User } from '../../interfaces/User';
 import { SettingComponent } from "../setting/setting.component";
 
 @Component({
-    selector: 'app-dashboard-student',
+    selector: 'app-dashboard-teacher',
     standalone: true,
-    templateUrl: './dashboard-student.component.html',
-    styleUrl: './dashboard-student.component.css',
-    imports: [NavbarComponent, RouterModule, NgIf, SettingComponent]
+    templateUrl: './dashboard-teacher.component.html',
+    styleUrl: './dashboard-teacher.component.css',
+    imports: [SettingComponent, RouterModule]
 })
-export class DashboardStudentComponent {
+export class DashboardTeacherComponent {
   user: User[] = [];
   teacher: Teacher[] = [];
   usertype = localStorage.getItem('user');

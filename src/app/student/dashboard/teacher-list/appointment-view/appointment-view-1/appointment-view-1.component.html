@@ -1,0 +1,60 @@
+<div class="main">
+    <div class="title">
+        <h2>View Appointments</h2>
+    </div>
+    <div class="content">
+        <div class="top">
+            <div class="text">
+                <h2>{{teachers[0]?.first_name}} {{teachers[0]?.last_name}}</h2>
+                <p>Instructor Schedule</p>
+            </div>
+            <div class="date">
+                <div class="box">
+                    <h4>Date</h4>
+                </div>
+                <p>{{formattedDate}}</p>
+            </div>
+        </div>
+        <div class="group">
+            <div class="border">
+                <div class="schedules">
+                    <ul>
+                        <li 
+                        [ngStyle]="{ 'background-color': time === selectedTime ? '#0D4913' : '' }"
+                        *ngFor="let time of appointmentTimes" 
+                        (click)="selectTime(time)">
+                        {{ time }}
+                      </li>
+                    </ul>
+                </div>
+            </div>
+            <div class="mode">
+                <h2>Mode of Appointment:</h2>
+                <div class="button-box">
+                    <div class="ftf" (click)="changeRoute()">
+                        <p>FACE TO FACE</p>
+                    </div>
+                </div>
+                <div class="button-box">
+                    <div class="online" (click)="changeRoute()">
+                        <p>ONLINE</p>
+                    </div>
+                </div>
+                <div class="button-box">
+                    <div class="confirmation" (click)="changeRoute()">
+                        <p>GET AN APPOINTMENT</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="bottom">
+            <div class="div">
+
+            </div>
+            <div class="icons">
+                <i class='bx bxs-chevron-left' (click)="decreaseFormattedDate()"></i>
+                <i class='bx bxs-chevron-right' (click)="increaseFormattedDate()"></i>
+            </div>
+        </div>
+    </div>
+</div>

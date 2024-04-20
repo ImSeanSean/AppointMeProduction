@@ -4,15 +4,15 @@ include "./post.php";
 include "../config/database.php";
 
 
-header('Access-Control-Allow-Origin: http://localhost:4200');
-header('Access-Control-Allow-Methods: DELETE, POST, GET, OPTIONS');
-header('Access-Control-Allow-Headers: Content-Type, Authorization, X-Requested-With');
+header('Access-Control-Allow-Origin: *');
+header('Access-Control-Allow-Methods: *');
+header('Access-Control-Allow-Headers: *');
 
 // Centralized CORS handling for OPTIONS requests
 if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
     header('HTTP/1.1 200 OK');
-    header('Access-Control-Allow-Methods: DELETE, POST, GET, OPTIONS');
-    header('Access-Control-Allow-Headers: Content-Type, Authorization, X-Requested-With');
+    header('Access-Control-Allow-Methods: *');
+    header('Access-Control-Allow-Headers: *');
     exit;
 }
 
