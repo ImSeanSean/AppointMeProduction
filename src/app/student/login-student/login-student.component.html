@@ -1,68 +1,42 @@
-<app-navbar></app-navbar>   
-<div class="vertical-line"></div>        
+<app-navbar></app-navbar>          
 <section>
 <div class="login-container" >
-    <form [formGroup]="formGroup" (ngSubmit)="loginStudent()">
-    <div class="login-box">
-        <div class="login-header">
-            <img src="assets/appointmelogo.png" alt="Appoint Me Logo" class="logo-img">
-            <header class="first-login-header">STUDENT</header>
-        </div>            
-        <div class="input-box">
-            <input type="email" class="input-field" placeholder="Email" autocomplete="off" formControlName="email" required>
-        </div>
-        <div class="input-box">
-            <input type="password" class="input-field" placeholder="Password" autocomplete="off" formControlName="password" required>
-            <!-- <div class="forgot-remember">
-                <section class="forgot">
-                    <input type="checkbox">
-                    <label for="check">Remember me</label>
-                </section>
-                <section class="remember">
-                    <a href="#">Forgot password?</a>
-                </section>
-            </div> -->
-        </div>            
-        <div class="input-submit">
-            <button class="submit-btn">Log In</button>
-        </div>
-        <div class="sign-up-link">
-            <p>Don't have account? <a routerLink="/register" routerLinkActive="active" ariaCurrentWhenActive="page">Sign Up</a></p>
-        </div>
-    </div>
-</form>
-</div>
-        <div class="login-container">
-            <form [formGroup]="formGroup" (ngSubmit)="loginTeacher()">
-            <div class="login-box" style="background-color:#FFEFD1;">
-                <div class="login-header">
-                    <img src="assets/appointmelogo.png" alt="Appoint Me Logo" class="logo-img">
-                    <header>TEACHER</header>
-                </div>
-                <div class="input-box">
-                    <input type="email" class="input-field" placeholder="Email" autocomplete="off" formControlName="email" required>
-                </div>
-                <div class="input-box">
-                    <input type="password" class="input-field" placeholder="Password" autocomplete="off" formControlName="password" required>
-                    <!-- <div class="forgot-remember">
-                        <section class="forgot">
-                            <input type="checkbox">
-                            <label for="check">Remember me</label>
-                        </section>
-                        <section class="remember">
-                            <a href="#">Forgot password?</a>
-                        </section>
-                    </div> -->
-                </div>            
-                <div class="input-submit">
-                    <button class="submit-btn" style="background-color: #06572A;">Log In</button>
-                </div>
-                        <div class="sign-up-link">
-                            <p>Don't have account? <b>Contact your administrator.</b></p>
-                        </div>
+        <form [formGroup]="formGroup" (ngSubmit)="loginStudent()">
+        <div class="login-box">
+            <div class="login-header">
+                <img src="assets/appointmelogo.png" alt="Appoint Me Logo" class="logo-img">
+                <header class="first-login-header">STUDENT</header>
+            </div>            
+            <div class="input-box">
+                <input type="email" class="input-field" placeholder="Email" autocomplete="off" formControlName="email" required>
             </div>
-            </form>
+            <div class="input-box">
+                <input type="password" class="input-field" placeholder="Password" autocomplete="off" formControlName="password" required>
+                <!-- <div class="forgot-remember">
+                    <section class="forgot">
+                        <input type="checkbox">
+                        <label for="check">Remember me</label>
+                    </section>
+                    <section class="remember">
+                        <a href="#">Forgot password?</a>
+                    </section>
+                </div> -->
+            </div>            
+            <div class="input-submit">
+                <button class="submit-btn">Log In</button>
+            </div>
+            <div class="sign-up-link">
+                <p>Don't have account? <a routerLink="/student/register" routerLinkActive="active" ariaCurrentWhenActive="page">Sign Up</a></p>
+            </div>
         </div>
+    </form>
+    </div>
+<div class="login-container" style="background-color: #FFEFD1;">
+    <div class="slogan">
+        <h2>Welcome to</h2>
+        <h1>Appoint<span style="color: #F78914;">Me</span></h1>
+        <p>Elevating your Schedule</p>
+        <p>One Appointment at a Time</p>
+    </div>
+</div>
 </section>
-
-<app-teacher-registration-approval></app-teacher-registration-approval>

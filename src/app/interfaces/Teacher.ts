@@ -8,4 +8,6 @@ export interface Teacher {
   last_name: string;
   bday: string;
   gender: string;
+  creation_time: Date;
+  approved: boolean;
 }

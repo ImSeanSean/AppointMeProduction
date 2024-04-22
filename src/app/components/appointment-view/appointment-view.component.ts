@@ -4,6 +4,8 @@ import { Component } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
 import { Observable, catchError } from 'rxjs';
 import { Appointment } from '../../interfaces/Appointment';
+import { ConfirmationComponent } from '../../matdialogs/confirmation/confirmation.component';
+import { MatDialog } from '@angular/material/dialog';
 
 @Component({
   selector: 'app-appointment-view',
@@ -17,7 +19,7 @@ export class AppointmentViewComponent {
   appointmentId: string | null = null;
   appointments: Appointment[] = [];
 
-  constructor(private http: HttpClient, private router: Router, private activatedRoute: ActivatedRoute) {}
+  constructor(private http: HttpClient, private router: Router, private activatedRoute: ActivatedRoute, public dialog: MatDialog) {}
 
   ngOnInit() {
     this.getAppointment().subscribe(
@@ -35,7 +37,47 @@ export class AppointmentViewComponent {
   }
 
   closeWindow() {
-    this.router.navigate(['teacher/dashboard/appointments']);
+    var user = localStorage.getItem('user')
+    if (user == "user"){
+      user = "student";
+    }
+    this.router.navigate([`${user}/dashboard/appointments`]);
+  }
+
+  openConfirmationReject(): void {
+    const dialogRef = this.dialog.open(ConfirmationComponent, {
+      height: '250px',
+      width: '490px',
+      data: {
+        title: 'Reject Appointment',
+        description: 'Are you sure you want to reject this appointment?'
+      }
+    });
+  
+    dialogRef.afterClosed().subscribe(result => {
+      console.log(result)
+      if (result) {
+        this.rejectAppointment();
+      }
+    });
+  }
+
+  openConfirmationAccept(): void {
+    const dialogRef = this.dialog.open(ConfirmationComponent, {
+      height: '250px',
+      width: '490px',
+      data: {
+        title: 'Confirm Appointment',
+        description: 'Are you sure you want to confirm this appointment?'
+      }
+    });
+  
+    dialogRef.afterClosed().subscribe(result => {
+      console.log(result)
+      if (result) {
+        this.confirmAppointment();
+      }
+    });
   }
 
   getAppointment(): Observable<Appointment[]> {
@@ -93,6 +135,6 @@ export class AppointmentViewComponent {
         console.error('Error rejecting appointment:', error);
       }
     );
-  this.closeWindow();
+    this.closeWindow();
   }
 }

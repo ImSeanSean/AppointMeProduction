@@ -161,6 +161,20 @@
   form{
     width: 100%;
   }
-  
-  
+.slogan{
+  display: flex;
+  flex-direction: column;
+  align-content: center;
+  justify-content: center;
+  margin: auto;
+}
+.slogan h2{
+  font-size: 40px;
+}
+.slogan h1{
+  font-size: 70px;
+}
+.slogan p{
+  font-size: 30px;
+}
   

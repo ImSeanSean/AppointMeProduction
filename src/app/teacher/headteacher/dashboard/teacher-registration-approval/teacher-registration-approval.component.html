@@ -1,15 +1,67 @@
-<div class="approval-card">
-    <div class="box-left"></div>
-    <div class="text">
-        <div class="teacher">
-            <p class="fullname">Full Name: Kenneth V. Bautista</p>
-            <p class="email">Email: bautista.kenneth&#64;gordoncollege.edu.ph</p>
-        </div>
-        <div class="details">
-            <p class="details">See more details</p>
-        </div>
+<div class="main">
+    <div class="title">
+        <h2>Teacher Registration Approval</h2>
     </div>
-    <div class="box-right">
-        <p class="box-text">TO BE APPROVED</p>
+    <div class="layout">
+        <div class="left">
+            <h3>Unapproved Registered Accounts</h3>
+            <div class="approval-card-list">
+                <div class="approval-card" *ngFor="let teachers of approvedTeachers" (click)="showTeacherDetails(teachers)"> 
+                    <div class="box-left"></div>
+                    <div class="text">
+                        <div class="teacher">
+                            <p class="fullname">Full Name: {{teachers.first_name}} {{teachers.last_name}}</p>
+                            <p class="email">Email: {{teachers.Email}}</p>
+                        </div>
+                        <div class="details">
+                            <p class="details">See more details</p>
+                        </div>
+                    </div>
+                    <div class="box-right">
+                        <p class="box-text">To Be Approved</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="right">
+            <h3>Account Details</h3>
+            <div class="containerr">
+              <div class="account-details">
+                <div class="group">
+                    <div class="left">
+                        <h4>First Name:</h4>
+                        <p>{{selectedTeacher?.first_name}}</p>
+                    </div>
+                    <div class="right">
+                        <h4>Last Name:</h4>
+                        <p>{{selectedTeacher?.last_name}}</p>
+                    </div>
+                </div>
+                <h4>Email:</h4>
+                <p>{{selectedTeacher?.Email}}</p>
+                <div class="group">
+                    <div class="left">
+                        <h4>Gender:</h4>
+                        <p>{{selectedTeacher?.gender}}</p>
+                    </div>
+                    <div class="right">
+                        <h4>Birthday</h4>
+                        <p>{{selectedTeacher?.bday}}</p>
+                    </div>
+                </div>
+                <h4>Account Created:</h4>
+                <p>{{selectedTeacher?.creation_time}}</p>
+                <div class="bottom">
+                    <div class="input-submit">
+                        <button class="submit-btn-confirm" (click)="approveTeacher(selectedTeacher?.ConsultantID)">Approve Account</button>
+                      </div>
+                    <div class="input-submit">
+                        <button class="submit-btn-reject">Reject Account</button>
+                    </div>
+                </div>
+              </div>
+            </div>            
+        </div>
     </div>
 </div>
+

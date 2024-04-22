@@ -2,13 +2,14 @@ import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { AuthServiceService } from '../../services/auth-service.service';
+import { NavbarComponent } from "../../layouts/navbar/navbar.component";
 
 @Component({
-  selector: 'app-teacher-login',
-  standalone: true,
-  imports: [ReactiveFormsModule],
-  templateUrl: './teacher-login.component.html',
-  styleUrl: './teacher-login.component.css'
+    selector: 'app-teacher-login',
+    standalone: true,
+    templateUrl: './teacher-login.component.html',
+    styleUrl: './teacher-login.component.css',
+    imports: [ReactiveFormsModule, NavbarComponent]
 })
 export class TeacherLoginComponent implements OnInit{
   onSubmit: any;

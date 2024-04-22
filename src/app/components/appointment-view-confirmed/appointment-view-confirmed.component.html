@@ -52,7 +52,7 @@
           <p>Appointment Purpose/Concerns:</p>
         </div>
         <div class="textarea-container">
-          <textarea placeholder="Leave a Concerns/purpose" readonly>{{appointments[0]?.AppointmentInfo}}</textarea>
+          <textarea placeholder="No Appointment Purpose Stated" readonly>{{appointments[0]?.AppointmentInfo}}</textarea>
         </div>
       </div>
       <div class="buttons">
@@ -60,7 +60,7 @@
           <p (click)="closeWindow()">CLOSE APPOINTMENT</p>
         </div>
         <div *ngIf="usertype == 'teacher'" class="reject">
-          <p (click)="rejectAppointment()">CANCEL APPOINTMENT</p>
+          <p (click)="openConfirmationReject()">CANCEL APPOINTMENT</p>
         </div>
       </div>
     </div>

@@ -13,23 +13,5 @@ import { TeacherCardComponent } from "../../../components/teacher-card/teacher-c
     imports: [DashboardStudentComponent, TeacherCardComponent]
 })
 export class TeacherListComponent {
-    private apiUrl = 'http://localhost/appointme/pdo/api/get_consultants';
-    teachers: Teacher[] = [];  
-  
-    constructor(private http: HttpClient) {}
-  
-    getTeachers(): Observable<Teacher[]> {
-      return this.http.get<Teacher[]>(this.apiUrl);
-    }
-  
-    ngOnInit(): void {
-      this.getTeachers().subscribe(
-        (data: Teacher[]) => {
-          this.teachers = data;
-        },
-        (error) => {
-          console.error('Error fetching teachers:', error);
-        }
-      );
-    }
+
 }

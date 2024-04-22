@@ -14,6 +14,8 @@ import { TeacherLoginComponent } from './teacher/teacher-login/teacher-login.com
 import { DashboardTeacherComponent } from './layouts/dashboard-teacher/dashboard-teacher.component';
 import { AppointmentViewComponent } from './components/appointment-view/appointment-view.component';
 import { AppointmentViewConfirmedComponent } from './components/appointment-view-confirmed/appointment-view-confirmed.component';
+import { TeacherRegistrationApprovalComponent } from './teacher/headteacher/dashboard/teacher-registration-approval/teacher-registration-approval.component';
+import { TeacherRegisterComponent } from './teacher/teacher-register/teacher-register.component';
 
 export const routes: Routes = [
     {path: '', component: HomepageComponent},
@@ -27,6 +29,8 @@ export const routes: Routes = [
                     {path: 'appointment-view/:teacherId', component: AppointmentView1Component},
                     {path: 'appointment-view-2/:teacherId',component: AppointmentView2Component},
                     {path: 'appointments', component: AppointmentStudentComponent},
+                    {path: 'appointments/pending/:appointmentId', component: AppointmentViewComponent},
+                    {path: 'appointments/confirmed/:appointmentId', component: AppointmentViewConfirmedComponent},
                     {path: 'profile', component: ProfileStudentComponent}
                 ]
             }
@@ -35,13 +39,18 @@ export const routes: Routes = [
     {path: 'teacher',
         children: [
             {path: 'login', component: TeacherLoginComponent},
-            // {path: 'register'},
+            {path: 'register', component: TeacherRegisterComponent},
             {path: 'dashboard', component: DashboardTeacherComponent,
                 children: [
                     {path: 'appointments', component: AppointmentStudentComponent},
                     {path: 'appointments/pending/:appointmentId', component: AppointmentViewComponent},
                     {path: 'appointments/confirmed/:appointmentId', component: AppointmentViewConfirmedComponent},
-                    {path: 'profile', component: ProfileStudentComponent}
+                    {path: 'profile', component: ProfileStudentComponent},
+                    {path: 'headteacher', 
+                        children: [
+                            {path: 'teacher-registration', component: TeacherRegistrationApprovalComponent}
+                        ]
+                    }
                 ]
             }
         ]

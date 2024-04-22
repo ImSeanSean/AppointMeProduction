@@ -3,18 +3,19 @@ import { Teacher } from '../../interfaces/Teacher';
 import { HttpClient } from '@angular/common/http';
 import { Router } from '@angular/router';
 import { Observable } from 'rxjs';
-import { NgFor } from '@angular/common';
+import { NgFor, NgIf } from '@angular/common';
 
 @Component({
   selector: 'app-teacher-card',
   standalone: true,
-  imports: [NgFor],
+  imports: [NgFor, NgIf],
   templateUrl: './teacher-card.component.html',
   styleUrl: './teacher-card.component.css'
 })
 export class TeacherCardComponent implements OnInit{
   private apiUrl = 'http://localhost/appointme/pdo/api/get_consultants';
   teachers: Teacher[] = [];
+  approvedTeachers: any[] = [];
 
   constructor(private http: HttpClient, private router: Router) {};
 
@@ -30,7 +31,7 @@ export class TeacherCardComponent implements OnInit{
     this.getTeachers().subscribe(
       (data: Teacher[]) => {
         this.teachers = data;
-        console.log(this.teachers);
+        this.approvedTeachers = this.teachers.filter(teacher => teacher.approved == true);
       },
       (error) => {
         console.error('Error fetching teachers:', error);

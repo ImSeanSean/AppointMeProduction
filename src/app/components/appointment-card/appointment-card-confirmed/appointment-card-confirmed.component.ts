@@ -16,7 +16,8 @@ export class AppointmentCardConfirmedComponent {
   constructor(private http: HttpClient, private router: Router) {};
 
   changeRoute(id:string) {
-    this.router.navigate(['teacher/dashboard/appointments/confirmed', id]);
+    const currentUrl = this.router.url
+    this.router.navigate([`${currentUrl}/confirmed`, id]);
   }
 
   appointments: Appointment[] = [];

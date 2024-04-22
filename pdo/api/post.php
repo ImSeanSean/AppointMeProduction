@@ -103,7 +103,7 @@ class Post
                 'user_id' => $userId,
                 'iss' => 'AppointMe',
                 'iat' => time(),
-                'exp' => time() + 3600,
+                'exp' => time() + 7200,
                 'type' => 'student'
             );
 
@@ -112,6 +112,89 @@ class Post
             return $token;
         } catch (PDOException $e) {
             return 1;
+        }
+    }
+    public function registerTeacher($data)
+    {
+        // Variables
+        $email = $data->email;
+        $fname = $data->fname;
+        $lname = $data->lname;
+        $birthday = $data->birthday;
+        $gender = $data->gender;
+        $password = $data->password;
+
+        // Check if the email already exists
+        $emailCheckSql = "SELECT COUNT(*) FROM `consultant` WHERE `Email` = :email";
+        $emailCheckStmt = $this->pdo->prepare($emailCheckSql);
+        $emailCheckStmt->bindParam(':email', $email);
+        $emailCheckStmt->execute();
+
+        if ($emailCheckStmt->fetchColumn() > 0) {
+            // Email already exists, return a response indicating that
+            return 2;
+        }
+
+        // Proceed with the insertion
+        $insertSql = "INSERT INTO `user` (`Email`, `FirstName`, `LastName`, `bday`, `gender`, `Password`) 
+        VALUES (:email, :fname, :lname, :birthday, :gender, :password)";
+
+        $insertStmt = $this->pdo->prepare($insertSql);
+
+        // Bind Parameters
+        $insertStmt->bindParam(':email', $email);
+        $insertStmt->bindParam(':fname', $fname);
+        $insertStmt->bindParam(':lname', $lname);
+        $insertStmt->bindParam(':birthday', $birthday);
+        $insertStmt->bindParam(':gender', $gender);
+        $insertStmt->bindParam(':password', $password);
+        // Execute SQL
+        try {
+            $insertStmt->execute();
+            $userId = $this->pdo->lastInsertId(); // Get the user ID after insertion
+
+            $payload = array(
+                'user_id' => $userId,
+                'iss' => 'AppointMe',
+                'iat' => time(),
+                'exp' => time() + 3600,
+                'type' => 'teacher'
+            );
+
+            $token = JWT::encode($payload, $this->secretKey, 'HS256');
+            // Return the token or any other response to the client
+            return $token;
+        } catch (PDOException $e) {
+            return 1;
+        }
+    }
+    public function approveTeacher($data)
+    {
+        $appointmentId = $data->teacher_id;
+
+        // SQL query to validate user authority and check appointment status
+        $sqlValidation = "SELECT * FROM consultant WHERE ConsultantID = $appointmentId";
+        $validationResult = $this->executeQuery($sqlValidation);
+
+        if ($validationResult['code'] == 200 && !empty($validationResult['data'])) {
+            $appointmentStatus = $validationResult['data'][0]['approved'];
+
+            if ($appointmentStatus == 1) {
+                // Appointment is already confirmed
+                return $this->sendPayLoad(null, "failed", "Teacher is already approved.", 400);
+            }
+
+            // SQL query to update the status to 1 (confirmed)
+            $sqlUpdate = "UPDATE consultant SET approved = 1 WHERE ConsultantID = $appointmentId";
+            $updateResult = $this->executeQuery($sqlUpdate);
+
+            if ($updateResult['code'] == 200) {
+                return $this->sendPayLoad(null, "success", "Teacher approved successfully.", $updateResult['code']);
+            } else {
+                return $this->sendPayLoad(null, "failed", "Failed to approve teacher.", $updateResult['code']);
+            }
+        } else {
+            return $this->sendPayLoad(null, "failed", "User is not authorized to confirm this appointment.", 403);
         }
     }
     public function login($data)
@@ -133,7 +216,7 @@ class Post
                 $payload = [
                     'iss' => 'AppointMe',
                     'iat' => time(),
-                    'exp' => time() + 3600,
+                    'exp' => time() + 7200,
                     'user_id' => $user['UserID'],
                     'type' => 'student'
                 ];
@@ -166,7 +249,7 @@ class Post
                 $payload = [
                     'iss' => 'AppointMe',
                     'iat' => time(),
-                    'exp' => time() + 3600,
+                    'exp' => time() + 7200,
                     'user_id' => $consultant['ConsultantID'],
                     'type' => 'teacher'
                 ];

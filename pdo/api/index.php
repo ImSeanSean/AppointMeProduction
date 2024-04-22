@@ -75,6 +75,12 @@ switch ($_SERVER['REQUEST_METHOD']) {
             case 'register':
                 echo json_encode($post->register($data));
                 break;
+            case 'register_teacher':
+                echo json_encode($post->registerTeacher($data));
+                break;
+            case 'approve_teacher':
+                echo json_encode($post->approveTeacher($data));
+                break;
             case 'create_appointment':
                 echo json_encode($post->create_appointment($data));
                 break;

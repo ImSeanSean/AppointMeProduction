@@ -1,29 +1,26 @@
 import { Component } from '@angular/core';
-import { ErrorComponent } from '../../matdialogs/error/error.component';
-import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
-import { MatDialog } from '@angular/material/dialog';
-import { AuthServiceService } from '../../services/auth-service.service';
-import { Router } from '@angular/router';
 import { NavbarComponent } from "../../layouts/navbar/navbar.component";
+import { FormGroup, Validators, FormBuilder, ReactiveFormsModule } from '@angular/forms';
+import { MatDialog } from '@angular/material/dialog';
+import { Router } from '@angular/router';
+import { ErrorComponent } from '../../matdialogs/error/error.component';
+import { AuthServiceService } from '../../services/auth-service.service';
 import { NgIf } from '@angular/common';
 
 @Component({
-    selector: 'app-register-student',
+    selector: 'app-teacher-register',
     standalone: true,
-    templateUrl: './register-student.component.html',
-    styleUrl: './register-student.component.css',
-    imports: [ReactiveFormsModule, NavbarComponent, NgIf]
+    templateUrl: './teacher-register.component.html',
+    styleUrl: './teacher-register.component.css',
+    imports: [NavbarComponent, ReactiveFormsModule, NavbarComponent, NgIf]
 })
-export class RegisterStudentComponent {
+export class TeacherRegisterComponent {
   myForm: FormGroup = this.formBuilder.group({
     email: ['', [Validators.required, Validators.email]],
     fname: ['', Validators.required],
     lname: ['', Validators.required],
     birthday: ['', Validators.required],
     gender: ['', Validators.required],
-    course: ['', Validators.required],
-    year: ['', Validators.required],
-    block: ['', Validators.required],
     password: ['', Validators.required],
     confirmpassword: ['', Validators.required],
   })
@@ -33,9 +30,8 @@ export class RegisterStudentComponent {
   onSubmit() {  
     if(this.myForm.valid){
       if(this.myForm.get('password')?.value == this.myForm.get('confirmpassword')?.value){
-        this.authService.register(this.myForm.value)
+        this.authService.registerTeacher(this.myForm.value)
         .subscribe(token => {
-          console.log(token)
           //Registration Error
           if(token == 1){
             this.openRegistrationErrorDialog();
@@ -46,12 +42,12 @@ export class RegisterStudentComponent {
             this.openExistingEmailErrorDialog();
           }
           else if(token != false || token != null) {
-            const title = "Login Successful"
-            const description = "Redirected to Dashboard"
+            const title = "Registration Successful"
+            const description = "Please wait for your account to get approved."
             this.openDialogtemplate(title, description);
             localStorage.setItem('token', token);
             localStorage.setItem('user', 'user')
-            this.router.navigate(['/student/dashboard/main'])
+            this.router.navigate([''])
           }
         },
           error => {

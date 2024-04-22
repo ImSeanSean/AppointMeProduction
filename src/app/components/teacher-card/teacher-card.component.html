@@ -1,5 +1,5 @@
 <div class="card-container">
-    <div *ngFor="let teachers of teachers" class="card" (click)="changeRoute(teachers.ConsultantID)"> 
+    <div *ngFor="let teachers of approvedTeachers" class="card" (click)="changeRoute(teachers.ConsultantID)"> 
         <div class="top">
             <img src="assets/profile.jpeg" alt="Teacher Image">
             <h4>{{teachers.first_name}} {{teachers.last_name}}</h4>

@@ -14,6 +14,9 @@ export class AuthServiceService {
   register(data:any): Observable<any> {
     return this.http.post('http://localhost/appointme/pdo/api/register', data);
   }
+  registerTeacher(data:any): Observable<any>{
+    return this.http.post('http://localhost/appointme/pdo/api/register_teacher', data);
+  }
   login(data: any): Observable<any> {
     return this.http.post('http://localhost/appointme/pdo/api/login', data);
   }

@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
-import { Router } from '@angular/router';
+import { Router, RouterLink } from '@angular/router';
 import { AuthServiceService } from '../../services/auth-service.service';
 import { UsertypedialogComponent } from '../../matdialogs/usertypedialog/usertypedialog.component';
 import { MatDialog } from '@angular/material/dialog';
@@ -12,7 +12,7 @@ import { TeacherRegistrationApprovalComponent } from "../../teacher/headteacher/
     standalone: true,
     templateUrl: './login-student.component.html',
     styleUrl: './login-student.component.css',
-    imports: [ReactiveFormsModule, NavbarComponent, TeacherRegistrationApprovalComponent]
+    imports: [ReactiveFormsModule, NavbarComponent, TeacherRegistrationApprovalComponent, RouterLink]
 })
 export class LoginStudentComponent implements OnInit {
   onSubmit: any;
