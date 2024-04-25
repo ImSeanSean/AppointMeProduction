@@ -136,7 +136,7 @@ class Post
         }
 
         // Proceed with the insertion
-        $insertSql = "INSERT INTO `user` (`Email`, `FirstName`, `LastName`, `bday`, `gender`, `Password`) 
+        $insertSql = "INSERT INTO `consultant` (`Email`, `FirstName`, `LastName`, `bday`, `gender`, `Password`) 
         VALUES (:email, :fname, :lname, :birthday, :gender, :password)";
 
         $insertStmt = $this->pdo->prepare($insertSql);
