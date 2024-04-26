@@ -165,7 +165,7 @@ class Post
             // Return the token or any other response to the client
             return $token;
         } catch (PDOException $e) {
-            return 1;
+            return $e;
         }
     }
     public function approveTeacher($data)

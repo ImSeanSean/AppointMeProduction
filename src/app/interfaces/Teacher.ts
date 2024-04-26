@@ -1,6 +1,5 @@
 export interface Teacher {
   ConsultantID: number;
-  Specialization: string;
   ConsultationHours: string;
   Email: string;
   Password: string;

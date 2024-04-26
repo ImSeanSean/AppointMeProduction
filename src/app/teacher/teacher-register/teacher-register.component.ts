@@ -51,7 +51,7 @@ export class TeacherRegisterComponent {
           }
         },
           error => {
-            console.error('Login failed:', error);
+            this.openErrorDialog(error[1]);
           });
       } else{
         //Pop-up
@@ -85,6 +85,15 @@ export class TeacherRegisterComponent {
       data: {
         title: 'Registration Error',
         description: 'We apologize, but the registration process encountered an error.'
+      }
+    });
+  }
+  openErrorDialog(error: any){
+    this.dialog.open(ErrorComponent, {
+      width: '300px',
+      data: {
+        title: 'Registration Error',
+        description: error
       }
     });
   }
