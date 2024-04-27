@@ -136,7 +136,7 @@ class Post
         }
 
         // Proceed with the insertion
-        $insertSql = "INSERT INTO `consultant` (`Email`, `FirstName`, `LastName`, `bday`, `gender`, `Password`) 
+        $insertSql = "INSERT INTO `consultant` (`Email`, `first_name`, `last_name`, `bday`, `gender`, `Password`) 
         VALUES (:email, :fname, :lname, :birthday, :gender, :password)";
 
         $insertStmt = $this->pdo->prepare($insertSql);
@@ -166,35 +166,6 @@ class Post
             return $token;
         } catch (PDOException $e) {
             return $e;
-        }
-    }
-    public function approveTeacher($data)
-    {
-        $appointmentId = $data->teacher_id;
-
-        // SQL query to validate user authority and check appointment status
-        $sqlValidation = "SELECT * FROM consultant WHERE ConsultantID = $appointmentId";
-        $validationResult = $this->executeQuery($sqlValidation);
-
-        if ($validationResult['code'] == 200 && !empty($validationResult['data'])) {
-            $appointmentStatus = $validationResult['data'][0]['approved'];
-
-            if ($appointmentStatus == 1) {
-                // Appointment is already confirmed
-                return $this->sendPayLoad(null, "failed", "Teacher is already approved.", 400);
-            }
-
-            // SQL query to update the status to 1 (confirmed)
-            $sqlUpdate = "UPDATE consultant SET approved = 1 WHERE ConsultantID = $appointmentId";
-            $updateResult = $this->executeQuery($sqlUpdate);
-
-            if ($updateResult['code'] == 200) {
-                return $this->sendPayLoad(null, "success", "Teacher approved successfully.", $updateResult['code']);
-            } else {
-                return $this->sendPayLoad(null, "failed", "Failed to approve teacher.", $updateResult['code']);
-            }
-        } else {
-            return $this->sendPayLoad(null, "failed", "User is not authorized to confirm this appointment.", 403);
         }
     }
     public function login($data)
@@ -261,6 +232,95 @@ class Post
             }
         } else {
             return false;
+        }
+    }
+    public function approveTeacher($data)
+    {
+        try {
+            //Authenticate User
+            $jwt = $data->key;
+            error_log("JWT Token: " . $jwt);
+            $key = JWT::decode($jwt, new Key($this->secretKey, 'HS256'));
+            // Check authorization here (example: verify that the user is authorized to create an appointment)
+            if ($key->type !== 'teacher') {
+                return "Unauthorized: Only the Head Teacher is allowed to approve registrations.";
+            }
+            //Get Teacher ID
+            $appointmentId = $data->teacher_id;
+            // SQL query to validate user authority and check appointment status
+            $sqlValidation = "SELECT * FROM consultant WHERE ConsultantID = $appointmentId";
+            $validationResult = $this->executeQuery($sqlValidation);
+
+            if ($validationResult['code'] == 200 && !empty($validationResult['data'])) {
+                $appointmentStatus = $validationResult['data'][0]['approved'];
+
+                if ($appointmentStatus == 1) {
+                    // Appointment is already confirmed
+                    return $this->sendPayLoad(null, "failed", "Teacher is already approved.", 400);
+                }
+
+                // SQL query to update the status to 1 (confirmed)
+                $sqlUpdate = "UPDATE consultant SET approved = 1 WHERE ConsultantID = $appointmentId";
+                $updateResult = $this->executeQuery($sqlUpdate);
+
+                if ($updateResult == true) {
+                    return "Teacher approved successfully.";
+                } else {
+                    return "Failed to approve teacher.";
+                }
+            } else {
+                return "User is not authorized to confirm this appointment.";
+            }
+        } catch (\Firebase\JWT\ExpiredException $e) {
+            return "Unauthorized: Token has expired.";
+        } catch (\Firebase\JWT\BeforeValidException $e) {
+            return "Unauthorized: Token is not yet valid.";
+        } catch (\Firebase\JWT\SignatureInvalidException $e) {
+            return "Unauthorized: Invalid token signature.";
+        } catch (PDOException $e) {
+            // Handle the exception, return an error response, or log the error
+            return "Error approving teacher" . $e;
+        }
+    }
+    public function reject_teacher($data)
+    {
+        try {
+            $teacher_Id = $data->teacher_id;
+
+            // Check if the teacher is not approved before attempting deletion
+            $check_sql = "SELECT approved FROM consultant WHERE ConsultantID = :teacher_id";
+            $check_stmt = $this->pdo->prepare($check_sql);
+            $check_stmt->bindParam(':teacher_id', $teacher_Id);
+            $check_stmt->execute();
+            $result = $check_stmt->fetch(PDO::FETCH_ASSOC);
+
+            if (!$result || $result['approved'] != 0) {
+                return $this->sendPayLoad(null, "failed", "Teacher is already approved or not found.", 404);
+            }
+
+            // Delete the teacher if approved column is 0
+            $delete_sql = "DELETE FROM consultant WHERE ConsultantID = :teacher_id";
+            $delete_stmt = $this->pdo->prepare($delete_sql);
+            $delete_stmt->bindParam(':teacher_id', $teacher_Id);
+            $delete_stmt->execute();
+
+            // Check if any rows were affected (appointment deleted successfully)
+            $rowCount = $delete_stmt->rowCount();
+
+            if ($rowCount > 0) {
+                return $this->sendPayLoad(null, "success", "Registration rejected successfully.", 200);
+            } else {
+                return $this->sendPayLoad(null, "failed", "Failed to reject registration. Appointment not found.", 404);
+            }
+        } catch (\Firebase\JWT\ExpiredException $e) {
+            return "Unauthorized: Token has expired.";
+        } catch (\Firebase\JWT\BeforeValidException $e) {
+            return "Unauthorized: Token is not yet valid.";
+        } catch (\Firebase\JWT\SignatureInvalidException $e) {
+            return "Unauthorized: Invalid token signature.";
+        } catch (\PDOException $e) {
+            // Handle the exception, return an error response, or log the error
+            return "Error rejecting teacher: " . $e->getMessage();
         }
     }
     public function create_appointment($data)

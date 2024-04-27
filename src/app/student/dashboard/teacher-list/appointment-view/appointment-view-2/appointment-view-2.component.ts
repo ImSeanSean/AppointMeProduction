@@ -33,7 +33,7 @@ export class AppointmentView2Component {
     console.log(data);
     this.http.post('http://localhost/appointme/pdo/api/create_appointment', data)
       .subscribe(
-        (response) => {
+        (response: any) => {
           this.dialog.open(ErrorComponent, {
             width: '300px',
             data: {

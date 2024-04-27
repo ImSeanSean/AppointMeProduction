@@ -31,11 +31,11 @@ export class AuthServiceService {
   getToken(): any{
     return localStorage.getItem('token');
   }
-  getUserData():Observable<any>{
-    const token = this.getToken();
-    const headers = new HttpHeaders({
-      'Authorization': 'Bearer ${token}'
-    })
-    return this.http.get('wawa', {headers});
-  }
+  // getUserData():Observable<any>{
+  //   const token = this.getToken();
+  //   const headers = new HttpHeaders({
+  //     'Authorization': 'Bearer ${token}'
+  //   })
+  //   return this.http.get('wawa', {headers});
+  // }
 }

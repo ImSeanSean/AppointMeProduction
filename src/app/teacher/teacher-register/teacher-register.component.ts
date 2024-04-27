@@ -51,6 +51,7 @@ export class TeacherRegisterComponent {
           }
         },
           error => {
+            console.log(error)
             this.openErrorDialog(error[1]);
           });
       } else{
