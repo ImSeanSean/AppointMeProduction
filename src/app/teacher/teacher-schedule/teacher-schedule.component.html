@@ -1,0 +1,55 @@
+<div class="main">
+    <div class="title">
+        <h2>Set Your Schedule</h2>
+    </div>
+    <div class="content">
+        <div class="middle">
+            <div class="left">
+                <h3>Schedule your Time:</h3>
+                <div class="day">
+                    <h4>Choose Day:</h4>
+                    <mat-form-field>
+                        <mat-label>Favorite food</mat-label>
+                        <mat-select [(ngModel)]="selectedDay" name="food">
+                          @for (day of days; track day) {
+                            <mat-option [value]="day.name">{{day.name}}</mat-option>
+                          }
+                        </mat-select>
+                    </mat-form-field>
+                    <div class="buttons">
+                        <div>
+                            <button class="disable">Disable</button>
+                        </div>
+                        <div>
+                            <button class="enable">Enable</button>
+                        </div>
+                    </div>
+                </div>
+                <div class="time">
+                    <h4>Add a Time for Appointment:</h4>
+                    <input type="time">
+                </div>
+                <div>
+                    <button class="schedule_button">Add Schedule</button>
+                </div>
+            </div>
+            <div class="right">
+                <h3>Appointment List for Monday</h3>
+                <div class="box">
+                    <ul>
+                        <li 
+                        [ngStyle]="{ 'background-color': time === selectedTime ? '#0D4913' : '' }"
+                        *ngFor="let time of appointmentTimes" 
+                        (click)="selectTime(time)">
+                        {{ time }}
+                      </li>
+                    </ul>
+                </div>
+                <div class="buttons">
+                    <button class="remove">Remove Schedule</button>
+                    <!-- <button class="save">Save Schedule</button> -->
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

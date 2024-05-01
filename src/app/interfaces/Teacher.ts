@@ -8,4 +8,5 @@ export interface Teacher {
   gender: string;
   creation_time: Date;
   approved: boolean;
+  headteacher: boolean;
 }

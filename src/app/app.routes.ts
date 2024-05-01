@@ -18,6 +18,7 @@ import { TeacherRegistrationApprovalComponent } from './teacher/headteacher/dash
 import { TeacherRegisterComponent } from './teacher/teacher-register/teacher-register.component';
 import { AppointmentStudentConfirmedComponent } from './student/dashboard/appointment-student-confirmed/appointment-student-confirmed.component';
 import { AppointmentViewFinishedComponent } from './components/appointment-view-finished/appointment-view-finished.component';
+import { TeacherScheduleComponent } from './teacher/teacher-schedule/teacher-schedule.component';
 
 export const routes: Routes = [
     {path: '', component: HomepageComponent},
@@ -49,6 +50,7 @@ export const routes: Routes = [
                     {path: 'appointments', component: AppointmentStudentComponent},
                     {path: 'appointments/pending/:appointmentId', component: AppointmentViewComponent},
                     {path: 'appointments/confirmed/:appointmentId', component: AppointmentViewConfirmedComponent},
+                    {path: 'schedule', component: TeacherScheduleComponent},
                     {path: 'profile', component: ProfileStudentComponent},
                     {path: 'headteacher', 
                         children: [

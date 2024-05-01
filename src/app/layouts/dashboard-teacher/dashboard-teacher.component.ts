@@ -4,13 +4,14 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Router, RouterModule, RouterOutlet } from '@angular/router';
 import { User } from '../../interfaces/User';
 import { SettingComponent } from "../setting/setting.component";
+import { NgIf } from '@angular/common';
 
 @Component({
     selector: 'app-dashboard-teacher',
     standalone: true,
     templateUrl: './dashboard-teacher.component.html',
     styleUrl: './dashboard-teacher.component.css',
-    imports: [SettingComponent, RouterModule]
+    imports: [SettingComponent, RouterModule, NgIf]
 })
 export class DashboardTeacherComponent {
   user: User[] = [];
@@ -18,6 +19,7 @@ export class DashboardTeacherComponent {
   usertype = localStorage.getItem('user');
   firstName = "";
   lastName = "";
+  headteacher = false;
 
   constructor(private http: HttpClient, private router: Router) {}
 
@@ -58,6 +60,7 @@ export class DashboardTeacherComponent {
           this.teacher = data;
           this.firstName = this.teacher[0].first_name; 
           this.lastName = this.teacher[0].last_name;
+          this.headteacher = this.teacher[0].headteacher;
           console.log(this.user);
           console.log("what")
         },
