@@ -8,17 +8,20 @@ import { MatDialog } from '@angular/material/dialog';
 import { ErrorComponent } from '../../../../../matdialogs/error/error.component';
 import { Observable } from 'rxjs';
 import {MatSlideToggleModule} from '@angular/material/slide-toggle';
+import { FormsModule } from '@angular/forms';
 
 @Component({
   selector: 'app-appointment-view-1',
   standalone: true,
-  imports: [NgStyle, NgFor, MatSlideToggleModule],
+  imports: [NgStyle, NgFor, MatSlideToggleModule, FormsModule],
   templateUrl: './appointment-view-1.component.html',
   styleUrl: './appointment-view-1.component.css'
 })
 export class AppointmentView1Component implements OnInit{
   selectedDate: Date | null = null;
   selectedTime: string | null = null; 
+  selectedMode: string | null = null;
+  selectedUrgency: string | null = null;
   formattedDate: string | null = null;
   appointmentTimes: string[] = ['7am', '8am', '9am', '10am', '11am', '1pm', '2pm', '3pm', '4pm'];
   teacherId: string | null = null; 
@@ -30,6 +33,8 @@ export class AppointmentView1Component implements OnInit{
     if (this.selectedTime != null) {
       this.service.selectedTime = this.selectedTime;
       this.service.selectedDate = this.formattedDate;
+      this.service.selectedMode = this.selectedMode;
+      this.service.selectedUrgency = this.selectedUrgency;
       this.service.teacher = this.teacherId;
       this.router.navigate(['student/dashboard/appointment-view-2', this.teacherId]);
     } else {

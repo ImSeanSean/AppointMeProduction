@@ -20,18 +20,22 @@ export class AppointmentView2Component {
   teacher = this.service.teacher;
   selectedTime = this.service.selectedTime;
   selectedDate = this.service.selectedDate;
+  selectedMode = this.service.selectedMode;
+  selectedUrgency = this.service.selectedUrgency;
   appointmentDetails: string = '';
 
   createAppointment(){
     const data = {
       key: localStorage.getItem('token'),
-      date: this.selectedDate,
-      time: this.selectedTime,
-      teacher: this.teacher,
+      date: this.service.selectedDate,
+      time: this.service.selectedTime,
+      mode: this.service.selectedMode,
+      urgency: this.service.selectedUrgency,
+      teacher: this.service.teacher,
       details: this.appointmentDetails,
     };
-    console.log(data);
-    this.http.post('http://localhost/appointme/pdo/api/create_appointment', data)
+    if(data.date && data.time && data.mode && data.urgency && data.teacher){
+      this.http.post('http://localhost/appointme/pdo/api/create_appointment', data)
       .subscribe(
         (response: any) => {
           this.dialog.open(ErrorComponent, {
@@ -44,5 +48,16 @@ export class AppointmentView2Component {
           this.router.navigate(['student/dashboard/main']);
         },
       );
+    }
+    else{
+      this.dialog.open(ErrorComponent, {
+        width: '300px',
+        data: {
+          title: 'Appointment Status',
+          description: "Incomplete Data. Returning to Dashboard."
+        }
+      });
+      this.router.navigate(['student/dashboard/main']);
+    }
   }
 }

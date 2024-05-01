@@ -20,15 +20,13 @@
 }
 .top{
     display: flex;
-    justify-content: space-between;
     margin-bottom: 20px;
 }
 .content{ 
     padding: 30px;
-    padding-left: 50px;
-    padding-right: 50px;
     align-items: center;
-    width: 100%;
+    width: 90%;
+    margin: auto;
 }
 .date{
     background-color: white;
@@ -37,7 +35,7 @@
     display: flex;
     align-items: center;
     border-radius: 20px;
-    margin-left: auto;
+    margin-right: 2vw;
 }
 .text{
     padding: 20px;
@@ -71,8 +69,8 @@
 }
 textarea{
     background-color: #FFEFD1;
-    height: 400px;
-    width: 90%;
+    height: 50vh;
+    width: 100%;
     border: 3px solid #F78914;
     padding: 40px;
     font-size: 20px;
@@ -93,7 +91,7 @@ textarea{
     justify-content: center;
     align-items: center;
     margin-left: auto;
-    margin-top: 47px;
+    margin-top: 5vh;
 }
 .confirmation p{
     cursor: pointer;

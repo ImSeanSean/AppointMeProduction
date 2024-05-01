@@ -109,27 +109,41 @@
     box-shadow: 7px 9px 8px rgba(69, 69, 69, 0.1);
 }
 .mode{
-    display: grid;
+    display: flex;
+    flex-direction: column;
     align-items: center;
-    justify-content: center;
+    margin-top: 10vh;
+}
+.buttons{
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    width: 90%;
+    gap: 20px;
+}
+.appointment-details{
+    border: 3px solid gray;
+    padding: 10px;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    row-gap: 10px;
+    width: 100%;
+
 }
 .bottom{
     margin-top: 30px;
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
 }
 .button-box{
     display: flex;
     justify-content: center;
     align-content: center;
-
 }
 .button-box p{
     margin: 0%;
     margin-top: 0% !important;
 }
 .confirmation{
-    background-color: #168021;
+    background-color: gray;
     height: 45px;
     width: 30vh;
     text-align: center;
@@ -144,66 +158,51 @@
     margin: auto;
     float: right;
 }
+.confirmation:hover{
+    background-color: #168021;
+}
 .confirmation p{
     margin-top: 7px;    
-}
-.ftf{
-    background-color: #a3a3a3;
-    height: 45px;
-    width: 30vh;
-    text-align: center;
-    color: white;
-    right: 3%;
-    border-radius: 20px;
-    box-shadow: 7px 9px 8px rgba(0, 0, 0, 0.1);
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    cursor: pointer;
-    margin: auto;
-}
-.ftf p{
-    margin-top: 7px;
-}
-.online{
-    background-color: #a3a3a3;
-    height: 45px;
-    width: 30vh;
-    text-align: center;
-    color: white;
-    right: 3%;
-    border-radius: 20px;
-    box-shadow: 7px 9px 8px rgba(0, 0, 0, 0.1);
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    cursor: pointer;
-    margin: auto;
-}
-.online p{
-    margin-top: 7px ;
-}
-.ftf:hover, .online:hover{
-    background-color: #0D4913;
-}
-.online{
-    background-color: #a3a3a3;
-    height: 45px;
-    width: 30vh;
-    text-align: center;
-    color: white;
-    right: 3%;
-    border-radius: 20px;
-    box-shadow: 7px 9px 8px rgba(0, 0, 0, 0.1);
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    cursor: pointer;
-    margin: auto;
 }
 .icons{
     display: flex;
     align-items: center; 
     justify-content: center;
     font-size: 40px;
+}
+
+/*Radio*/
+.radio{
+    width: 100%;
+    display: inline-flex;
+    overflow: hidden;
+    border-radius: 15px;
+    box-shadow: 0 0 5px rgba(0,0,0,0.25);
+}
+
+.radio__input{
+    display: none;
+}
+
+.radio__label{
+    width: 100%;
+    padding: 8px 14px;
+    font-size: 18px;
+    color:gray;
+    background-color: #FFEFD1;
+    cursor: pointer;
+    transition: background 0.1s;
+    display: flex;
+    justify-content: center;
+    text-align: center;
+    flex-direction: column;
+}
+
+.radio__label:not(:last-of-type){
+    border-right: 1px solid #F78914;
+}
+
+.radio__input:checked + .radio__label{
+    background: #F78914;
+    color: white;
 }

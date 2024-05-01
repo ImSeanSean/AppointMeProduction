@@ -337,6 +337,8 @@ class Post
             $teacher_id = $data->teacher;
             $date = $data->date;
             $time = $data->time;
+            $mode = $data->mode;
+            $urgency = $data->urgency;
             $mysqlDatetime = date("Y-m-d H:i:s", strtotime("$date $time"));
             // Retrieve teacher information
             $teacherInfoSql = "SELECT first_name, last_name FROM consultant WHERE ConsultantID = :teacher_id";
@@ -352,8 +354,8 @@ class Post
             $details = $data->details;
             $status = 0;
 
-            $sql = "INSERT INTO appointment (user_id, ConsultantID, AppointmentDate, appointment_title, AppointmentInfo, status)
-                    VALUES (:user_id, :consultant_id, :appointment_date, :appointment_title, :appointment_info, :status)";
+            $sql = "INSERT INTO appointment (user_id, ConsultantID, AppointmentDate, appointment_title, AppointmentInfo, status, mode, urgency)
+                    VALUES (:user_id, :consultant_id, :appointment_date, :appointment_title, :appointment_info, :status, :mode, :urgency)";
 
             $stmt = $this->pdo->prepare($sql);
 
@@ -363,6 +365,8 @@ class Post
             $stmt->bindParam(':appointment_title', $title);
             $stmt->bindParam(':appointment_info', $details);
             $stmt->bindParam(':status', $status);
+            $stmt->bindParam(':mode', $mode);
+            $stmt->bindParam(':urgency', $urgency);
 
             $stmt->execute();
 

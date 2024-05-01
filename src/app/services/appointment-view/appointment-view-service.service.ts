@@ -8,5 +8,7 @@ export class AppointmentViewServiceService {
   constructor() { }
   selectedTime: any;
   selectedDate: any;
+  selectedMode: any;
+  selectedUrgency: any;
   teacher: any;
 }

@@ -3,57 +3,84 @@
         <h2>View Appointments</h2>
     </div>
     <div class="content">
-        <div class="top">
-            <div class="text">
-                <h2>{{teachers[0]?.first_name}} {{teachers[0]?.last_name}}</h2>
-                <p>Instructor Schedule</p>
-            </div>
-            <div class="date">
-                <div class="box">
-                    <h4>Date</h4>
-                </div>
-                <p>{{formattedDate}}</p>
-            </div>
-        </div>
         <div class="group">
-            <div class="border">
-                <div class="schedules">
-                    <ul>
-                        <li 
-                        [ngStyle]="{ 'background-color': time === selectedTime ? '#0D4913' : '' }"
-                        *ngFor="let time of appointmentTimes" 
-                        (click)="selectTime(time)">
-                        {{ time }}
-                      </li>
-                    </ul>
+            <div>
+                <div class="top">
+                    <div class="text">
+                        <h2>{{teachers[0]?.first_name}} {{teachers[0]?.last_name}}</h2>
+                        <p>Instructor Schedule</p>
+                    </div>
+                    <div class="date">
+                        <div class="box">
+                            <h4>Date</h4>
+                        </div>
+                        <p>{{formattedDate}}</p>
+                    </div>
+                </div>
+                <div class="border">
+                    <div class="schedules">
+                        <ul>
+                            <li 
+                            [ngStyle]="{ 'background-color': time === selectedTime ? '#0D4913' : '' }"
+                            *ngFor="let time of appointmentTimes" 
+                            (click)="selectTime(time)">
+                            {{ time }}
+                          </li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="bottom">
+                    <div class="icons">
+                        <i class='bx bxs-chevron-left' (click)="decreaseFormattedDate()"></i>
+                        <i class='bx bxs-chevron-right' (click)="increaseFormattedDate()"></i>
+                    </div>
                 </div>
             </div>
             <div class="mode">
-                <h2>Mode of Appointment:</h2>
-                <div class="button-box">
-                    <div class="ftf" (click)="changeRoute()">
-                        <p>FACE TO FACE</p>
+                <h2>Appointment Options:</h2>
+                <div class="buttons">
+                    <div>
+                        <h3>Appointment Mode:</h3>
+                        <div class="radio">
+                            <input class="radio__input" type="radio" value="Online" name="mode" id="online" [(ngModel)]="selectedMode">
+                            <label class="radio__label" for="online">Online</label>
+                            <input class="radio__input" type="radio" value="Face to Face" name="mode" id="ftf" [(ngModel)]="selectedMode">
+                            <label class="radio__label" for="ftf">Face to Face</label>
+                        </div>
+                    </div>
+                    <div>
+                        <h3>Appointment Urgency:</h3>
+                        <div class="radio">
+                            <input class="radio__input" type="radio" value="Urgent" name="urgent" id="urgent" [(ngModel)]="selectedUrgency">
+                            <label class="radio__label" for="urgent">Urgent</label>
+                            <input class="radio__input" type="radio" value="Not Urgent" name="urgent" id="not_urgent" [(ngModel)]="selectedUrgency">
+                            <label class="radio__label" for="not_urgent">Not Urgent</label>
+                        </div>
+                    </div>
+                    <div class="appointment-details">
+                        <div>
+                            <h4>Date:</h4>
+                            <p>{{formattedDate}}</p>
+                        </div>
+                        <div>
+                            <h4>Time:</h4>
+                            <p>{{selectedTime}}</p>
+                        </div>
+                        <div>
+                            <h4>Mode:</h4>
+                            <p>{{selectedMode}}</p>
+                        </div>
+                        <div>
+                            <h4>Urgency:</h4>
+                            <p>{{selectedUrgency}}</p>
+                        </div>
+                    </div>
+                    <div class="button-box">
+                        <div class="confirmation" (click)="changeRoute()">
+                            <p>GET AN APPOINTMENT</p>
+                        </div>
                     </div>
                 </div>
-                <div class="button-box">
-                    <div class="online" (click)="changeRoute()">
-                        <p>ONLINE</p>
-                    </div>
-                </div>
-                <div class="button-box">
-                    <div class="confirmation" (click)="changeRoute()">
-                        <p>GET AN APPOINTMENT</p>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div class="bottom">
-            <div class="div">
-
-            </div>
-            <div class="icons">
-                <i class='bx bxs-chevron-left' (click)="decreaseFormattedDate()"></i>
-                <i class='bx bxs-chevron-right' (click)="increaseFormattedDate()"></i>
             </div>
         </div>
     </div>
