@@ -52,8 +52,7 @@
     height: 30px;
     display: flex;
     gap: 20px;
-    margin-bottom: 50px;
-    margin-top: -15px;
+    margin-bottom: 20px;
   }
   
   .textDate {
@@ -87,7 +86,7 @@
 
   textarea {
     background-color: #ffefd1;
-    height: 45vh;
+    height: 35vh;
     width: 100%;
     border: 3px solid #f78914;
     padding: 25px;
