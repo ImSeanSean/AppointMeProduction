@@ -24,15 +24,20 @@
     font-weight: bold;
     font-size: 17px;
 }
-.title, .mid, .bottom, p{
+.title, .mid, .bottom, p, .extra{
     margin: 0px;
     padding: 0px;
 }
-.mid, .bottom{
+.mid, .bottom, .extra{
     font-size: 15px;
 }
 
-.mid{
-    display: flex;
-    gap: 150px;
+.mid, .bottom, .extra{
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    column-gap: 2vw;
+}
+.urgent-appointment {
+    color: red; 
+    font-weight: bold;
 }

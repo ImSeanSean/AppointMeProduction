@@ -3,12 +3,12 @@ import { Component } from '@angular/core';
 import { Router } from '@angular/router';
 import { Appointment } from '../../../interfaces/Appointment';
 import { Observable } from 'rxjs';
-import { DatePipe, NgFor } from '@angular/common';
+import { DatePipe, NgClass, NgFor } from '@angular/common';
 
 @Component({
   selector: 'app-appointment-card',
   standalone: true,
-  imports: [NgFor],
+  imports: [NgFor, NgClass],
   templateUrl: './appointment-card.component.html',
   styleUrl: './appointment-card.component.css'
 })

@@ -13,6 +13,10 @@
                 <p>Teacher: {{appointment.ConsultantFirstName}} {{appointment.ConsultantLastName}}</p>
                 <p>Student: {{appointment.UserName}} {{appointment.UserLastName}}</p>
             </div>
+            <div class="extra">
+                <p>Mode: {{appointment.mode}}</p>
+                <p >Urgency: <label [ngClass]="{'urgent-appointment': appointment.urgency == 'Urgent'}">{{appointment.urgency}}</label></p>
+            </div>
         </div>
     </div>
 </div>

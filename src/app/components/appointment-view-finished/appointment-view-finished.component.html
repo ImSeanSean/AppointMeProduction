@@ -12,18 +12,55 @@
     <div class="group">
       <div class="date">
         <div class="box">
+          <h4>Teacher</h4>
+        </div>
+        <div class="textDate">
+          <p>{{appointments[0]?.ConsultantFirstName}} {{appointments[0]?.ConsultantLastName}}</p>
+        </div>
+      </div>
+
+      <div class="date">
+        <div class="box">
+          <h4>Student</h4>
+        </div>
+        <div class="textDate">
+          <p>{{appointments[0]?.UserName}} {{appointments[0]?.UserLastName}}</p>
+        </div>
+      </div>
+
+      <div class="date">
+        <div class="box">
           <h4>Date</h4>
         </div>
         <div class="textDate">
-          <p>2/25/2021</p>
+          <p>{{getFormattedDate(this.appointments[0]?.AppointmentDate)}}</p>
         </div>
       </div>
+
       <div class="date">
         <div class="box">
           <h4>Time</h4>
         </div>
         <div class="textDate">
-          <p>10:00 AM</p>
+          <p>{{getFormattedTime(this.appointments[0]?.AppointmentDate)}}</p>
+        </div>
+      </div>
+
+      <div class="date">
+        <div class="box">
+          <h4>Mode</h4>
+        </div>
+        <div class="textDate">
+          <p>{{this.appointments[0]?.mode}}</p>
+        </div>
+      </div>
+
+      <div class="date">
+        <div class="box">
+          <h4>Urgency</h4>
+        </div>
+        <div class="textDate">
+          <p>{{this.appointments[0]?.urgency}}</p>
         </div>
       </div>
     </div>

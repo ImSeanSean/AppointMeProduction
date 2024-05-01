@@ -108,14 +108,6 @@ class Get
     }
     public function get_appointments()
     {
-        // $tokenInfo = $this->middleware->validateToken();
-        // if ($tokenInfo) {
-        //     $userId = $tokenInfo->user_id;
-        //     return $this->get_records("appointment", "user_id = $userId");
-        // } else {
-        //     http_response_code(401);
-        //     echo json_encode(array('message' => 'Token is invalid or Authorization header is missing'));
-        // }
         $tokenInfo = $this->middleware->validateToken();
         if ($tokenInfo) {
             $userId = $tokenInfo->user_id;

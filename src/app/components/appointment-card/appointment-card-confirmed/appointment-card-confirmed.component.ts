@@ -1,4 +1,4 @@
-import { DatePipe, NgFor } from '@angular/common';
+import { DatePipe, NgClass, NgFor } from '@angular/common';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Component } from '@angular/core';
 import { Router } from '@angular/router';
@@ -8,7 +8,7 @@ import { Appointment } from '../../../interfaces/Appointment';
 @Component({
   selector: 'app-appointment-card-confirmed',
   standalone: true,
-  imports: [NgFor],
+  imports: [NgFor, NgClass],
   templateUrl: './appointment-card-confirmed.component.html',
   styleUrl: './appointment-card-confirmed.component.css'
 })
