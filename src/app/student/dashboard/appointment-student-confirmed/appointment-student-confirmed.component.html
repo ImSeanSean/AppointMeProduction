@@ -3,38 +3,37 @@
         <h2>Finished Appointments</h2>
     </div>
     <div class="card-container">
-        <div class="appointment-card">
-            <div class="box"></div>
-            <div class="Text">
-                <div class="appointment-card-title">
-                    <p></p>
-                </div>
-                <div class="mid">
-                    <p>Date:</p>
-                    <p>Time:</p>
-                </div>
-                <div class="bottom">
-                    <p>Teacher: </p>
-                    <p>Student: </p>
-                </div>
+        <div class="left-container">
+            <label>COMPLETED</label>
+            <hr>
+            <div class="appointment-list">
+                <app-appointment-card-completed></app-appointment-card-completed>
             </div>
         </div>
         <div class="right">
-            <h2>Appointment Details</h2>
+            <label>APPOINTMENT DETAILS:</label>
             <div class="containerr">
               <div class="account-details">
                 <div class="group">
                     <div class="left">
-                        <h3>Account With:</h3>
+                        <h5>Appointment With:</h5>
                     </div>
                     <div class="input-box">
-                </div>
+                        
+                    </div>
+                    <div class="left">
+                        <h5>Rating:</h5>
+                    </div>
+                    <div class="input-box">
+                    </div>
                 <div class="Appoint">
-                    <h3>Appointment Purpose /Concern:</h3></div>
-                    <div class="inputbox">
-              </div>
+                    <h5>Appointment Remarks:</h5> 
+                </div>
+                <div class="inputbox">
+
+                </div>
               <div class="input-submit">
-                <button class="submit-btn">Open</button>
+                <button class="submit-btn" (click)="changeRoute()">Open</button>
             </div>
             </div>            
         </div>

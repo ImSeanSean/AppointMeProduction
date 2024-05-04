@@ -2,6 +2,7 @@ export interface Appointment {
     AppointmentID: number;
     ConsultantID: number;
     Status: number;
+    Completed: number;
     AppointmentDate: string;
     AppointmentInfo: string;
     CreatedAt: string | null;

@@ -35,7 +35,7 @@ export const routes: Routes = [
                     {path: 'appointments/pending/:appointmentId', component: AppointmentViewComponent},
                     {path: 'appointments/confirmed/:appointmentId', component: AppointmentViewConfirmedComponent},
                     {path: 'confirmed-appointments', component: AppointmentStudentConfirmedComponent},
-                    {path: 'confirmed-appointments-view', component: AppointmentViewFinishedComponent},
+                    {path: 'confirmed-appointments/completed/:appointmentId', component: AppointmentViewFinishedComponent},
                     {path: 'profile', component: ProfileStudentComponent}
                 ]
             }

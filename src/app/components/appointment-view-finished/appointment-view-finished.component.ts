@@ -118,5 +118,5 @@ export class AppointmentViewFinishedComponent {
       }
     );
   this.closeWindow();
-  } 
+  }  
 }
