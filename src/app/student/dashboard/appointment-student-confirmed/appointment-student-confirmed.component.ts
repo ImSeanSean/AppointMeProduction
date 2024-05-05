@@ -2,6 +2,9 @@ import { Component } from '@angular/core';
 import { AppointmentCardCompletedComponent } from "../../../components/appointment-card/appointment-card-completed/appointment-card-completed.component";
 import { Router } from '@angular/router';
 import { CompletedAppointmentDataService } from '../../../services/appointment-view-completed/completed-appointment-data.service';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { Observable, catchError } from 'rxjs';
+import { Appointment } from '../../../interfaces/Appointment';
 
 @Component({
     selector: 'app-appointment-student-confirmed',
@@ -11,11 +14,48 @@ import { CompletedAppointmentDataService } from '../../../services/appointment-v
     imports: [AppointmentCardCompletedComponent]
 })
 export class AppointmentStudentConfirmedComponent {
-    constructor(private router: Router, private appointmentId: CompletedAppointmentDataService){   
+    appointmentId: number | null | undefined;
+    appointments: Appointment[] = [];
+
+    constructor(private router: Router, private completedAppointmentDataService: CompletedAppointmentDataService, private http: HttpClient) {}
+  
+    ngOnInit(): void {
+      // Subscribe to the appointmentId$ observable to get its value
+      this.completedAppointmentDataService.appointmentId$.subscribe(id => {
+        this.appointmentId = id;
+        this.getAppointment().subscribe(
+            (data: Appointment[]) => {
+              // Handle successful response
+              this.appointments = data; 
+            },
+            (error) => {
+              // Handle errors
+              console.error('Error fetching appointment:', error);
+              // You can add additional error handling logic here
+            }
+          );
+      });
+    }
+  
+    changeRoute() {
+      if (this.appointmentId !== null) {
+        const currentUrl = this.router.url;
+        this.router.navigate([`${currentUrl}/completed`, this.appointmentId]);
+      } else {
+        console.error('Appointment ID is null.');
+      }
     }
 
-    changeRoute() {
-        const currentUrl = this.router.url
-        this.router.navigate([`${currentUrl}/completed`, this.appointmentId.appointmentId]);
+    getAppointment(): Observable<Appointment[]> {
+        const token = localStorage.getItem('token');
+        const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
+    
+        return this.http.get<Appointment[]>(`http://localhost/appointme/pdo/api/get_appointment/${this.appointmentId}`, { headers })
+          .pipe(
+            catchError((error) => {
+              console.error('HTTP error:', error);
+              return [];
+            })
+          );
       }
 }

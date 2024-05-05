@@ -17,7 +17,7 @@ export class AppointmentCardCompletedComponent {
   constructor(private http: HttpClient, private router: Router, private appointmentId: CompletedAppointmentDataService) {};
 
   setValue(id:any){
-    this.appointmentId.appointmentId = id;
+    this.appointmentId.setAppointmentId(id);
   }
 
   appointments: Appointment[] = [];

@@ -15,5 +15,7 @@ export interface Appointment {
     ConsultantLastName: string;
     mode: string;
     urgency: string;
+    remarks: string;
+    rating: number;
   }
   

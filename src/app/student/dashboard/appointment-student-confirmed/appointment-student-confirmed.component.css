@@ -106,9 +106,7 @@
     margin-top: 0%;
     border-radius: 0px;
   }
-.Appoint{
 
-}
 .inputbox{
     width: 480px; /* Set width to your desired size */
     height: 200px;
@@ -191,6 +189,15 @@
     background-color: #168021;
     margin: 10px 0;
     margin: auto;
+}
+
+.right p{
+    
+}
+
+.right .input-box{
+    display: flex;
+    align-content: center;
 }
 
 .right label{

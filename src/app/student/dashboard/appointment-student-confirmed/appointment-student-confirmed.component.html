@@ -16,21 +16,22 @@
               <div class="account-details">
                 <div class="group">
                     <div class="left">
-                        <h5>Appointment With:</h5>
+                        <h5>Appointment Title:</h5>
                     </div>
                     <div class="input-box">
-                        
+                        <p>{{appointments[0]?.appointment_title}}</p>
                     </div>
                     <div class="left">
                         <h5>Rating:</h5>
                     </div>
                     <div class="input-box">
+                        <p>{{appointments[0]?.rating}}</p>
                     </div>
                 <div class="Appoint">
                     <h5>Appointment Remarks:</h5> 
                 </div>
                 <div class="inputbox">
-
+                    <p>{{appointments[0]?.remarks}}</p>
                 </div>
               <div class="input-submit">
                 <button class="submit-btn" (click)="changeRoute()">Open</button>
