@@ -1,4 +1,4 @@
-import { DatePipe } from '@angular/common';
+import { DatePipe, NgIf } from '@angular/common';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Component } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
@@ -6,11 +6,14 @@ import { Router, ActivatedRoute } from '@angular/router';
 import { Observable, catchError } from 'rxjs';
 import { Appointment } from '../../interfaces/Appointment';
 import { ConfirmationComponent } from '../../matdialogs/confirmation/confirmation.component';
+import { RatingComponent } from '../../matdialogs/rating/rating.component';
+import { FormsModule } from '@angular/forms';
+import { ErrorComponent } from '../../matdialogs/error/error.component';
 
 @Component({
   selector: 'app-appointment-view-finished',
   standalone: true,
-  imports: [],
+  imports: [FormsModule, NgIf],
   templateUrl: './appointment-view-finished.component.html',
   styleUrl: './appointment-view-finished.component.css'
 })
@@ -18,6 +21,7 @@ export class AppointmentViewFinishedComponent {
   usertype = localStorage.getItem('user');
   appointmentId: string | null = null;
   appointments: Appointment[] = [];
+  remarks: string | null = null;
 
   constructor(private http: HttpClient, private router: Router, private activatedRoute: ActivatedRoute, public dialog: MatDialog) {}
 
@@ -36,32 +40,53 @@ export class AppointmentViewFinishedComponent {
     );
   }
 
+  //Matdialogs
   closeWindow() {
     var user = localStorage.getItem('user')
     if (user == "user"){
       user = "student";
     }
-    this.router.navigate([`${user}/dashboard/appointments`]);
+    this.router.navigate([`${user}/dashboard/confirmed-appointments`]);
   }
 
-  openConfirmationReject(): void {
-    const dialogRef = this.dialog.open(ConfirmationComponent, {
+  openRating(): void {
+    const dialogRef = this.dialog.open(RatingComponent, {
       height: '250px',
       width: '490px',
       data: {
-        title: 'Cancel Appointment',
-        description: 'Are you sure you want to cancel this appointment?'
+        description: "Rate your experience"
       }
     });
   
     dialogRef.afterClosed().subscribe(result => {
-      console.log(result)
-      if (result) {
-        this.rejectAppointment();
+      if (result != null) {
+        if (this.remarks == null){
+          this.remarks = "No remarks have been provided."
+        }
+        const $data = {
+          key: localStorage.getItem('token'),
+          appointment_id: this.appointmentId,
+          appointment_rating: result,
+          appointment_remarks: this.remarks
+        }
+        this.http.post('http://localhost/appointme/pdo/api/rate_appointment', $data)
+        .subscribe(
+          (response: any) => {
+            this.dialog.open(ErrorComponent, {
+              width: '300px',
+              data: {
+                title: 'Appointment Status',
+                description: response
+              }
+            });
+            this.router.navigate(['student/dashboard/confirmed-appointments']);
+          },
+        );
       }
     });
   }
 
+  //Get Appointments
   getAppointment(): Observable<Appointment[]> {
     this.appointmentId = this.activatedRoute.snapshot.params['appointmentId'];
     const token = localStorage.getItem('token');
@@ -93,30 +118,4 @@ export class AppointmentViewFinishedComponent {
       return null;
     }
   }
-  confirmAppointment() {
-    const data = { appointment_id: this.appointmentId };
-    this.http.post('http://localhost/appointme/pdo/api/confirm_appointment', data)
-      .subscribe(
-        (response) => {
-          console.log('Appointment confirmed successfully:', response);
-        },
-        (error) => {
-          console.error('Error confirming appointment:', error);
-        }
-      );
-    this.closeWindow();
-  }
-  rejectAppointment() {
-    const data = {appointment_id: this.appointmentId};
-    this.http.post('http://localhost/appointme/pdo/api/reject_appointment', data)
-    .subscribe(
-      (response) => {
-        console.log('Appointment rejected successfully:', response);
-      },
-      (error) => {
-        console.error('Error rejecting appointment:', error);
-      }
-    );
-  this.closeWindow();
-  }  
 }

@@ -5,6 +5,7 @@ import { Router, RouterModule, RouterOutlet } from '@angular/router';
 import { User } from '../../interfaces/User';
 import { SettingComponent } from "../setting/setting.component";
 import { NgIf } from '@angular/common';
+import { UserInformationService } from '../../services/user-information/user-information.service';
 
 @Component({
     selector: 'app-dashboard-teacher',
@@ -21,7 +22,7 @@ export class DashboardTeacherComponent {
   lastName = "";
   headteacher = false;
 
-  constructor(private http: HttpClient, private router: Router) {}
+  constructor(private http: HttpClient, private router: Router, private userInfo: UserInformationService) {}
 
   redirectToHomePage(){
     this.router.navigate(['']);
@@ -61,6 +62,7 @@ export class DashboardTeacherComponent {
           this.firstName = this.teacher[0].first_name; 
           this.lastName = this.teacher[0].last_name;
           this.headteacher = this.teacher[0].headteacher;
+          this.userInfo.userId = this.teacher[0].ConsultantID;
           console.log(this.user);
           console.log("what")
         },

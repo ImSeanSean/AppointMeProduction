@@ -15,9 +15,9 @@
             </div>
             <div class="extra">
                 <p>Mode: {{appointment.mode}}</p>
-                <p>Rating: </p> 
+                <p>Rating: {{appointment.rating}}</p> 
             </div>
-            <div class="feedback">
+            <div class="feedback" *ngIf="appointment.rating == null">
                 <p>No feedback has been provided.</p>
             </div>
         </div>

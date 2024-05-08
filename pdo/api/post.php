@@ -54,6 +54,7 @@ class Post
         }
         return array("code" => $code, "errmsg" => $errmsg);
     }
+    //User Related Functions
     public function register($data)
     {
         // Variables
@@ -234,6 +235,7 @@ class Post
             return false;
         }
     }
+    //Teacher Related Functio
     public function approveTeacher($data)
     {
         try {
@@ -323,6 +325,7 @@ class Post
             return "Error rejecting teacher: " . $e->getMessage();
         }
     }
+    //Appointment Related Functions
     public function create_appointment($data)
     {
         try {
@@ -433,5 +436,214 @@ class Post
         } catch (\PDOException $e) {
             return $this->sendPayLoad(null, "failed", "Error rejecting appointment: " . $e->getMessage(), 500);
         }
+    }
+    public function complete_appointment($data)
+    {
+        $appointmentId = $data->appointment_id;
+
+        // SQL query to validate user authority and check appointment status
+        $sqlValidation = "SELECT * FROM appointment WHERE AppointmentID = $appointmentId";
+        $validationResult = $this->executeQuery($sqlValidation);
+
+        if ($validationResult['code'] == 200 && !empty($validationResult['data'])) {
+            $appointmentStatus = $validationResult['data'][0]['Completed'];
+
+            if ($appointmentStatus == 1) {
+                // Appointment is already confirmed
+                return $this->sendPayLoad(null, "failed", "Appointment is already marked as completed.", 400);
+            }
+
+            // SQL query to update the status to 1 (confirmed)
+            $sqlUpdate = "UPDATE appointment SET Completed = 1 WHERE AppointmentID = $appointmentId";
+            $updateResult = $this->executeQuery($sqlUpdate);
+
+            if ($updateResult['code'] == 200) {
+                return $this->sendPayLoad(null, "success", "Appointment completed successfully.", $updateResult['code']);
+            } else {
+                return $this->sendPayLoad(null, "failed", "Failed to complete appointment.", $updateResult['code']);
+            }
+        } else {
+            return $this->sendPayLoad(null, "failed", "User is not authorized to confirm this appointment.", 403);
+        }
+    }
+    public function rate_appointment($data)
+    {
+        try {
+            $jwt = $data->key;
+            error_log("JWT Token: " . $jwt);
+            $key = JWT::decode($jwt, new Key($this->secretKey, 'HS256'));
+            // Check authorization here (example: verify that the user is authorized to create an appointment)
+            if ($key->type !== 'student') {
+                return "Unauthorized: Only students are allowed to rate appointments.";
+            }
+            // The rest of the function
+            //Initialize Data
+            $appointmentId = $data->appointment_id;
+            $appointmentRating = $data->appointment_rating;
+            $appointmentRemarks = $data->appointment_remarks;
+            //Find Appointment
+            $sqlValidation = "SELECT * FROM appointment WHERE AppointmentID = :appointmentId";
+            $stmt = $this->pdo->prepare($sqlValidation);
+            $stmt->bindParam(':appointmentId', $appointmentId);
+            $stmt->execute();
+            $validationResult = $stmt->fetch(PDO::FETCH_ASSOC);
+            // Check if appointment exists
+
+            // Update Appointment
+            $sqlUpdate = "UPDATE appointment SET rating = :rating, remarks = :remarks WHERE AppointmentID = :id";
+            $stmt = $this->pdo->prepare($sqlUpdate);
+            $stmt->bindParam(':rating', $appointmentRating);
+            $stmt->bindParam(':remarks', $appointmentRemarks);
+            $stmt->bindParam(':id', $appointmentId);
+            $stmt->execute();
+            // Optionally, return success response or handle accordingly
+            return "Appointment rated successfully.";
+        } catch (\Firebase\JWT\ExpiredException $e) {
+            return "Unauthorized: Token has expired.";
+        } catch (\Firebase\JWT\BeforeValidException $e) {
+            return "Unauthorized: Token is not yet valid.";
+        } catch (\Firebase\JWT\SignatureInvalidException $e) {
+            return "Unauthorized: Invalid token signature.";
+        } catch (PDOException $e) {
+            // Handle the exception, return an error response, or log the error
+            return "Error rating appointment" . $e->getMessage();
+        }
+    }
+    //Teacher Schedule 
+    public function add_schedule($data)
+    {
+        try {
+            $jwt = $data->key;
+            error_log("JWT Token: " . $jwt);
+            $key = JWT::decode($jwt, new Key($this->secretKey, 'HS256'));
+            // Check authorization here (example: verify that the user is authorized to create an appointment)
+            if ($key->type !== 'teacher') {
+                return "Unauthorized: Only students are allowed to add a schedule.";
+            }
+            // The rest of the function
+            $consultantId = $data->teacher_id;
+            $startTime = $data->startTime;
+            $day = $data->day;
+            //Check
+            $existingSchedule = $this->checkExistingSchedule($consultantId, $startTime, $day);
+            if ($existingSchedule) {
+                // Schedule already exists, return custom error code
+                return 2;
+            }
+            //Insert
+            $sql = "INSERT INTO `schedule` (`consultantId`, `startTime`, `dayOfWeek`) 
+            VALUES (:consultantId, :startTime, :day)";
+
+            $stmt = $this->pdo->prepare($sql);
+
+            $stmt->bindParam(':consultantId', $consultantId);
+            $stmt->bindParam(':startTime', $startTime);
+            $stmt->bindParam(':day', $day);
+
+            $stmt->execute();
+            // Optionally, return success response or handle accordingly
+            return "Appointment rated successfully.";
+        } catch (\Firebase\JWT\ExpiredException $e) {
+            return "Unauthorized: Token has expired.";
+        } catch (\Firebase\JWT\BeforeValidException $e) {
+            return "Unauthorized: Token is not yet valid.";
+        } catch (\Firebase\JWT\SignatureInvalidException $e) {
+            return "Unauthorized: Invalid token signature.";
+        } catch (PDOException $e) {
+            // Handle the exception, return an error response, or log the error
+            return "Error rating appointment" . $e->getMessage();
+        }
+    }
+
+    public function remove_schedule($data)
+    {
+        try {
+            $jwt = $data->key;
+            error_log("JWT Token: " . $jwt);
+            $key = JWT::decode($jwt, new Key($this->secretKey, 'HS256'));
+            // Check authorization here (example: verify that the user is authorized to create an appointment)
+            if ($key->type !== 'teacher') {
+                return "Unauthorized: Only teachers are allowed to delete a schedule.";
+            }
+            // The rest of the function
+            $scheduleId = $data->schedule_id;
+            //Insert
+            $sql = "DELETE FROM schedule WHERE scheduleId = :scheduleId;";
+
+            $stmt = $this->pdo->prepare($sql);
+
+            $stmt->bindParam(':scheduleId', $scheduleId);
+
+            $stmt->execute();
+            // Optionally, return success response or handle accordingly
+            if ($stmt->rowCount() > 0) {
+                // Appointment successfully removed
+                return "Appointment removed successfully.";
+            } else {
+                // No record found with the given scheduleId
+                return "No appointment found with the given schedule ID.";
+            }
+        } catch (\Firebase\JWT\ExpiredException $e) {
+            return "Unauthorized: Token has expired.";
+        } catch (\Firebase\JWT\BeforeValidException $e) {
+            return "Unauthorized: Token is not yet valid.";
+        } catch (\Firebase\JWT\SignatureInvalidException $e) {
+            return "Unauthorized: Invalid token signature.";
+        } catch (PDOException $e) {
+            // Handle the exception, return an error response, or log the error
+            return "Error removing the schedule" . $e->getMessage();
+        }
+    }
+    public function remove_day_schedule($data)
+    {
+        try {
+            $jwt = $data->key;
+            error_log("JWT Token: " . $jwt);
+            $key = JWT::decode($jwt, new Key($this->secretKey, 'HS256'));
+            // Check authorization here (example: verify that the user is authorized to create an appointment)
+            if ($key->type !== 'teacher') {
+                return "Unauthorized: Only teachers are allowed to delete schedules.";
+            }
+            // The rest of the function
+            $day = $data->day;
+            $consultantId = $data->consultant_id;
+            //Delete
+            $sql = "DELETE FROM schedule WHERE consultantId = :consultantId AND dayOfWeek = :day;";
+
+            $stmt = $this->pdo->prepare($sql);
+
+            $stmt->bindParam(':day', $day);
+            $stmt->bindParam(':consultantId', $consultantId);
+
+            $stmt->execute();
+            // Optionally, return success response or handle accordingly
+            if ($stmt->rowCount() > 0) {
+                // Appointment successfully removed
+                return "Appointment removed successfully.";
+            } else {
+                // No record found with the given scheduleId
+                return "No appointment found with the given schedule day.";
+            }
+        } catch (\Firebase\JWT\ExpiredException $e) {
+            return "Unauthorized: Token has expired.";
+        } catch (\Firebase\JWT\BeforeValidException $e) {
+            return "Unauthorized: Token is not yet valid.";
+        } catch (\Firebase\JWT\SignatureInvalidException $e) {
+            return "Unauthorized: Invalid token signature.";
+        } catch (PDOException $e) {
+            // Handle the exception, return an error response, or log the error
+            return "Error removing the schedule" . $e->getMessage();
+        }
+    }
+    //Additional Functions
+    private function checkExistingSchedule($consultantId, $startTime, $day)
+    {
+        $sql = "SELECT * FROM schedule WHERE consultantId = :consultantId AND startTime = :startTime AND dayOfWeek = :day";
+        $stmt = $this->pdo->prepare($sql);
+        $stmt->bindParam(':consultantId', $consultantId);
+        $stmt->bindParam(':startTime', $startTime);
+        $stmt->bindParam(':day', $day);
+        $stmt->execute();
+        return $stmt->fetch(PDO::FETCH_ASSOC);
     }
 }

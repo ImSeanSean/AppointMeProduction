@@ -62,6 +62,24 @@ export class AppointmentViewConfirmedComponent {
     });
   }
 
+  openConfirmationComplete(): void {
+    const dialogRef = this.dialog.open(ConfirmationComponent, {
+      height: '250px',
+      width: '490px',
+      data: {
+        title: 'Complete Appointment',
+        description: 'Are you sure you want to complete this appointment?'
+      }
+    });
+  
+    dialogRef.afterClosed().subscribe(result => {
+      console.log(result)
+      if (result) {
+        this.completeAppointment();
+      }
+    });
+  }
+
   getAppointment(): Observable<Appointment[]> {
     this.appointmentId = this.activatedRoute.snapshot.params['appointmentId'];
     const token = localStorage.getItem('token');
@@ -93,15 +111,15 @@ export class AppointmentViewConfirmedComponent {
       return null;
     }
   }
-  confirmAppointment() {
+  completeAppointment() {
     const data = { appointment_id: this.appointmentId };
-    this.http.post('http://localhost/appointme/pdo/api/confirm_appointment', data)
+    this.http.post('http://localhost/appointme/pdo/api/complete_appointment', data)
       .subscribe(
         (response) => {
-          console.log('Appointment confirmed successfully:', response);
+          console.log('Appointment complete successfully:', response);
         },
         (error) => {
-          console.error('Error confirming appointment:', error);
+          console.error('Error completing appointment:', error);
         }
       );
     this.closeWindow();

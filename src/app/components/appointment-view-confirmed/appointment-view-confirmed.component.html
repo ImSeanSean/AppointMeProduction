@@ -80,6 +80,9 @@
         <div *ngIf="usertype == 'teacher'" class="reject">
           <p (click)="openConfirmationReject()">CANCEL APPOINTMENT</p>
         </div>
+        <div *ngIf="usertype == 'teacher'" class="confirmation">
+          <p (click)="openConfirmationComplete()">MARK AS COMPLETED</p>
+        </div>
       </div>
     </div>
   </div>

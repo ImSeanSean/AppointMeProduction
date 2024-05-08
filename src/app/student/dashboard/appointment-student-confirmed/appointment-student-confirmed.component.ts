@@ -5,13 +5,14 @@ import { CompletedAppointmentDataService } from '../../../services/appointment-v
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Observable, catchError } from 'rxjs';
 import { Appointment } from '../../../interfaces/Appointment';
+import { NgIf } from '@angular/common';
 
 @Component({
     selector: 'app-appointment-student-confirmed',
     standalone: true,
     templateUrl: './appointment-student-confirmed.component.html',
     styleUrl: './appointment-student-confirmed.component.css',
-    imports: [AppointmentCardCompletedComponent]
+    imports: [AppointmentCardCompletedComponent, NgIf]
 })
 export class AppointmentStudentConfirmedComponent {
     appointmentId: number | null | undefined;

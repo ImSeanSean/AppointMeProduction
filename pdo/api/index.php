@@ -57,6 +57,12 @@ switch ($_SERVER['REQUEST_METHOD']) {
             case 'get_appointment':
                 echo json_encode($get->get_appointment($request[1]));
                 break;
+            case 'get_day_schedule':
+                echo json_encode($get->get_day_schedule($request[1]));
+                break;
+            case 'get_day_schedule_student':
+                echo json_encode($get->get_day_schedule_student($request[1], $request[2]));
+                break;
             default:
                 http_response_code(403);
                 break;
@@ -92,6 +98,21 @@ switch ($_SERVER['REQUEST_METHOD']) {
                 break;
             case 'reject_appointment':
                 echo json_encode($post->reject_appointment($data));
+                break;
+            case 'complete_appointment':
+                echo json_encode($post->complete_appointment($data));
+                break;
+            case 'rate_appointment':
+                echo json_encode($post->rate_appointment($data));
+                break;
+            case 'add_schedule':
+                echo json_encode($post->add_schedule($data));
+                break;
+            case 'remove_schedule':
+                echo json_encode($post->remove_schedule($data));
+                break;
+            case 'remove_all_schedule':
+                echo json_encode($post->remove_day_schedule($data));
                 break;
             default:
                 http_response_code(403);

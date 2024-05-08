@@ -21,10 +21,10 @@
                     <div class="schedules">
                         <ul>
                             <li 
-                            [ngStyle]="{ 'background-color': time === selectedTime ? '#0D4913' : '' }"
+                            [ngStyle]="{ 'background-color': time.scheduleId === selectedTimeId ? '#0D4913' : '' }"
                             *ngFor="let time of appointmentTimes" 
-                            (click)="selectTime(time)">
-                            {{ time }}
+                            (click)="selectTime(time.startTime, time.scheduleId)">
+                            {{ convertToAMPM(time.startTime) }}
                           </li>
                         </ul>
                     </div>

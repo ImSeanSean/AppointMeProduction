@@ -199,4 +199,56 @@ class Get
             echo json_encode(array('message' => 'Token is invalid or Authorization header is missing'));
         }
     }
+    public function get_day_schedule($day)
+    {
+        $tokenInfo = $this->middleware->validateToken();
+        if ($tokenInfo) {
+            // Modified SQL query to join user and consultant tables
+            $sqlStr = "SELECT *
+            FROM schedule
+            WHERE consultantId = $tokenInfo->user_id
+            AND dayOfWeek = $day;";
+
+            $result = $this->executeQuery($sqlStr);
+
+            if ($result['code'] == 200) {
+                if (count($result['data']) > 0) {
+                    return $this->sendPayLoad($result['data'], "success", "Successfully retrieved schedules.", $result['code']);
+                } else {
+                    return null; // Return null when no records found
+                }
+            }
+
+            return $this->sendPayLoad(null, "failed", "Failed to pull data.", $result['code']);
+        } else {
+            http_response_code(401);
+            echo json_encode(array('message' => 'Token is invalid or Authorization header is missing'));
+        }
+    }
+    public function get_day_schedule_student($teacher_id, $day)
+    {
+        $tokenInfo = $this->middleware->validateToken();
+        if ($tokenInfo) {
+            // Modified SQL query to join user and consultant tables
+            $sqlStr = "SELECT *
+            FROM schedule
+            WHERE consultantId = $teacher_id
+            AND dayOfWeek = $day;";
+
+            $result = $this->executeQuery($sqlStr);
+
+            if ($result['code'] == 200) {
+                if (count($result['data']) > 0) {
+                    return $this->sendPayLoad($result['data'], "success", "Successfully retrieved schedules.", $result['code']);
+                } else {
+                    return null; // Return null when no records found
+                }
+            }
+
+            return $this->sendPayLoad(null, "failed", "Failed to pull data.", $result['code']);
+        } else {
+            http_response_code(401);
+            echo json_encode(array('message' => 'Token is invalid or Authorization header is missing'));
+        }
+    }
 }

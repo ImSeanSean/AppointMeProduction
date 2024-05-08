@@ -1,4 +1,4 @@
-import { DatePipe, NgClass, NgFor } from '@angular/common';
+import { DatePipe, NgClass, NgFor, NgIf } from '@angular/common';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Component } from '@angular/core';
 import { Router } from '@angular/router';
@@ -9,7 +9,7 @@ import { CompletedAppointmentDataService } from '../../../services/appointment-v
 @Component({
   selector: 'app-appointment-card-completed',
   standalone: true,
-  imports: [NgFor, NgClass],
+  imports: [NgFor, NgClass, NgIf],
   templateUrl: './appointment-card-completed.component.html',
   styleUrl: './appointment-card-completed.component.css'
 })

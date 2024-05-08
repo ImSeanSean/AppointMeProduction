@@ -9,28 +9,28 @@
                 <div class="day">
                     <h4>Choose Day:</h4>
                     <mat-form-field>
-                        <mat-label>Favorite food</mat-label>
-                        <mat-select [(ngModel)]="selectedDay" name="food">
+                        <mat-label>Day</mat-label>
+                        <mat-select [(ngModel)]="selectedDay" name="Day" (ngModelChange)="onSelectedDayChange($event)">
                           @for (day of days; track day) {
-                            <mat-option [value]="day.name">{{day.name}}</mat-option>
+                            <mat-option [value]="day.day">{{day.name}}</mat-option>
                           }
                         </mat-select>
                     </mat-form-field>
-                    <div class="buttons">
+                    <!-- <div class="buttons">
                         <div>
                             <button class="disable">Disable</button>
                         </div>
                         <div>
                             <button class="enable">Enable</button>
                         </div>
-                    </div>
+                    </div> -->
                 </div>
                 <div class="time">
                     <h4>Add a Time for Appointment:</h4>
-                    <input type="time">
+                    <input type="time" [(ngModel)]="selectedStartTime">
                 </div>
                 <div>
-                    <button class="schedule_button">Add Schedule</button>
+                    <button class="schedule_button" (click)="addSchedule(selectedDay)">Add Schedule</button>
                 </div>
             </div>
             <div class="right">
@@ -38,16 +38,16 @@
                 <div class="box">
                     <ul>
                         <li 
-                        [ngStyle]="{ 'background-color': time === selectedTime ? '#0D4913' : '' }"
+                        [ngStyle]="{ 'background-color': time.scheduleId === selectedTime ? '#0D4913' : '' }"
                         *ngFor="let time of appointmentTimes" 
-                        (click)="selectTime(time)">
-                        {{ time }}
+                        (click)="selectTime(time.scheduleId)">
+                        {{ convertToAMPM(time.startTime) }}
                       </li>
                     </ul>
                 </div>
                 <div class="buttons">
-                    <button class="remove">Remove Schedule</button>
-                    <!-- <button class="save">Save Schedule</button> -->
+                    <button class="remove" (click)="removeScheduleConfirmation(selectedTime!)">Remove Schedule</button>
+                    <button class="save" (click)="removeAllScheduleConfirmation(selectedDay)">Remove All Schedule</button>
                 </div>
             </div>
         </div>

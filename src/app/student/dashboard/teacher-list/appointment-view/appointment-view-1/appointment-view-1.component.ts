@@ -1,14 +1,16 @@
 import { Component, OnInit } from '@angular/core';
 import { Teacher } from '../../../../../interfaces/Teacher';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { ActivatedRoute, Router } from '@angular/router';
 import { AppointmentViewServiceService } from '../../../../../services/appointment-view/appointment-view-service.service';
 import { DatePipe, NgFor, NgStyle } from '@angular/common';
 import { MatDialog } from '@angular/material/dialog';
 import { ErrorComponent } from '../../../../../matdialogs/error/error.component';
-import { Observable } from 'rxjs';
+import { Observable, catchError, map, of } from 'rxjs';
 import {MatSlideToggleModule} from '@angular/material/slide-toggle';
 import { FormsModule } from '@angular/forms';
+import { DaySchedule } from '../../../../../interfaces/DaySchedule';
+import { UserInformationService } from '../../../../../services/user-information/user-information.service';
 
 @Component({
   selector: 'app-appointment-view-1',
@@ -19,18 +21,29 @@ import { FormsModule } from '@angular/forms';
 })
 export class AppointmentView1Component implements OnInit{
   selectedDate: Date | null = null;
-  selectedTime: string | null = null; 
+  selectedTime: String | null = null;
+  selectedTimeId: number | null = null;
   selectedMode: string | null = null;
   selectedUrgency: string | null = null;
   formattedDate: string | null = null;
-  appointmentTimes: string[] = ['7am', '8am', '9am', '10am', '11am', '1pm', '2pm', '3pm', '4pm'];
   teacherId: string | null = null; 
   teachers: Teacher[] = [];
+  token = localStorage.getItem('token');
+  //Schedule Variables
+  appointmentTimes: DaySchedule[] = [];
 
-  constructor(private http: HttpClient, private router: Router, private service: AppointmentViewServiceService, private datePipe: DatePipe, private route: ActivatedRoute, public dialog: MatDialog) {};
+  constructor(
+    private http: HttpClient, 
+    private router: Router, 
+    private service: AppointmentViewServiceService, 
+    private datePipe: DatePipe, 
+    private route: ActivatedRoute, 
+    public dialog: MatDialog,
+    private userInfo: UserInformationService
+  ) {};
 
   changeRoute() {
-    if (this.selectedTime != null) {
+    if (this.selectedTime != null && this.selectedMode && this.selectedUrgency) {
       this.service.selectedTime = this.selectedTime;
       this.service.selectedDate = this.formattedDate;
       this.service.selectedMode = this.selectedMode;
@@ -41,15 +54,16 @@ export class AppointmentView1Component implements OnInit{
       this.dialog.open(ErrorComponent, {
         width: '300px',
         data: {
-          title: 'Select Time',
-          description: 'Please select a time.'
+          title: 'Incomplete Details',
+          description: 'Please select all necessary details.'
         }
       });
     }
   }
 
-  selectTime(time: string): void {
-    this.selectedTime = time === this.selectedTime ? null : time;
+  selectTime(time: String, timeId: number): void {
+    this.selectedTime = this.convertToAMPM(time)
+    this.selectedTimeId = timeId
   }
 
   getTeachers(): Observable<Teacher[]> {
@@ -78,7 +92,18 @@ export class AppointmentView1Component implements OnInit{
       // Update the formatted date
       this.formattedDate = this.datePipe.transform(
         this.selectedDate,
-        'MMMM dd, yyyy'
+        'EEEE, MMMM dd, yyyy'
+      );
+
+      const selectedDay = this.selectedDate.getDay();
+
+      this.getDaySchedule(selectedDay).subscribe(
+        (data: DaySchedule[]) => {
+          this.appointmentTimes = data;
+        },
+        (error) => {
+
+        }
       );
     }
   }
@@ -96,15 +121,57 @@ export class AppointmentView1Component implements OnInit{
       // Update the formatted date
       this.formattedDate = this.datePipe.transform(
         this.selectedDate,
-        'MMMM dd, yyyy'
+        'EEEE, MMMM dd, yyyy'
+      );
+
+      const selectedDay = this.selectedDate.getDay();
+
+      this.getDaySchedule(selectedDay).subscribe(
+        (data: DaySchedule[]) => {
+          this.appointmentTimes = data;
+        },
+        (error) => {
+
+        }
       );
     }
   }
-  
+  //Get Schedule
+  getDaySchedule(day: number): Observable<DaySchedule[]> {
+    const headers = new HttpHeaders().set('Authorization', `Bearer ${this.token}`);
+    
+    return this.http.get<DaySchedule[]>(`http://localhost/appointme/pdo/api/get_day_schedule_student/${this.teacherId}/${day}`, { headers }).pipe(
+      map((data: DaySchedule[] | null) => {
+        if (data === null) {
+          // Handle null case, for example, return an empty array
+          return [];
+        }
+        // Sort the data by start time
+        data.sort((a, b) => {
+          const startTimeA = a.startTime.toString();
+          const startTimeB = b.startTime.toString();
+          return startTimeA.localeCompare(startTimeB);  
+        });
+        return data;
+      }),
+      catchError((error) => {
+        // Handle error here, for example, return an empty array
+        return of([]);
+      })
+    );
+  }
+  convertToAMPM(time: String): string {
+    const [hours, minutes, seconds] = time.split(':');
+    let hour = parseInt(hours);
+    const ampm = hour >= 12 ? 'pm' : 'am';
+    hour = hour % 12;
+    hour = hour ? hour : 12; // Handle midnight (0 hours)
+    return `${hour}:${minutes} ${ampm}`;
+  }
 
   ngOnInit(): void {
       this.selectedDate = new Date();
-      this.formattedDate = this.datePipe.transform(this.selectedDate, 'MMMM dd, yyyy');
+      this.formattedDate = this.datePipe.transform(this.selectedDate, 'EEEE, MMMM dd, yyyy');
       this.teacherId = this.route.snapshot.params['teacherId'];
       this.getTeachers().subscribe(
       (data: Teacher[]) => {
@@ -112,7 +179,18 @@ export class AppointmentView1Component implements OnInit{
         console.log(this.teachers);
       },
       (error) => {
-        console.error('Error fetching teachers:', error);
+
+      }
+    );
+    //Day of the Week
+    const currentDayOfWeek = this.selectedDate.getDay();
+    
+    this.getDaySchedule(currentDayOfWeek).subscribe(
+      (data: DaySchedule[]) => {
+        this.appointmentTimes = data;
+      },
+      (error) => {
+
       }
     );
   }
