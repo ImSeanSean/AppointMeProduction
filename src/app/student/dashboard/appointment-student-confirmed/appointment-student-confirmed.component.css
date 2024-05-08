@@ -1,218 +1,178 @@
-/**/
-.main{
+/* General Styles */
+.main {
     height: 90vh;
     width: 94vw;
     overflow: auto;
 }
 
-.title{
+.title {
     background-color: #D9D9D9;
-    width: 100%;    
     height: 10vh;
     display: flex;
     align-items: center;
+    padding-left: 3vw;
     font-weight: normal;
 }
 
-.main h2{
-    padding-left: 30px;
-    color: #000000;
-    font-size: 30px;
+.main h2 {
+    color: #000;
+    font-size: 2.5vw;
 }
 
-
-/*Appointment Card Design*/
-.appointment-card{
-    height: 115px;
-    width: 500px;
+.appointment-card {
+    height: 15vw;
+    width: 90vw;
     background-color: #EAFAE5;
-    border-radius: 30px;
-    box-shadow: 0 11px 8px rgba(0, 0, 0, 0.1);
-    margin: 20px;
-    border: 3px solid #168021;
+    border-radius: 3vw;
+    box-shadow: 0 1.5vw 1vw rgba(0, 0, 0, 0.1);
+    margin: 2vw;
+    border: 0.5vw solid #168021;
     display: flex;
     overflow: hidden;
     cursor: pointer;
 }
 
-.box{
-    height: 115px;
-    width: 60px;
-    background-color: #168021;
+.Text {
+    padding-left: 1.5vw;
+    margin-top: 1.5vw;
 }
-.Text{
-    padding-left: 15px;
-    margin-top: 15px;
-}
-.title, .p{
+
+.title, .p {
     font-weight: bold;
-    font-size: 17px;
-}
-.title, .mid, .bottom, p{
-    margin: 0px;
-    padding: 0px;
-}
-.mid, .bottom{
-    font-size: 15px;
+    font-size: 1.5vw;
 }
 
-.mid{
-    display: flex;
-    gap: 150px;
+.mid, .bottom {
+    font-size: 1.3vw;
 }
 
-.text{
+.mid {
+    gap: 5vw;
+}
+
+.text {
     width: 90%;
-    padding: 15px;
-    display: grid;
-    padding-bottom: 20px;
+    padding: 2.5vw;
+    padding-bottom: 3vw;
 }
-.teacher{
-    font-size: 15px;
-    margin-bottom: 10px;
+
+.teacher {
+    font-size: 1.3vw;
+    margin-bottom: 0.7vw;
 }
-.details{
+
+.details {
     color: #168021;
-    font-size: 15px;
+    font-size: 1.3vw;
 }
 
 .account-details {
-    border: 3px solid #BD997E;
-    padding: 10px;
-    border-radius: 5px;
+    border: 0.3vw solid #BD997E;
+    padding: 1.5vw;
+    border-radius: 2vw;
     background-color: #D9D9D9;
-    width: 70vh;
+    width: 40vw;
     height: 60vh;
-    margin-left: 10%;
-    margin-top: 0%;
+    margin-left: 12vw;
+    padding-right: .1vw;
+    padding-left: 3vh;
 }
 
-.right{
-    width: 100%;  
-    padding: 10px 30px;  
-    color: #000000; 
-    font-size: 22px; 
+.right {
+    padding: .5vw 2vw;
+    color: #000;
+    font-size: 1.7vw;
 }
 
-.appointment-card, .right {
-    flex: 1; /* Ensures that both take equal space if needed */
+.input-box {
+    width: 90%;
+    height: 4vh;
+    background: #EEE;
+    border-radius: 0.5vw;
 }
 
-.input-box{
-    width: 480px; /* Set width to your desired size */
-    height: 40px;
-    background: #EEEEEE;
-    margin-left: 0%;
-    margin-top: 0%;
-    border-radius: 0px;
-  }
-
-.inputbox{
-    width: 480px; /* Set width to your desired size */
-    height: 200px;
-    background: #EEEEEE;
-    margin-left: 0%;
-    margin-top: 0%;
-    border-radius: 0px;
+.inputbox {
+    width: 90%;
+    height: 20vh;
+    background: #EEE;
+    border-radius: 0.5vw;
 }
+
 .submit-btn {
-    width: 140px;
-    height: 35px;
+    width: 12vw;
+    height: 3.5vh;
     border: none;
     background: #168021;
     color: #fff;
     font-weight: 600;
-    margin-left: 70%;
-    margin-top: 10%;
+    margin-left: 18.5vw;
+    margin-top: 2vw;
     text-transform: uppercase;
     cursor: pointer;
-    font-size: large;
-    font-weight: 150;
-  }
+    font-size: 1.5vw;
+}
 
-  
-  .subtitle {
-    width: 100%;  
-    text-align: left;   
-    background-color: #FFFFFF;  
-    color:#168021;  
-    position: relative;
-    padding-left: 30px;
-    padding-top: 20px;
-    padding-bottom: 10px;
-    font-size: 22px;
+.subtitle {
+    background-color: #FFF;
+    color: #168021;
+    padding-left: 3vw;
+    padding-top: 2vw;
+    padding-bottom: 1vw;
+    font-size: 1.7vw;
 }
 
 .subtitle::after {
-    content: '';  
+    content: '';
     display: block;
-    width: 50%;  
-    height: 2px; 
-    background-color:#168021;  
+    width: 50%;
+    height: 0.15vw;
+    background-color: #168021;
     position: absolute;
-    left: 1;  
-    bottom: -7px; 
-
-}    
+    left: 1vw;
+    bottom: -0.7vw;
+}
 
 .card-container {
     display: grid;
     grid-template-columns: 1fr 1fr;
-    padding-top: 20px;
+    padding-top: 2vw;
 }
 
-.containerr{
-    margin-top: 20px;
-}
-
-/*zzz*/
-.appointment-list{
-    width: 100%;
+.appointment-list {
     height: 70vh;
     display: grid;
     justify-content: center;
     overflow-y: scroll;
 }
 
-.left-container label{
+.left-container label {
     color: #168021;
-    padding-left: 120px;
-    padding-top: 25px;
-    padding-bottom: 10px;
-    font-size: 25px;
+    padding-left: 12vw;
+    padding-top: 2.5vw;
+    padding-bottom: 1vw;
+    font-size: 1.8vw;
 }
 
 .left-container hr {
     width: 75%;
     border: 0;
-    height: 2.6px;
+    height: 0.2vw;
     background-color: #168021;
-    margin: 10px 0;
-    margin: auto;
+    margin: 1vw auto;
 }
 
-.right p{
-    
-}
-
-.right .input-box{
-    display: flex;
-    align-content: center;
-}
-
-.right label{
-    color: #000000;
-    padding-left: 70px;
-    padding-top: 25px;
-    padding-bottom: 10px;
-    font-size: 25px;
+.right label {
+    color: #000;
+    padding-left: 7vw;
+    padding-top: 2.5vw;
+    padding-bottom: 1vw;
+    font-size: 1.8vw;
 }
 
 .right hr {
     width: 75%;
     border: 0;
-    height: 2.6px;
+    height: 0.2vw;
     background-color: #2b2b2b;
-    margin: 10px 0;
-    margin: auto;
+    margin: 1vw auto;
 }
