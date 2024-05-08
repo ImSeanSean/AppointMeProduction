@@ -63,8 +63,7 @@ export class DashboardTeacherComponent {
           this.lastName = this.teacher[0].last_name;
           this.headteacher = this.teacher[0].headteacher;
           this.userInfo.userId = this.teacher[0].ConsultantID;
-          console.log(this.user);
-          console.log("what")
+          console.log(this.teacher);
         },
         (error) => {
           console.error('Error fetching teachers:', error);

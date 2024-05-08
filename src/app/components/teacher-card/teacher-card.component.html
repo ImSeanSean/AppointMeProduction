@@ -1,20 +1,19 @@
 <div class="card-container">
-    <div *ngFor="let teachers of approvedTeachers" class="card" (click)="changeRoute(teachers.ConsultantID)"> 
-        <div class="top">
-            <img src="assets/profile.jpeg" alt="Teacher Image">
-            <h4>{{teachers.first_name}} {{teachers.last_name}}</h4>
-        </div>
-        <div class="bottom">
-            <ul>
-                <li>8am</li>
-                <li>9am</li>
-                <li>10am</li>
-                <li>1pm</li>
-                <li>2pm</li>
-                <li>3pm</li>
-            </ul>
-        </div>
+  <div *ngFor="let teacher of approvedTeachers" class="card" (click)="changeRoute(teacher.ConsultantID)">
+    <div class="top">
+      <img src="assets/profile.jpeg" alt="Teacher Image">
+      <h4>{{ teacher.first_name }} {{ teacher.last_name }}</h4>
     </div>
+    <div class="bottom">
+      <ul *ngIf="teacherScheduleMap.has(teacher.ConsultantID)">
+        <ng-container>
+          <li *ngFor="let time of teacherScheduleMap.get(teacher.ConsultantID)?.slice(0, 8)">{{convertToAMPM(time.startTime)}}</li>
+          <li *ngIf="teacherScheduleMap.get(teacher.ConsultantID)?.length && teacherScheduleMap.get(teacher.ConsultantID)!.length > 8">More</li>
+        </ng-container>
+      </ul>
+      <ng-container *ngIf="!teacherScheduleMap.has(teacher.ConsultantID)">
+        <p class="nosched">No Schedule Available Today</p>
+    </ng-container>
+    </div>
+  </div>
 </div>
-
-

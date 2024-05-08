@@ -12,6 +12,7 @@ import { UserInformationService } from '../../services/user-information/user-inf
 import { MatDialog } from '@angular/material/dialog';
 import { ErrorComponent } from '../../matdialogs/error/error.component';
 import { ConfirmationComponent } from '../../matdialogs/confirmation/confirmation.component';
+import { Teacher } from '../../interfaces/Teacher';
 
 @Component({
   selector: 'app-teacher-schedule',
@@ -36,17 +37,26 @@ export class TeacherScheduleComponent implements OnInit{
   selectedDay: number = 1;
   selectedStartTime: number | null = null;
   days: Day[];
+  teacher: Teacher[] = [];
   appointmentTimes: DaySchedule[] = [];
   usertype = localStorage.getItem('user');
   teacherId = this.userInfo.userId;
   token = localStorage.getItem('token');
 
   ngOnInit(): void {
+    this.getTeacher().subscribe(
+      (data: Teacher[]) => {
+        this.teacher = data;
+        this.userInfo.userId = this.teacher[0].ConsultantID;
+      },
+      (error) => {
+        console.error('Error fetching teachers:', error);
+      }
+    );
     this.getDaySchedule(1).subscribe(
       (data: DaySchedule[]) => {
         this.appointmentTimes = data;
         this.teacherId = this.userInfo.userId;
-        console.log(this.appointmentTimes);
       },
       (error) => {
         console.error('Error fetching appointments:', error);
@@ -56,6 +66,12 @@ export class TeacherScheduleComponent implements OnInit{
 
   selectTime(time: number): void {
     this.selectedTime = time
+  }
+
+  getTeacher(){
+    const token = localStorage.getItem('token');
+    const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
+    return this.http.get<Teacher[]>('http://localhost/appointme/pdo/api/get_teacher', { headers });
   }
 
   getDaySchedule(day: number): Observable<DaySchedule[]> {
@@ -91,22 +107,23 @@ export class TeacherScheduleComponent implements OnInit{
     return this.http.post('http://localhost/appointme/pdo/api/remove_all_schedule', day);
   }
 
-  convertToAMPM(time: String): string {
-    const [hours, minutes, seconds] = time.split(':');
-    let hour = parseInt(hours);
-    const ampm = hour >= 12 ? 'pm' : 'am';
-    hour = hour % 12;
-    hour = hour ? hour : 12; // Handle midnight (0 hours)
-    return `${hour}:${minutes} ${ampm}`;
-  }
-
   addSchedule(day:number){
-    if(this.selectedStartTime == null){
+    if(!this.selectedStartTime){
       this.dialog.open(ErrorComponent, {
         width: '300px',
         data: {
           title: 'No Selected Time',
           description: 'Please select a time to add.'
+        }
+      });
+      return;
+    }
+    if(!this.teacherId){
+      this.dialog.open(ErrorComponent, {
+        width: '300px',
+        data: {
+          title: 'Error',
+          description: 'Teacher cannot be detected. Please refresh.'
         }
       });
     }
@@ -211,11 +228,20 @@ export class TeacherScheduleComponent implements OnInit{
     this.getDaySchedule(day).subscribe(
       (data: DaySchedule[]) => {
         this.appointmentTimes = data;
-        console.log(this.appointmentTimes);
       },
       (error) => {
         console.error('Error fetching appointments:', error);
       }
     );
+  }
+
+  //Formatting Functions
+  convertToAMPM(time: String): string {
+    const [hours, minutes, seconds] = time.split(':');
+    let hour = parseInt(hours);
+    const ampm = hour >= 12 ? 'pm' : 'am';
+    hour = hour % 12;
+    hour = hour ? hour : 12; // Handle midnight (0 hours)
+    return `${hour}:${minutes} ${ampm}`;
   }
 }
