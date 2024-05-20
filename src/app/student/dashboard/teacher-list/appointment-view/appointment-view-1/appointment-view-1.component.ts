@@ -11,6 +11,8 @@ import {MatSlideToggleModule} from '@angular/material/slide-toggle';
 import { FormsModule } from '@angular/forms';
 import { DaySchedule } from '../../../../../interfaces/DaySchedule';
 import { UserInformationService } from '../../../../../services/user-information/user-information.service';
+import { AppointmentValidationService } from '../../../../../services/appointment/appointment-validation.service';
+import { Appointment } from '../../../../../interfaces/Appointment';
 
 @Component({
   selector: 'app-appointment-view-1',
@@ -20,17 +22,18 @@ import { UserInformationService } from '../../../../../services/user-information
   styleUrl: './appointment-view-1.component.css'
 })
 export class AppointmentView1Component implements OnInit{
-  selectedDate: Date | null = null;
+  selectedDate: Date = new Date();
   selectedTime: String | null = null;
   selectedTimeId: number | null = null;
   selectedMode: string | null = null;
   selectedUrgency: string | null = null;
   formattedDate: string | null = null;
-  teacherId: string | null = null; 
+  teacherId: string = ""; 
   teachers: Teacher[] = [];
   token = localStorage.getItem('token');
   //Schedule Variables
   appointmentTimes: DaySchedule[] = [];
+  dayAppointment: Appointment[] = [];
 
   constructor(
     private http: HttpClient, 
@@ -39,7 +42,8 @@ export class AppointmentView1Component implements OnInit{
     private datePipe: DatePipe, 
     private route: ActivatedRoute, 
     public dialog: MatDialog,
-    private userInfo: UserInformationService
+    private userInfo: UserInformationService,
+    private appointmentvalidator: AppointmentValidationService
   ) {};
 
   changeRoute() {
@@ -193,5 +197,22 @@ export class AppointmentView1Component implements OnInit{
 
       }
     );
+  }
+  //Validate if time is occupied
+  isTimeOccupied(time:String){
+    //Get Appointments for that Day
+    this.appointmentvalidator.getTeacherDayAppointments(this.teacherId, this.selectedDate).subscribe(result => {
+      this.dayAppointment = result;
+    })
+    this.dayAppointment.forEach((appointment: Appointment) => {
+      let appointmentDate = new Date(appointment.AppointmentDate)
+      let appointmentTime = appointmentDate.getHours() + ':' + appointmentDate.getMinutes
+      if(time == appointmentTime){
+        return true;
+      }
+      else{
+        return false;
+      }
+    });
   }
 }

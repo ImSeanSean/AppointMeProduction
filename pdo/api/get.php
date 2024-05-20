@@ -199,6 +199,42 @@ class Get
             echo json_encode(array('message' => 'Token is invalid or Authorization header is missing'));
         }
     }
+    // public function get_day_appointment($teacher_id, $date)
+    // {
+    //     $tokenInfo = $this->middleware->validateToken();
+    //     if ($tokenInfo) {
+    //         // Modified SQL query to join user and consultant tables
+    //         $sqlStr = "SELECT *
+    //         FROM appointment
+    //         WHERE DATE(AppointmentDate) = :date AND ConsultantID = :teacher_id";
+
+    //         // Prepare the SQL statement
+    //         $stmt = $this->db->prepare($sqlStr);
+
+    //         // Bind parameters
+    //         $stmt->bindParam(':date', $date);
+    //         $stmt->bindParam(':teacher_id', $teacher_id);
+
+    //         // Execute the query
+    //         if ($stmt->execute()) {
+    //             // Fetch all rows
+    //             $appointments = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+    //             // Check if any rows were returned
+    //             if ($appointments) {
+    //                 // Return the appointments
+    //                 return $this->sendPayLoad($appointments, "success", "Successfully retrieved appointments for the day.", 200);
+    //             } else {
+    //                 return $this->sendPayLoad(null, "failed", "No appointments found for the specified day.", 404);
+    //             }
+    //         } else {
+    //             return $this->sendPayLoad(null, "failed", "Failed to execute query.", 500);
+    //         }
+    //     } else {
+    //         http_response_code(401);
+    //         echo json_encode(array('message' => 'Token is invalid or Authorization header is missing'));
+    //     }
+    // }
     public function get_day_schedule($day)
     {
         $tokenInfo = $this->middleware->validateToken();
