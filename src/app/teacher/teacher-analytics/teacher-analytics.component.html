@@ -6,7 +6,7 @@
         <div class="top">
             <div class="large-box">
                 <div class="number">
-                    <h1>2</h1> 
+                    <h1>{{getPending()}}</h1> 
                 </div>
                 <div class="details">
                     <h2>PENDING</h2>
@@ -14,7 +14,7 @@
             </div>
             <div class="large-box">
                 <div class="number">
-                    <h1>3</h1> 
+                    <h1>{{getConfirmed()}}</h1> 
                 </div>
                 <div class="details">
                     <h2>CONFIRMED</h2>
@@ -22,7 +22,7 @@
             </div>
             <div class="large-box">
                 <div class="number">
-                    <h1>2</h1> 
+                    <h1>{{getCompleted()}}</h1> 
                 </div>
                 <div class="details">
                     <h2>TOTAL<br>APPOINMENTS</h2>
@@ -30,7 +30,7 @@
             </div>
             <div class="large-box-green">
                 <div class="number">
-                    <h1>4.5</h1> 
+                    <h1>{{getRating()}}</h1> 
                 </div>
                 <div class="details">
                     <h2>OVERALL RATING</h2>
@@ -38,7 +38,7 @@
             </div>
             <div class="large-box-green">
                 <div class="number">
-                    <h1>3</h1> 
+                    <h1>{{getRatingForWeek()}}</h1> 
                 </div>
                 <div class="details">
                     <h2>WEEKLY RATING</h2>
@@ -54,7 +54,7 @@
                             <label>Scheduled for the Week</label>
                         </div>
                         <div class="app-box-top-right">
-                            <h2>30</h2>
+                            <h2>{{getAppointmentsThisWeek()}}</h2>
                             <label>Total</label>
                         </div>
                     </div>
@@ -62,7 +62,32 @@
                         <ul>
                             <li>
                                 <h3>Monday</h3> 
-                                <p>5 Total Appoinments</p>
+                                <p>{{getAppointmentsForDayOfWeek(0)}} Total Appoinments</p>
+                                <a>See More</a>
+                            </li>
+                            <li>
+                                <h3>Tuesday</h3> 
+                                <p>{{getAppointmentsForDayOfWeek(1)}} Total Appoinments</p>
+                                <a>See More</a>
+                            </li>
+                            <li>
+                                <h3>Wednesday</h3> 
+                                <p>{{getAppointmentsForDayOfWeek(2)}} Total Appoinments</p>
+                                <a>See More</a>
+                            </li>
+                            <li>
+                                <h3>Thursday</h3> 
+                                <p>{{getAppointmentsForDayOfWeek(3)}} Total Appoinments</p>
+                                <a>See More</a>
+                            </li>
+                            <li>
+                                <h3>Friday</h3> 
+                                <p>{{getAppointmentsForDayOfWeek(4)}} Total Appoinments</p>
+                                <a>See More</a>
+                            </li>
+                            <li>
+                                <h3>Saturday</h3> 
+                                <p>{{getAppointmentsForDayOfWeek(5)}} Total Appoinments</p>
                                 <a>See More</a>
                             </li>
                         </ul>
@@ -70,7 +95,35 @@
                 </div>
             </div>
             <div class="right">
-
+                <div class="appointment-box">
+                    <div class="appointment-list">
+                        <div class="second-box-top">
+                            <h3>Monday Appointments</h3>
+                        </div>
+                        <div class="card-container">
+                            <div class="appointment-card" *ngFor="let appointment of filterAppointments(appointments)" (click)="changeRoute(appointment.AppointmentID)">
+                                <div class="box"></div>
+                                <div class="Text">
+                                    <div class="appointment-card-title">
+                                        <p>{{appointment.appointment_title}}</p>
+                                    </div>
+                                    <div class="mid">
+                                        <p>Date: {{getFormattedDate(appointment.AppointmentDate)}}</p>
+                                        <p>Time: {{getFormattedTime(appointment.AppointmentDate)}}</p>
+                                    </div>
+                                    <div class="bottom">
+                                        <p>Teacher: {{appointment.ConsultantFirstName}} {{appointment.ConsultantLastName}}</p>
+                                        <p>Student: {{appointment.UserName}} {{appointment.UserLastName}}</p>
+                                    </div>
+                                    <div class="extra">
+                                        <p>Mode: {{appointment.mode}}</p>
+                                        <p >Urgency: <label [ngClass]="{'urgent-appointment': appointment.urgency == 'Urgent'}">{{appointment.urgency}}</label></p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
