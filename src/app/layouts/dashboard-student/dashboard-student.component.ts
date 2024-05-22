@@ -6,6 +6,7 @@ import { User } from '../../interfaces/User';
 import { Teacher } from '../../interfaces/Teacher';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { SettingComponent } from "../setting/setting.component";
+import { mainPort } from '../../app.component';
 
 @Component({
     selector: 'app-dashboard-student',
@@ -31,13 +32,13 @@ export class DashboardStudentComponent {
     const token = localStorage.getItem('token');
     const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
     console.log(token);
-    return this.http.get<User[]>('http://localhost/appointme/pdo/api/get_user', { headers });
+    return this.http.get<User[]>(`${mainPort}/appointme/pdo/api/get_user`, { headers });
   }
   getTeacher(){
     const token = localStorage.getItem('token');
     const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
     console.log(token);
-    return this.http.get<Teacher[]>('http://localhost/appointme/pdo/api/get_teacher', { headers });
+    return this.http.get<Teacher[]>(`${mainPort}/appointme/pdo/api/get_teacher`, { headers });
   }
   ngOnInit(): void {
     if(this.usertype == "user"){

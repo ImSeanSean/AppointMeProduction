@@ -6,6 +6,7 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Observable, catchError } from 'rxjs';
 import { Appointment } from '../../../interfaces/Appointment';
 import { NgIf } from '@angular/common';
+import { mainPort } from '../../../app.component';
 
 @Component({
     selector: 'app-appointment-student-confirmed',
@@ -51,7 +52,7 @@ export class AppointmentStudentConfirmedComponent {
         const token = localStorage.getItem('token');
         const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
     
-        return this.http.get<Appointment[]>(`http://localhost/appointme/pdo/api/get_appointment/${this.appointmentId}`, { headers })
+        return this.http.get<Appointment[]>(`${mainPort}/appointme/pdo/api/get_appointment/${this.appointmentId}`, { headers })
           .pipe(
             catchError((error) => {
               console.error('HTTP error:', error);

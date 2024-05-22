@@ -6,6 +6,7 @@ import { Observable, catchError } from 'rxjs';
 import { Appointment } from '../../interfaces/Appointment';
 import { MatDialog } from '@angular/material/dialog';
 import { ConfirmationComponent } from '../../matdialogs/confirmation/confirmation.component';
+import { mainPort } from '../../app.component';
 
 @Component({
   selector: 'app-appointment-view-confirmed',
@@ -85,7 +86,7 @@ export class AppointmentViewConfirmedComponent {
     const token = localStorage.getItem('token');
     const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
 
-    return this.http.get<Appointment[]>(`http://localhost/appointme/pdo/api/get_appointment/${this.appointmentId}`, { headers })
+    return this.http.get<Appointment[]>(`${mainPort}/appointme/pdo/api/get_appointment/${this.appointmentId}`, { headers })
       .pipe(
         catchError((error) => {
           console.error('HTTP error:', error);
@@ -113,7 +114,7 @@ export class AppointmentViewConfirmedComponent {
   }
   completeAppointment() {
     const data = { appointment_id: this.appointmentId };
-    this.http.post('http://localhost/appointme/pdo/api/complete_appointment', data)
+    this.http.post(`${mainPort}/appointme/pdo/api/complete_appointment`, data)
       .subscribe(
         (response) => {
           console.log('Appointment complete successfully:', response);
@@ -126,7 +127,7 @@ export class AppointmentViewConfirmedComponent {
   }
   rejectAppointment() {
     const data = {appointment_id: this.appointmentId};
-    this.http.post('http://localhost/appointme/pdo/api/reject_appointment', data)
+    this.http.post(`${mainPort}/appointme/pdo/api/reject_appointment`, data)
     .subscribe(
       (response) => {
         console.log('Appointment rejected successfully:', response);

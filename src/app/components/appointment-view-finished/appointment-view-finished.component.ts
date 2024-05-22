@@ -9,6 +9,7 @@ import { ConfirmationComponent } from '../../matdialogs/confirmation/confirmatio
 import { RatingComponent } from '../../matdialogs/rating/rating.component';
 import { FormsModule } from '@angular/forms';
 import { ErrorComponent } from '../../matdialogs/error/error.component';
+import { mainPort } from '../../app.component';
 
 @Component({
   selector: 'app-appointment-view-finished',
@@ -69,7 +70,7 @@ export class AppointmentViewFinishedComponent {
           appointment_rating: result,
           appointment_remarks: this.remarks
         }
-        this.http.post('http://localhost/appointme/pdo/api/rate_appointment', $data)
+        this.http.post(`${mainPort}/appointme/pdo/api/rate_appointment`, $data)
         .subscribe(
           (response: any) => {
             this.dialog.open(ErrorComponent, {
@@ -92,7 +93,7 @@ export class AppointmentViewFinishedComponent {
     const token = localStorage.getItem('token');
     const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
 
-    return this.http.get<Appointment[]>(`http://localhost/appointme/pdo/api/get_appointment/${this.appointmentId}`, { headers })
+    return this.http.get<Appointment[]>(`${mainPort}/appointme/pdo/api/get_appointment/${this.appointmentId}`, { headers })
       .pipe(
         catchError((error) => {
           console.error('HTTP error:', error);

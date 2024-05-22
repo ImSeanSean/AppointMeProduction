@@ -3,6 +3,7 @@ import { MatDialog } from '@angular/material/dialog';
 import { Router, RouterOutlet } from '@angular/router';
 import { UsertypedialogComponent } from '../matdialogs/usertypedialog/usertypedialog.component';
 import { NavbarComponent } from "../layouts/navbar/navbar.component";
+import { mainPort } from '../app.component';
 
 @Component({
     selector: 'app-homepage',

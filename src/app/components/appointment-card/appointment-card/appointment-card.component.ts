@@ -4,6 +4,7 @@ import { Router } from '@angular/router';
 import { Appointment } from '../../../interfaces/Appointment';
 import { Observable } from 'rxjs';
 import { DatePipe, NgClass, NgFor } from '@angular/common';
+import { mainPort } from '../../../app.component';
 
 @Component({
   selector: 'app-appointment-card',
@@ -27,14 +28,14 @@ export class AppointmentCardComponent {
     const token = localStorage.getItem('token');
     const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
     console.log(token);
-    return this.http.get<Appointment[]>('http://localhost/appointme/pdo/api/get_appointments', { headers });
+    return this.http.get<Appointment[]>(`${mainPort}/appointme/pdo/api/get_appointments`, { headers });
   }
 
   getAppointmentTeacher(): Observable<Appointment[]> {
     const token = localStorage.getItem('token');
     const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
     console.log(token);
-    return this.http.get<Appointment[]>('http://localhost/appointme/pdo/api/get_appointments_teacher', { headers });
+    return this.http.get<Appointment[]>(`${mainPort}/appointme/pdo/api/get_appointments_teacher`, { headers });
   }
 
   filterAppointments(appointments: any[]): any[] {

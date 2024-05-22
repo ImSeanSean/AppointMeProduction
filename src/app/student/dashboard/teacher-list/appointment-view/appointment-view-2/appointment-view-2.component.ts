@@ -5,6 +5,7 @@ import { MatDialog } from '@angular/material/dialog';
 import { Router } from '@angular/router';
 import { ErrorComponent } from '../../../../../matdialogs/error/error.component';
 import { FormsModule, NgModel } from '@angular/forms';
+import { mainPort } from '../../../../../app.component';
 
 @Component({
   selector: 'app-appointment-view-2',
@@ -35,7 +36,7 @@ export class AppointmentView2Component {
       details: this.appointmentDetails,
     };
     if(data.date && data.time && data.mode && data.urgency && data.teacher){
-      this.http.post('http://localhost/appointme/pdo/api/create_appointment', data)
+      this.http.post(`${mainPort}/appointme/pdo/api/create_appointment`, data)
       .subscribe(
         (response: any) => {
           this.dialog.open(ErrorComponent, {

@@ -13,6 +13,7 @@ import { DaySchedule } from '../../../../../interfaces/DaySchedule';
 import { UserInformationService } from '../../../../../services/user-information/user-information.service';
 import { AppointmentValidationService } from '../../../../../services/appointment/appointment-validation.service';
 import { Appointment } from '../../../../../interfaces/Appointment';
+import { mainPort } from '../../../../../app.component';
 
 @Component({
   selector: 'app-appointment-view-1',
@@ -71,7 +72,7 @@ export class AppointmentView1Component implements OnInit{
   }
 
   getTeachers(): Observable<Teacher[]> {
-    return this.http.get<Teacher[]>(`http://localhost/appointme/pdo/api/get_consultants/${this.teacherId}`);
+    return this.http.get<Teacher[]>(`${mainPort}/appointme/pdo/api/get_consultants/${this.teacherId}`);
   }
 
   increaseFormattedDate(): void {
@@ -144,7 +145,7 @@ export class AppointmentView1Component implements OnInit{
   getDaySchedule(day: number): Observable<DaySchedule[]> {
     const headers = new HttpHeaders().set('Authorization', `Bearer ${this.token}`);
     
-    return this.http.get<DaySchedule[]>(`http://localhost/appointme/pdo/api/get_day_schedule_student/${this.teacherId}/${day}`, { headers }).pipe(
+    return this.http.get<DaySchedule[]>(`${mainPort}/appointme/pdo/api/get_day_schedule_student/${this.teacherId}/${day}`, { headers }).pipe(
       map((data: DaySchedule[] | null) => {
         if (data === null) {
           // Handle null case, for example, return an empty array

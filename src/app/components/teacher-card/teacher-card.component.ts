@@ -5,6 +5,7 @@ import { Router } from '@angular/router';
 import { Observable, catchError, map, of } from 'rxjs';
 import { CommonModule, NgFor, NgIf } from '@angular/common';
 import { DaySchedule } from '../../interfaces/DaySchedule';
+import { mainPort } from '../../app.component';
 
 @Component({
   selector: 'app-teacher-card',
@@ -14,7 +15,7 @@ import { DaySchedule } from '../../interfaces/DaySchedule';
   styleUrl: './teacher-card.component.css'
 })
 export class TeacherCardComponent implements OnInit {
-  private apiUrl = 'http://localhost/appointme/pdo/api/get_consultants';
+  private apiUrl = `${mainPort}/appointme/pdo/api/get_consultants`;
   teachers: Teacher[] = [];
   approvedTeachers: any[] = [];
   token = localStorage.getItem('token');
@@ -48,7 +49,7 @@ export class TeacherCardComponent implements OnInit {
   getDaySchedule(teacherId: number): void {
     const day = new Date().getDay();
     const headers = new HttpHeaders().set('Authorization', `Bearer ${this.token}`);
-    this.http.get<DaySchedule[]>(`http://localhost/appointme/pdo/api/get_day_schedule_student/${teacherId}/${day}`, { headers }).pipe(
+    this.http.get<DaySchedule[]>(`${mainPort}/appointme/pdo/api/get_day_schedule_student/${teacherId}/${day}`, { headers }).pipe(
       catchError((error) => {
         console.error('Error fetching day schedule:', error);
         return of([]);

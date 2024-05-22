@@ -6,6 +6,7 @@ import { Teacher } from '../../../../interfaces/Teacher';
 import { NgFor, NgIf } from '@angular/common';
 import { ErrorComponent } from '../../../../matdialogs/error/error.component';
 import { MatDialog } from '@angular/material/dialog';
+import { mainPort } from '../../../../app.component';
 
 @Component({
   selector: 'app-teacher-registration-approval',
@@ -15,7 +16,7 @@ import { MatDialog } from '@angular/material/dialog';
   styleUrl: './teacher-registration-approval.component.css'
 })
 export class TeacherRegistrationApprovalComponent {
-  private apiUrl = 'http://localhost/appointme/pdo/api/get_consultants';
+  private apiUrl = `${mainPort}/appointme/pdo/api/get_consultants`;
   teachers: Teacher[] = [];
   approvedTeachers: any[] = [];
   selectedTeacher: Teacher | undefined;
@@ -46,7 +47,7 @@ export class TeacherRegistrationApprovalComponent {
       teacher_id: teacherId 
     }; 
 
-    this.http.post('http://localhost/appointme/pdo/api/approve_teacher', data)
+    this.http.post(`${mainPort}/appointme/pdo/api/approve_teacher`, data)
       .subscribe(
         (response) => {
           this.dialog.open(ErrorComponent, {
@@ -95,7 +96,7 @@ export class TeacherRegistrationApprovalComponent {
       teacher_id: teacherId 
     }; 
 
-    this.http.post('http://localhost/appointme/pdo/api/reject_teacher', data)
+    this.http.post(`${mainPort}/appointme/pdo/api/reject_teacher`, data)
       .subscribe(
         (response) => {
           this.dialog.open(ErrorComponent, {
