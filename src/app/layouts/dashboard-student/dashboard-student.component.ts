@@ -32,13 +32,13 @@ export class DashboardStudentComponent {
     const token = localStorage.getItem('token');
     const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
     console.log(token);
-    return this.http.get<User[]>(`${mainPort}/appointme/pdo/api/get_user`, { headers });
+    return this.http.get<User[]>(`${mainPort}/pdo/api/get_user`, { headers });
   }
   getTeacher(){
     const token = localStorage.getItem('token');
     const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
     console.log(token);
-    return this.http.get<Teacher[]>(`${mainPort}/appointme/pdo/api/get_teacher`, { headers });
+    return this.http.get<Teacher[]>(`${mainPort}/pdo/api/get_teacher`, { headers });
   }
   ngOnInit(): void {
     if(this.usertype == "user"){

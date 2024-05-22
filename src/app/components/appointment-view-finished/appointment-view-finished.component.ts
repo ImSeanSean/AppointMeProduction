@@ -70,7 +70,7 @@ export class AppointmentViewFinishedComponent {
           appointment_rating: result,
           appointment_remarks: this.remarks
         }
-        this.http.post(`${mainPort}/appointme/pdo/api/rate_appointment`, $data)
+        this.http.post(`${mainPort}/pdo/api/rate_appointment`, $data)
         .subscribe(
           (response: any) => {
             this.dialog.open(ErrorComponent, {
@@ -93,7 +93,7 @@ export class AppointmentViewFinishedComponent {
     const token = localStorage.getItem('token');
     const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
 
-    return this.http.get<Appointment[]>(`${mainPort}/appointme/pdo/api/get_appointment/${this.appointmentId}`, { headers })
+    return this.http.get<Appointment[]>(`${mainPort}/pdo/api/get_appointment/${this.appointmentId}`, { headers })
       .pipe(
         catchError((error) => {
           console.error('HTTP error:', error);

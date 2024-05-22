@@ -15,7 +15,7 @@ import { mainPort } from '../../app.component';
   styleUrl: './teacher-card.component.css'
 })
 export class TeacherCardComponent implements OnInit {
-  private apiUrl = `${mainPort}/appointme/pdo/api/get_consultants`;
+  private apiUrl = `${mainPort}/pdo/api/get_consultants`;
   teachers: Teacher[] = [];
   approvedTeachers: any[] = [];
   token = localStorage.getItem('token');
@@ -49,7 +49,7 @@ export class TeacherCardComponent implements OnInit {
   getDaySchedule(teacherId: number): void {
     const day = new Date().getDay();
     const headers = new HttpHeaders().set('Authorization', `Bearer ${this.token}`);
-    this.http.get<DaySchedule[]>(`${mainPort}/appointme/pdo/api/get_day_schedule_student/${teacherId}/${day}`, { headers }).pipe(
+    this.http.get<DaySchedule[]>(`${mainPort}/pdo/api/get_day_schedule_student/${teacherId}/${day}`, { headers }).pipe(
       catchError((error) => {
         console.error('Error fetching day schedule:', error);
         return of([]);

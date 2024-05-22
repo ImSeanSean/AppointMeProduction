@@ -36,7 +36,7 @@ export class AppointmentView2Component {
       details: this.appointmentDetails,
     };
     if(data.date && data.time && data.mode && data.urgency && data.teacher){
-      this.http.post(`${mainPort}/appointme/pdo/api/create_appointment`, data)
+      this.http.post(`${mainPort}/pdo/api/create_appointment`, data)
       .subscribe(
         (response: any) => {
           this.dialog.open(ErrorComponent, {

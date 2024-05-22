@@ -72,7 +72,7 @@ export class AppointmentView1Component implements OnInit{
   }
 
   getTeachers(): Observable<Teacher[]> {
-    return this.http.get<Teacher[]>(`${mainPort}/appointme/pdo/api/get_consultants/${this.teacherId}`);
+    return this.http.get<Teacher[]>(`${mainPort}/pdo/api/get_consultants/${this.teacherId}`);
   }
 
   increaseFormattedDate(): void {
