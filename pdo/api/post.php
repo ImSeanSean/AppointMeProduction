@@ -4,6 +4,9 @@ require __DIR__ . '\vendor\autoload.php';
 use Firebase\JWT\JWT;
 use Firebase\JWT\Key;
 
+use PHPMailer\PHPMailer\PHPMailer;
+use PHPMailer\PHPMailer\Exception;
+
 class Post
 {
 
@@ -167,6 +170,46 @@ class Post
             return $token;
         } catch (PDOException $e) {
             return $e;
+        }
+    }
+    public function sendCode($data)
+    {
+        $email = $data->email;
+        $verificationCode = mt_rand(100000, 999999);
+        $mail = new PHPMailer(true);
+
+        try {
+            $mail->isSMTP();
+            $mail->Host = EMAIL_HOST;
+            $mail->SMTPAuth = true;
+            $mail->Username = EMAIL_USERNAME;
+            $mail->Password = EMAIL_PASSWORD;
+            $mail->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS;
+            $mail->Port = EMAIL_PORT;
+            $mail->SMTPOptions = array(
+                'ssl' => array(
+                    'verify_peer' => false,
+                    'verify_peer_name' => false,
+                    'allow_self_signed' => true
+                )
+            );
+
+            $mail->SMTPDebug = 2;
+
+            $mail->setFrom(EMAIL_FROM, 'AppointMe Team');
+            $mail->addAddress($email);
+
+            $mail->isHTML(true);
+            $mail->Subject = 'Your Verification Code';
+            $mail->Body = "Your verification code is: $verificationCode";
+
+            $mail->send();
+            echo json_encode([
+                'message' => 'Verification code sent',
+                'code' => $verificationCode
+            ]);
+        } catch (Exception $e) {
+            echo json_encode(['error' => 'Error sending email: ' . $mail->ErrorInfo]);
         }
     }
     public function login($data)

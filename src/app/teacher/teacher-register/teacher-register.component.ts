@@ -6,6 +6,10 @@ import { Router } from '@angular/router';
 import { ErrorComponent } from '../../matdialogs/error/error.component';
 import { AuthServiceService } from '../../services/auth-service.service';
 import { NgIf } from '@angular/common';
+import { HttpClient } from '@angular/common/http';
+import { mainPort } from '../../app.component';
+import { Observable, tap } from 'rxjs';
+import { VerificationCodeResponse } from '../../interfaces/VerificationCodeResponse';
 
 @Component({
     selector: 'app-teacher-register',
@@ -15,6 +19,8 @@ import { NgIf } from '@angular/common';
     imports: [NavbarComponent, ReactiveFormsModule, NavbarComponent, NgIf]
 })
 export class TeacherRegisterComponent {
+  verificationCode: string | null = null;
+  codeSent: boolean = false;
   myForm: FormGroup = this.formBuilder.group({
     email: ['', [Validators.required, Validators.email]],
     fname: ['', Validators.required],
@@ -25,7 +31,15 @@ export class TeacherRegisterComponent {
     confirmpassword: ['', Validators.required],
   })
 
-  constructor(private formBuilder: FormBuilder, public dialog: MatDialog, private authService: AuthServiceService, public router: Router) {}
+  constructor(private formBuilder: FormBuilder, public dialog: MatDialog, private authService: AuthServiceService, public router: Router, private http: HttpClient) {}
+
+  sendCode(): Observable<VerificationCodeResponse> {
+    const url = `${mainPort}/pdo/api/verification_code`;
+    let email = this.myForm.get('email')?.value;
+    return this.http.post<VerificationCodeResponse>(url, { email }).pipe(
+      tap(result => this.verificationCode = result.code)
+    );
+  }
 
   onSubmit() {  
     if(this.myForm.valid){

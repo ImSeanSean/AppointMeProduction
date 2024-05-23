@@ -6,8 +6,10 @@ header {
     background-color: white;
     border-bottom: #D0D3D4 3px solid;
     height: 10vh;
+    width: 100%;
     padding-left: 20px;
     padding-right: 20px;
+    
 }
 
 header .title {
@@ -139,4 +141,122 @@ button {
 
 .sign-up-button:hover {
     background-color: #45a049; /* Darker green background on hover */
+}
+
+@media (max-width: 1250px) {
+    .side-content {
+        flex-direction: column;
+        align-items: center;
+    }
+    .side-image {
+        padding-top: 80px;
+    }
+}
+@media (max-width: 1000px) {
+    
+    .side-image {
+        height: 600px;
+        width: 380px;
+    }
+}
+@media (max-width: 623px) {
+    
+    .side-image {
+        height: 550px;
+        width: 380px;
+    }
+}
+@media (max-width: 530px) {
+    .side-image {
+        height: 400px;
+        width: 340px;
+        padding-top: 30px;
+    }
+}
+
+@media (min-width: 480px) {
+    .border-bottom{
+        width: 200vw;
+    }
+}
+
+
+
+@media (max-width: 700px) {
+    .text-content h1 {
+        font-size: 3rem;
+    }
+    .text-content h2 {
+        font-size: 2rem;
+    }
+    .text-content p {
+        font-size: 1.5rem;
+    }
+    .sign-up-button {
+        width: 400px;
+        height: 40px; 
+    }
+    button {
+        font-size: 0.8rem; 
+        padding: 8px; 
+    }
+}
+@media (max-width: 530px) {
+    .text-content h2 {
+        font-size: 1.5rem;
+    }
+    .text-content p {
+        font-size: 1rem;
+    }
+}
+@media (max-width: 420px) {
+
+    .text-content h2 {
+        font-size: 1.2rem;
+    }
+    .sign-up-button {
+        width: 300px;
+        height: 40px;
+    }
+    button {
+        font-size: 0.8rem;
+        padding: 2px;
+    }
+}
+@media (max-width: 312px) {
+    .text-content h1 {
+        font-size: 1.8rem;
+    }
+    .text-content h2 {
+        font-size: 1rem;
+    }
+    .text-content p {
+        font-size: 1rem;
+    }
+    .sign-up-button {
+        width: 250px;
+        height: 40px;
+    }
+    
+}
+@media (max-width: 260px) {
+    .text-content h1 {
+        font-size: 1.2rem;
+    }
+    .text-content h2 {
+        font-size: 0.9rem;
+    }
+    .sign-up-button {
+        width: 220px;
+        height: 30px; 
+    }
+    button {
+        font-size: 0.6rem;
+        padding: 2px; 
+    }
+}
+@media (max-width: 480px) {
+    .border-bottom{
+        width: 100%;
+    }
 }

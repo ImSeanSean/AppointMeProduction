@@ -145,7 +145,7 @@ export class AppointmentView1Component implements OnInit{
   getDaySchedule(day: number): Observable<DaySchedule[]> {
     const headers = new HttpHeaders().set('Authorization', `Bearer ${this.token}`);
     
-    return this.http.get<DaySchedule[]>(`${mainPort}/appointme/pdo/api/get_day_schedule_student/${this.teacherId}/${day}`, { headers }).pipe(
+    return this.http.get<DaySchedule[]>(`${mainPort}/pdo/api/get_day_schedule_student/${this.teacherId}/${day}`, { headers }).pipe(
       map((data: DaySchedule[] | null) => {
         if (data === null) {
           // Handle null case, for example, return an empty array

@@ -72,13 +72,13 @@ export class TeacherScheduleComponent implements OnInit{
   getTeacher(){
     const token = localStorage.getItem('token');
     const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
-    return this.http.get<Teacher[]>(`${mainPort}/appointme/pdo/api/get_teacher`, { headers });
+    return this.http.get<Teacher[]>(`${mainPort}/pdo/api/get_teacher`, { headers });
   }
 
   getDaySchedule(day: number): Observable<DaySchedule[]> {
     const headers = new HttpHeaders().set('Authorization', `Bearer ${this.token}`);
     
-    return this.http.get<DaySchedule[]>(`${mainPort}/appointme/pdo/api/get_day_schedule/${day}`, { headers }).pipe(
+    return this.http.get<DaySchedule[]>(`${mainPort}/pdo/api/get_day_schedule/${day}`, { headers }).pipe(
       map((data: DaySchedule[] | null) => {
         if (data === null) {
           // Handle null case, for example, return an empty array
@@ -101,11 +101,11 @@ export class TeacherScheduleComponent implements OnInit{
   }
 
   deleteDaySchedule(scheduleId: object){
-    return this.http.post(`${mainPort}/appointme/pdo/api/remove_schedule`, scheduleId);
+    return this.http.post(`${mainPort}/pdo/api/remove_schedule`, scheduleId);
   }
 
   removeAllDaySchedule(day: object){
-    return this.http.post(`${mainPort}/appointme/pdo/api/remove_all_schedule`, day);
+    return this.http.post(`${mainPort}/pdo/api/remove_all_schedule`, day);
   }
 
   addSchedule(day:number){
@@ -134,7 +134,7 @@ export class TeacherScheduleComponent implements OnInit{
       startTime: this.selectedStartTime,
       day: this.selectedDay
     }
-    return this.http.post(`${mainPort}/appointme/pdo/api/add_schedule`, data).subscribe(result=>{
+    return this.http.post(`${mainPort}/pdo/api/add_schedule`, data).subscribe(result=>{
       if(result == 2){
         this.dialog.open(ErrorComponent, {
           width: '300px',

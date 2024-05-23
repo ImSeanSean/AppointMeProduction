@@ -84,6 +84,9 @@ switch ($_SERVER['REQUEST_METHOD']) {
             case 'register_teacher':
                 echo json_encode($post->registerTeacher($data));
                 break;
+            case 'verification_code':
+                echo json_encode($post->sendCode($data));
+                break;
             case 'approve_teacher':
                 echo json_encode($post->approveTeacher($data));
                 break;

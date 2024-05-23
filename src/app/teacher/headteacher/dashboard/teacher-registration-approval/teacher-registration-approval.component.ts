@@ -47,7 +47,7 @@ export class TeacherRegistrationApprovalComponent {
       teacher_id: teacherId 
     }; 
 
-    this.http.post(`${mainPort}/appointme/pdo/api/approve_teacher`, data)
+    this.http.post(`${mainPort}/pdo/api/approve_teacher`, data)
       .subscribe(
         (response) => {
           this.dialog.open(ErrorComponent, {
@@ -96,7 +96,7 @@ export class TeacherRegistrationApprovalComponent {
       teacher_id: teacherId 
     }; 
 
-    this.http.post(`${mainPort}/appointme/pdo/api/reject_teacher`, data)
+    this.http.post(`${mainPort}/pdo/api/reject_teacher`, data)
       .subscribe(
         (response) => {
           this.dialog.open(ErrorComponent, {

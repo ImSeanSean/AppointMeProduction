@@ -255,3 +255,25 @@ small{
     width: 100%; 
     
 }
+.row-code-container{
+    display: flex;
+    width: 100%;
+    justify-content: space-between  
+}
+.code{
+    width: 35%;
+    height: 50px;
+    background: #f0f0f0;
+    margin: 10px 0;
+    border: 2px solid #06572A;
+    border-radius: 50px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 15px;
+    cursor: pointer;
+    overflow: hidden;
+}
+.code:hover{
+    background: #c6c6c6;
+}

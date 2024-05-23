@@ -17,10 +17,13 @@
                                 Enter a valid email.
                             </small>
                         </div>
-                        <!-- <div class="coll">
+                    </div>       
+                    <div class="row-code-container">
+                        <div class="coll">
                             <input type="text" class="input-field" placeholder="Email Code" autocomplete="off" required>
-                        </div> -->
-                    </div>                    
+                        </div>
+                        <div class="code" (click)="sendCode()"><p>Send Code</p></div> 
+                    </div>              
                     <div class="row name-container">
                         <div class="coll">
                             <input type="text" class="input-field" placeholder="First Name" autocomplete="off" formControlName="fname" required>
@@ -28,9 +31,6 @@
                                 Enter your first name.
                             </small>
                         </div>
-                        <!-- <div class="coll">
-                            <input type="text" class="input-field" placeholder="Middle Name" autocomplete="off" required>
-                        </div> -->
                         <div class="coll">
                             <input type="text" class="input-field" placeholder="Last Name" autocomplete="off" formControlName="lname" required>
                             <small *ngIf="myForm.get('lname')?.invalid && myForm.get('lname')?.touched">
