@@ -33,13 +33,14 @@ export class TeacherRegisterComponent {
 
   constructor(private formBuilder: FormBuilder, public dialog: MatDialog, private authService: AuthServiceService, public router: Router, private http: HttpClient) {}
 
-  sendCode(): Observable<VerificationCodeResponse> {
-    const url = `${mainPort}/pdo/api/verification_code`;
-    let email = this.myForm.get('email')?.value;
-    return this.http.post<VerificationCodeResponse>(url, { email }).pipe(
-      tap(result => this.verificationCode = result.code)
-    );
-  }
+  // sendCode(): Observable<VerificationCodeResponse> {
+  //   const url = `${mainPort}/pdo/api/verification_code`;
+  //   let email = this.myForm.get('email')?.value;
+  //   if(email)
+  //   return this.http.post<VerificationCodeResponse>(url, { email }).pipe(
+  //     tap(result => this.verificationCode = result.code)
+  //   );
+  // }
 
   onSubmit() {  
     if(this.myForm.valid){

@@ -22,7 +22,7 @@
                         <div class="coll">
                             <input type="text" class="input-field" placeholder="Email Code" autocomplete="off" required>
                         </div>
-                        <div class="code" (click)="sendCode()"><p>Send Code</p></div> 
+                        <!-- <div class="code" (click)="sendCode()"><p>Send Code</p></div>  -->
                     </div>              
                     <div class="row name-container">
                         <div class="coll">
@@ -50,9 +50,9 @@
                             <label for="sex" class="form-label"></label>
                             <select class="form-select" id="sex" formControlName="gender">
                                 <option value="" disabled selected>Gender</option>
-                                <option value="male">Male</option>
-                                <option value="female">Female</option>
-                                <option value="other">Other</option>
+                                <option value="Male">Male</option>
+                                <option value="Female">Female</option>
+                                <option value="Other">Other</option>
                             </select>
                             <small *ngIf="myForm.get('gender')?.invalid && myForm.get('gender')?.touched">
                                 Enter your gender.

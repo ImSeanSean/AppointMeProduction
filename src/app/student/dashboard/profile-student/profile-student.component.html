@@ -9,7 +9,7 @@
                     <img class="profile-image" src="assets/profile.jpeg">
                 </div>
                 <div class="name-container">
-                    <h3>Paul Vincent F. Corsina</h3>
+                    <h3>{{user[0].FirstName}} {{user[0].LastName}}</h3>
                     <h4>STUDENT</h4>
                     <button style="font-size: 1.5vw; width: 0;">Edit</button>
                 </div>
@@ -17,18 +17,16 @@
             <div class="domain">
                 <table>
                     <tr>
+                        <th>Email Address (DOMAIN)</th>
+                        <td>{{user[0].Email ? user[0].Email : 'No Email'}}</td>
+                    </tr>
+                    <tr>
                         <th>Student ID</th>
                         <td>202677777</td>
-                        <th><button>Edit</button></th>
                     </tr>
                     <tr>
                         <th>Course/Block</th>
-                        <td>BSCS - 2A</td>
-                        <th><button>Edit</button></th>
-                    </tr>
-                    <tr>
-                        <th>Email Address (DOMAIN)</th>
-                        <td>20226677&#64;gordoncollege.edu.ph</td>
+                        <td>{{ user[0].Course ?? 'No Course' }} - {{ user[0].year ?? 'No Year' }} | {{ user[0].block ?? 'No Block' }}</td>
                         <th><button>Edit</button></th>
                     </tr>
                     <tr>
@@ -39,53 +37,22 @@
                     <hr>
                     <tr>
                         <th>Alternate Email (PERSONAL)</th>
-                        <td>itlogmo&#64;gmail.com</td>
+                        <td>{{ user[0].AlternateEmail ? user[0].AlternateEmail : 'No Alternate Email Set'}}</td>
                         <th><button>Edit</button></th>
                     </tr>
                     <tr>
                         <th>Contact Number</th>
-                        <td>09923323232323</td>
+                        <td>{{ user[0].ContactNumber ? user[0].ContactNumber : 'No Contact Number Set'}}</td>
                         <th><button>Edit</button></th>
                     </tr>
                     <tr>
                         <th>Birthday</th>
-                        <td>02/03/1990</td>
+                        <td>{{user[0].bday}}</td>
                         <th><button>Edit</button></th>
                     </tr>
                     <tr>
                         <th>Sex</th>
-                        <td>Male</td>
-                        <th><button>Edit</button></th>
-                    </tr>
-                    <hr>
-                    <tr>
-                        <th>Current Address</th>
-                        <td>Purok 7, Sitio Malinta, Asinan Proper, Subic Zambales </td>
-                        <th><button>Edit</button></th>
-                    </tr>
-                    <hr>
-                    <p>Contact Person Incase of Emergency</p>
-                    <p>Option 1:</p>
-                    <tr>
-                        <td>Full Name</td>
-                        <td>Mother M. Father</td>
-                        <th><button>Edit</button></th>
-                    </tr>
-                    <tr>
-                        <td>Contact Number</td>
-                        <td>09923323232323</td>
-                        <th><button>Edit</button></th>
-                    </tr>
-                    <hr>
-                    <p>Option 2:</p>
-                    <tr>
-                        <td>Full Name</td>
-                        <td>Mother M. Father</td>
-                        <th><button>Edit</button></th>
-                    </tr>
-                    <tr>
-                        <td>Contact Number</td>
-                        <td>09923323232323</td>
+                        <td>{{user[0].gender}}</td>
                         <th><button>Edit</button></th>
                     </tr>
                 </table>   

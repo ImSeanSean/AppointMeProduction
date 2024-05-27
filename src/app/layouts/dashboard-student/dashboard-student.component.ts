@@ -7,6 +7,7 @@ import { Teacher } from '../../interfaces/Teacher';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { SettingComponent } from "../setting/setting.component";
 import { mainPort } from '../../app.component';
+import { ProfileServiceService } from '../../services/ProfileService/profile-service.service';
 
 @Component({
     selector: 'app-dashboard-student',
@@ -22,7 +23,7 @@ export class DashboardStudentComponent {
   firstName = "";
   lastName = "";
 
-  constructor(private http: HttpClient, private router: Router) {}
+  constructor(private http: HttpClient, private router: Router, private profileService: ProfileServiceService) {}
 
   redirectToHomePage(){
     this.router.navigate(['']);
@@ -49,6 +50,8 @@ export class DashboardStudentComponent {
           this.lastName = this.user[0].LastName; 
           console.log(this.user);
           console.log(localStorage.getItem('user'))
+          //Save to Service
+          this.profileService.updateProfile(this.user[0]);
         },
         (error) => {
           console.error('Error fetching teachers:', error);
