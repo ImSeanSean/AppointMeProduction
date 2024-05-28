@@ -1,0 +1,188 @@
+.Upper {
+    display: flex;
+    gap: 10px;
+    margin-top: 15px;
+    margin-bottom: 20px;
+    margin-left: 20px;
+}
+
+.top, .bot {
+    display: flex;            
+    align-items: center;      
+    justify-content: center;  
+    background-color: #168021;
+    color: #fff;
+    height: 50px;
+    width: 45vh;
+    font-size: 25px;
+    font-weight: 600;
+}
+
+.bot {
+    background-color: #F78914; 
+}
+
+hr{
+    border: 1px solid #D9D9D9;
+    margin-left: 20px;
+    margin-bottom: 20px;
+    width: 130%;
+}
+.lower{
+    margin-left: 20px;
+}
+.title{
+    margin-bottom: 20px;
+    font-size: 30px;
+    display: flex;
+    flex-direction: row;
+}
+.act{
+    display: flex;
+    flex-direction: row;
+    margin-left: 75vh;
+}
+.head{
+    display: flex;
+    flex-direction: row;
+    margin-left: 20vh;
+}
+.teacher-row{
+    display: flex;
+    flex-direction: row;
+    gap: 10px;
+    margin-top: 15px;
+    height: 80px;
+    width: 100%;
+}
+.teachercard{
+    display: flex;
+    flex-direction: row;
+    height: 100px;
+    width: 90vh;
+    background-color: #D9D9D9;
+    overflow: hidden;
+}
+
+.info{
+    margin-top: 26px;
+    margin-left: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.left{
+    background-color: #F78914;
+    width: 20px;
+}
+.teacher{
+    background-color: #F78914;
+    width: 30%;
+    margin-left: 121px;
+}
+.teacher p{
+    color: #fff;
+    text-align: center;
+    margin-top: 37px;
+    font-size: 20px;
+}
+
+/* 2nd part ACTION */
+.action {
+    width: 45vh;
+    display: flex;
+    flex-direction: row;
+    gap: 40px;
+    margin-left: 60px;
+    margin-top: 20px;
+}
+
+
+.edit, .add, .delete{
+    color: #fff;
+    font-weight: 500;
+    font-size: 15px;
+}
+.edit:hover, .add:hover, .delete:hover {
+    opacity: 0.8; 
+}
+
+.edit {
+    width: 80px;
+    height: 50px;
+    border-radius: 25px;
+    background-color: #A4A4A4;
+}
+
+.add {
+    width: 80px;
+    height: 50px;
+    border-radius: 25px;
+    background-color: #0BB51C;
+}
+
+.delete {
+    width: 80px;
+    height: 50px;
+    border-radius: 25px;
+    background-color: #DE0202;
+}
+
+
+/* Last part which is yung sa toggle */
+.switch {
+    position: relative;
+    display: inline-block;
+    width: 75px;
+    height: 34px;
+    margin-left: 10vh;
+    margin-top: 28px;
+  }
+  
+  .switch input { 
+    opacity: 0;
+    width: 0;
+    height: 0;
+  }
+  
+  .slider {
+    position: absolute;
+    cursor: pointer;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: #D9D9D9;
+    -webkit-transition: .4s;
+    transition: .4s;
+    border-radius: 34px;
+  }
+  
+  .slider:before {
+    position: absolute;
+    content: "";
+    height: 26px;
+    width: 26px;
+    left: 4px;
+    bottom: 4px;
+    background-color: #ffff;
+    -webkit-transition: .4s;
+    transition: .4s;
+    border-radius: 50%;
+  }
+  
+  input:checked + .slider {
+    background-color: #F78914;
+  }
+  
+  input:focus + .slider {
+    box-shadow: 0 0 1px #F78914;
+  }
+  
+  input:checked + .slider:before {
+    -webkit-transform: translateX(26px);
+    -ms-transform: translateX(26px);
+    transform: translateX(26px);
+  }
+  
