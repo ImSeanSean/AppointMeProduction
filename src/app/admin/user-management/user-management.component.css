@@ -14,8 +14,8 @@
     color: #fff;
     height: 50px;
     width: 45vh;
-    font-size: 25px;
-    font-weight: 600;
+    font-size: 26px;
+    font-weight: 400;
 }
 
 .bot {
@@ -33,19 +33,19 @@ hr{
 }
 .title{
     margin-bottom: 20px;
-    font-size: 30px;
+    font-size: 25px;
     display: flex;
     flex-direction: row;
 }
 .act{
     display: flex;
     flex-direction: row;
-    margin-left: 75vh;
+    margin-left: 85vh;
 }
 .head{
     display: flex;
     flex-direction: row;
-    margin-left: 20vh;
+    margin-left: 29vh;
 }
 .teacher-row{
     display: flex;
@@ -58,14 +58,14 @@ hr{
 .teachercard{
     display: flex;
     flex-direction: row;
-    height: 100px;
+    height: 90px;
     width: 90vh;
     background-color: #D9D9D9;
     overflow: hidden;
 }
 
 .info{
-    margin-top: 26px;
+    margin-top: 20px;
     margin-left: 20px;
     display: flex;
     flex-direction: column;
