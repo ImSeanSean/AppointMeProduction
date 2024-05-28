@@ -20,6 +20,7 @@ import { AppointmentStudentConfirmedComponent } from './student/dashboard/appoin
 import { AppointmentViewFinishedComponent } from './components/appointment-view-finished/appointment-view-finished.component';
 import { TeacherScheduleComponent } from './teacher/teacher-schedule/teacher-schedule.component';
 import { TeacherAnalyticsComponent } from './teacher/teacher-analytics/teacher-analytics.component';
+import { UserManagementComponent } from './admin/user-management/user-management.component';
 
 export const routes: Routes = [
     {path: '', component: HomepageComponent},
@@ -37,7 +38,8 @@ export const routes: Routes = [
                     {path: 'appointments/confirmed/:appointmentId', component: AppointmentViewConfirmedComponent},
                     {path: 'confirmed-appointments', component: AppointmentStudentConfirmedComponent},
                     {path: 'confirmed-appointments/completed/:appointmentId', component: AppointmentViewFinishedComponent},
-                    {path: 'profile', component: ProfileStudentComponent}
+                    {path: 'profile', component: ProfileStudentComponent},
+                    {path: 'admin', component: UserManagementComponent}
                 ]
             }
         ]
