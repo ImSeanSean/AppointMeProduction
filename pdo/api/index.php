@@ -66,6 +66,9 @@ switch ($_SERVER['REQUEST_METHOD']) {
             case 'get_matching_schedule':
                 echo json_encode($get->is_schedule_occupied($request[1], $request[2]));
                 break;
+            case 'get_notifications_student':
+                echo json_encode($get->get_notifications_student());
+                break;
             case 'has_existing_appointment':
                 echo json_encode($get->has_existing_appointment($request[1]));
                 break;
@@ -122,6 +125,15 @@ switch ($_SERVER['REQUEST_METHOD']) {
                 break;
             case 'remove_all_schedule':
                 echo json_encode($post->remove_day_schedule($data));
+                break;
+            case 'mark_notification':
+                echo json_encode($post->markNotificationAsRead($data));
+                break;
+            case 'create_notification':
+                echo json_encode($post->createNotification($data));
+                break;
+            case 'check_ftf_appointments':
+                echo json_encode($post->checkFTFSchedule($data));
                 break;
             default:
                 http_response_code(403);

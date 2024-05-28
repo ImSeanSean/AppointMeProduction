@@ -17,12 +17,12 @@
 <div class="body">
     <div class="sidebar">
         <ul>
-            <a routerLink="./appointments"><li><i class='bx bx-bookmark-alt-minus'></i></li></a>
-            <a routerLink="./confirmed-appointments"><li><i class='bx bx-calendar-check'></i></li></a>
-            <a routerLink="./schedule"><li><i class='bx bx-time-five'></i></li></a>
-            <a routerLink="./analytics"><li><i class='bx bx-line-chart'></i></li></a>
-            <a routerLink="./profile"><li><i class='bx bx-user'></i></li></a>
-            <a routerLink="./headteacher/teacher-registration" *ngIf="headteacher == true"><li><i class='bx bx-book-reader'></i></li></a>
+            <a routerLink="./appointments" routerLinkActive="active-link"><li><i class='bx bx-bookmark-alt-minus'></i></li></a>
+            <a routerLink="./confirmed-appointments" routerLinkActive="active-link"><li><i class='bx bx-calendar-check'></i></li></a>
+            <a routerLink="./schedule" routerLinkActive="active-link"><li><i class='bx bx-time-five'></i></li></a>
+            <a routerLink="./analytics" routerLinkActive="active-link"><li><i class='bx bx-line-chart'></i></li></a>
+            <a routerLink="./profile" routerLinkActive="active-link"><li><i class='bx bx-user'></i></li></a>
+            <a routerLink="./headteacher/teacher-registration" *ngIf="headteacher == true" routerLinkActive="active-link"><li><i class='bx bx-book-reader'></i></li></a>
         </ul>
         <ul>
             <li class="settings">

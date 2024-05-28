@@ -1,0 +1,42 @@
+<div class="main">
+    <div class="title">
+        <h2>Notifications</h2>
+    </div>
+    <div class="notification-list">
+        <div class="notification-group" *ngFor="let notification of notifications">
+            <div class="notification" [ngClass]="{
+                'accepted-or-completed': notification.NotificationType === 'Approved' || notification.NotificationType === 'Finished',
+                'rejected-or-cancelled': notification.NotificationType !== 'Approved' && notification.NotificationType !== 'Finished'
+            }">
+                <div class="preview">
+                    <div class="color">
+                        <ng-container *ngIf="notification.NotificationType === 'Approved' || notification.NotificationType === 'Finished'">
+                            <i class='bx bx-message-check'></i>
+                        </ng-container>
+                        <ng-container *ngIf="notification.NotificationType !== 'Approved' && notification.NotificationType !== 'Finished'">
+                            <i class='bx bx-message-x'></i>
+                        </ng-container>
+                    </div>
+                    <div class="notification-title">
+                        <h3>{{ notification.NotificationName }}</h3>
+                        <h4>{{ notification.NotificationType }}</h4>
+                    </div>
+                    <div class="date">
+                        <p>{{ formatDate(notification.NotificationAt) }}</p>
+                    </div>
+                    <div class="chevron" (click)="toggleActive(notification)">
+                        <i class='bx bx-chevron-down'></i>
+                    </div>
+                </div>
+                <div [ngClass]="{'description': !notification.isActive}" [@descriptionToggle]="notification.isActive ? 'visible' : 'hidden'">
+                    <p>{{ notification.NotificationDescription }}</p>
+                </div>
+            </div>
+            
+            <div class="notification-buttons">
+                <button class="done" (click)="markAsRead(notification.NotificationID)"><i class='bx bx-check' ></i></button>
+                <button class="trash"><i class='bx bx-trash-alt' ></i></button>
+            </div>
+        </div>
+    </div>
+</div>

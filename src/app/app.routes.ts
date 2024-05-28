@@ -21,6 +21,7 @@ import { AppointmentViewFinishedComponent } from './components/appointment-view-
 import { TeacherScheduleComponent } from './teacher/teacher-schedule/teacher-schedule.component';
 import { TeacherAnalyticsComponent } from './teacher/teacher-analytics/teacher-analytics.component';
 import { UserManagementComponent } from './admin/user-management/user-management.component';
+import { NotificationTabComponent } from './layouts/notification/notification-tab/notification-tab.component';
 
 export const routes: Routes = [
     {path: '', component: HomepageComponent},
@@ -39,7 +40,8 @@ export const routes: Routes = [
                     {path: 'confirmed-appointments', component: AppointmentStudentConfirmedComponent},
                     {path: 'confirmed-appointments/completed/:appointmentId', component: AppointmentViewFinishedComponent},
                     {path: 'profile', component: ProfileStudentComponent},
-                    {path: 'admin', component: UserManagementComponent}
+                    {path: 'admin', component: UserManagementComponent},
+                    {path: 'notification', component: NotificationTabComponent}
                 ]
             }
         ]
@@ -62,7 +64,8 @@ export const routes: Routes = [
                         children: [
                             {path: 'teacher-registration', component: TeacherRegistrationApprovalComponent}
                         ]
-                    }
+                    },
+                    {path: 'notification', component: NotificationTabComponent}
                 ]
             }
         ]

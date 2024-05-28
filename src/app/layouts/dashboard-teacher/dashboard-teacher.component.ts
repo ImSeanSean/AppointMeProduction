@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
 import { Teacher } from '../../interfaces/Teacher';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
-import { Router, RouterModule, RouterOutlet } from '@angular/router';
+import { Router, RouterLinkActive, RouterModule, RouterOutlet } from '@angular/router';
 import { User } from '../../interfaces/User';
 import { SettingComponent } from "../setting/setting.component";
 import { NgIf } from '@angular/common';
@@ -13,7 +13,7 @@ import { mainPort } from '../../app.component';
     standalone: true,
     templateUrl: './dashboard-teacher.component.html',
     styleUrl: './dashboard-teacher.component.css',
-    imports: [SettingComponent, RouterModule, NgIf]
+    imports: [SettingComponent, RouterModule, NgIf, RouterLinkActive]
 })
 export class DashboardTeacherComponent {
   user: User[] = [];

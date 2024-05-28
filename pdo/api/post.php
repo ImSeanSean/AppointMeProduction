@@ -678,6 +678,84 @@ class Post
             return "Error removing the schedule" . $e->getMessage();
         }
     }
+    //Notifications
+    public function markNotificationAsRead($notificationId)
+    {
+        $sql = "UPDATE notification SET marked = true WHERE notificationid = :notificationId";
+
+        try {
+            $stmt = $this->pdo->prepare($sql);
+            $stmt->bindParam(':notificationId', $notificationId, PDO::PARAM_INT);
+            $stmt->execute();
+            if ($stmt->rowCount() > 0) {
+                return true;
+            } else {
+                return false;
+            }
+        } catch (PDOException $e) {
+            return false;
+        }
+    }
+    public function createNotification($data)
+    {
+        // Extract data
+        $teacherId = $data->TeacherId;
+        $userId = $data->UserId;
+        $type = $data->Type;
+        $title = $data->Title;
+        $description = $data->Description;
+
+        // Prepare SQL statement
+        $sql = "INSERT INTO notification (ConsultantId, UserId, NotificationType, NotificationName, NotificationDescription) VALUES (?, ?, ?, ?, ?)";
+
+        // Prepare and execute the statement
+        $stmt = $this->pdo->prepare($sql);
+        $stmt->execute([$teacherId, $userId, $type, $title, $description]);
+
+        // Check if the query was successful
+        if ($stmt->rowCount() > 0) {
+            // Notification created successfully
+            return true;
+        } else {
+            // Failed to create notification
+            return false;
+        }
+    }
+    public function checkFTFSchedule($data)
+    {
+        $date = $data->date;
+        $beforeDate = date('Y-m-d H:i:s', strtotime('-30 minutes', strtotime($date)));
+        $afterDate = date('Y-m-d H:i:s', strtotime('+30 minutes', strtotime($date)));
+
+        $sql = "SELECT COUNT(*) as count
+                FROM appointment
+                WHERE 
+                    AppointmentDate >= :beforeDate AND
+                    AppointmentDate <= :afterDate AND
+                    Status = 1 AND
+                    Completed = 0 AND
+                    mode = 'ftf'";
+
+        $stmt = $this->pdo->prepare($sql);
+
+        // Debug output
+        echo "Date: $date";
+        echo "Query: $sql\n";
+        echo "Before Date: $beforeDate\n";
+        echo "After Date: $afterDate\n";
+
+        $stmt->execute(array(':beforeDate' => $beforeDate, ':afterDate' => $afterDate));
+
+        // Fetch result count
+        $result = $stmt->fetch(PDO::FETCH_ASSOC);
+
+        // Debug output
+        var_dump($result);
+
+        // Check if count is greater than 0
+        return $result && $result['count'] > 0;
+    }
+
     //Additional Functions
     private function checkExistingSchedule($consultantId, $startTime, $day)
     {

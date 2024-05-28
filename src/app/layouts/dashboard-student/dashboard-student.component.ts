@@ -1,6 +1,6 @@
-import { Component } from '@angular/core';
+import { Component, ElementRef, ViewChild } from '@angular/core';
 import { NavbarComponent } from "../navbar/navbar.component";
-import { Router, RouterModule } from '@angular/router';
+import { Router, RouterLinkActive, RouterModule } from '@angular/router';
 import { NgIf } from '@angular/common';
 import { User } from '../../interfaces/User';
 import { Teacher } from '../../interfaces/Teacher';
@@ -8,22 +8,28 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { SettingComponent } from "../setting/setting.component";
 import { mainPort } from '../../app.component';
 import { ProfileServiceService } from '../../services/ProfileService/profile-service.service';
+import {MatIconModule} from '@angular/material/icon';
+import {MatButtonModule} from '@angular/material/button';
+import {MatBadgeModule} from '@angular/material/badge';
+import { Notification } from '../../interfaces/Notification';
+import { NotificationServicesService } from '../../services/notification-services.service';
 
 @Component({
     selector: 'app-dashboard-student',
     standalone: true,
     templateUrl: './dashboard-student.component.html',
     styleUrl: './dashboard-student.component.css',
-    imports: [NavbarComponent, RouterModule, NgIf, SettingComponent]
+    imports: [NavbarComponent, RouterModule, NgIf, SettingComponent, RouterLinkActive, MatBadgeModule, MatButtonModule, MatIconModule]
 })
 export class DashboardStudentComponent {
+  constructor(private http: HttpClient, private router: Router, private profileService: ProfileServiceService, private notificationService: NotificationServicesService) {}
+
   user: User[] = [];
   teacher: Teacher[] = [];
   usertype = localStorage.getItem('user');
   firstName = "";
   lastName = "";
-
-  constructor(private http: HttpClient, private router: Router, private profileService: ProfileServiceService) {}
+  unreadNotificationsCount = 0;
 
   redirectToHomePage(){
     this.router.navigate(['']);
@@ -42,6 +48,7 @@ export class DashboardStudentComponent {
     return this.http.get<Teacher[]>(`${mainPort}/pdo/api/get_teacher`, { headers });
   }
   ngOnInit(): void {
+    this.countUnreadNotifications();
     if(this.usertype == "user"){
       this.getUser().subscribe(
         (data: User[]) => {
@@ -72,5 +79,12 @@ export class DashboardStudentComponent {
         }
       );
     }
+    this.notificationService.unreadNotifications$.subscribe(count => {
+      this.unreadNotificationsCount = count;
+    });
+  }
+
+  countUnreadNotifications() {
+    this.notificationService.countNotifications(); 
   }
 }

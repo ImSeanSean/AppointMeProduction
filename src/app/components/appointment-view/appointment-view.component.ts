@@ -7,6 +7,11 @@ import { Appointment } from '../../interfaces/Appointment';
 import { ConfirmationComponent } from '../../matdialogs/confirmation/confirmation.component';
 import { MatDialog } from '@angular/material/dialog';
 import { mainPort } from '../../app.component';
+import { AppointmentValidationService } from '../../services/appointment/appointment-validation.service';
+import { UserInformationService } from '../../services/user-information/user-information.service';
+import { ErrorComponent } from '../../matdialogs/error/error.component';
+import { ConfirmationInputComponent } from '../../matdialogs/confirmation-input/confirmation-input/confirmation-input.component';
+import { NotificationServicesService } from '../../services/notification-services.service';
 
 @Component({
   selector: 'app-appointment-view',
@@ -20,14 +25,21 @@ export class AppointmentViewComponent {
   appointmentId: string | null = null;
   appointments: Appointment[] = [];
 
-  constructor(private http: HttpClient, private router: Router, private activatedRoute: ActivatedRoute, public dialog: MatDialog) {}
+  constructor(
+    private http: HttpClient, 
+    private router: Router, 
+    private activatedRoute: ActivatedRoute, 
+    public dialog: MatDialog, 
+    private appointmentValidation: AppointmentValidationService,
+    private userInformation: UserInformationService,
+    private notificationService: NotificationServicesService
+  ) {}
 
   ngOnInit() {
     this.getAppointment().subscribe(
       (data: Appointment[]) => {
         // Handle successful response
         this.appointments = data; 
-        console.log(this.appointments)
       },
       (error) => {
         // Handle errors
@@ -46,9 +58,9 @@ export class AppointmentViewComponent {
   }
 
   openConfirmationReject(): void {
-    const dialogRef = this.dialog.open(ConfirmationComponent, {
-      height: '250px',
-      width: '490px',
+    const dialogRef = this.dialog.open(ConfirmationInputComponent, {
+      height: '50vh',
+      width: '50vw',
       data: {
         title: 'Reject Appointment',
         description: 'Are you sure you want to reject this appointment?'
@@ -56,17 +68,19 @@ export class AppointmentViewComponent {
     });
   
     dialogRef.afterClosed().subscribe(result => {
-      console.log(result)
-      if (result) {
+      let bool = result[0];
+      let desc = result[1]
+      if (bool) {
         this.rejectAppointment();
+        this.notificationService.createNotification(this.appointments[0].ConsultantID, this.appointments[0].user_id, "Rejected", this.appointments[0].appointment_title, desc)
       }
     });
   }
 
   openConfirmationAccept(): void {
-    const dialogRef = this.dialog.open(ConfirmationComponent, {
-      height: '250px',
-      width: '490px',
+    const dialogRef = this.dialog.open(ConfirmationInputComponent, {
+      height: '50vh',
+      width: '50vw',
       data: {
         title: 'Confirm Appointment',
         description: 'Are you sure you want to confirm this appointment?'
@@ -74,10 +88,28 @@ export class AppointmentViewComponent {
     });
   
     dialogRef.afterClosed().subscribe(result => {
-      console.log(result)
-      if (result) {
-        this.confirmAppointment();
-      }
+      let bool = result[0];
+      let desc = result[1]
+      //If FTF, check first if there is already an FTF for that schedule
+      this.http.post(`${mainPort}/pdo/api/check_ftf_appointments`, this.appointments[0].AppointmentDate).subscribe(result=>{
+        if(result){
+          this.dialog.open(ErrorComponent, {
+            width: '300px',
+            data: {
+              title: 'Appointment Conflict',
+              description: 'A Face to Face Appointment Already Exists for the Schedule'
+            }
+          });
+          this.closeWindow();
+          return;
+        }
+        else{
+          if (bool) {
+            this.confirmAppointment();
+            this.notificationService.createNotification(this.appointments[0].ConsultantID, this.appointments[0].user_id, "Approved", this.appointments[0].appointment_title, desc)
+          }
+        }
+      })
     });
   }
 
@@ -114,16 +146,34 @@ export class AppointmentViewComponent {
   }
   confirmAppointment() {
     const data = { appointment_id: this.appointmentId };
-    this.http.post(`${mainPort}/pdo/api/confirm_appointment`, data)
-      .subscribe(
-        (response) => {
-          console.log('Appointment confirmed successfully:', response);
-        },
-        (error) => {
-          console.error('Error confirming appointment:', error);
-        }
-      );
-    this.closeWindow();
+    const token = localStorage.getItem('token');
+    const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
+    //Check if an Appointment Exists for that Day
+    this.appointmentValidation.getMatchingDate(this.userInformation.userId, this.appointments[0].AppointmentDate).subscribe(result => {
+      if(result){
+        this.dialog.open(ErrorComponent, {
+          width: '300px',
+          data: {
+            title: 'Appointment Conflict',
+            description: 'You already have an Appointment Exists for the Schedule'
+          }
+        });
+        this.closeWindow();
+        return;
+      }
+      else{
+        this.http.post(`${mainPort}/pdo/api/confirm_appointment`, data)
+        .subscribe(
+          (response) => {
+            console.log('Appointment confirmed successfully:', response);
+          },
+          (error) => {
+            console.error('Error confirming appointment:', error);
+          }
+        );
+      this.closeWindow();
+      }
+    })
   }
   rejectAppointment() {
     const data = {appointment_id: this.appointmentId};

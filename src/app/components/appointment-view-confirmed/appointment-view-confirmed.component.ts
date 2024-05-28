@@ -7,6 +7,8 @@ import { Appointment } from '../../interfaces/Appointment';
 import { MatDialog } from '@angular/material/dialog';
 import { ConfirmationComponent } from '../../matdialogs/confirmation/confirmation.component';
 import { mainPort } from '../../app.component';
+import { ConfirmationInputComponent } from '../../matdialogs/confirmation-input/confirmation-input/confirmation-input.component';
+import { NotificationServicesService } from '../../services/notification-services.service';
 
 @Component({
   selector: 'app-appointment-view-confirmed',
@@ -20,7 +22,7 @@ export class AppointmentViewConfirmedComponent {
   appointmentId: string | null = null;
   appointments: Appointment[] = [];
 
-  constructor(private http: HttpClient, private router: Router, private activatedRoute: ActivatedRoute, public dialog: MatDialog) {}
+  constructor(private http: HttpClient, private router: Router, private activatedRoute: ActivatedRoute, public dialog: MatDialog, private notificationService: NotificationServicesService) {}
 
   ngOnInit() {
     this.getAppointment().subscribe(
@@ -46,9 +48,9 @@ export class AppointmentViewConfirmedComponent {
   }
 
   openConfirmationReject(): void {
-    const dialogRef = this.dialog.open(ConfirmationComponent, {
-      height: '250px',
-      width: '490px',
+    const dialogRef = this.dialog.open(ConfirmationInputComponent, {
+      height: '50vh',
+      width: '50vw',
       data: {
         title: 'Cancel Appointment',
         description: 'Are you sure you want to cancel this appointment?'
@@ -56,26 +58,29 @@ export class AppointmentViewConfirmedComponent {
     });
   
     dialogRef.afterClosed().subscribe(result => {
-      console.log(result)
-      if (result) {
+      let bool = result[0];
+      let desc = result[1]
+      if (bool) {
         this.rejectAppointment();
+        this.notificationService.createNotification(this.appointments[0].ConsultantID, this.appointments[0].user_id, "Rejected", this.appointments[0].appointment_title, desc)
       }
     });
   }
 
   openConfirmationComplete(): void {
     const dialogRef = this.dialog.open(ConfirmationComponent, {
-      height: '250px',
-      width: '490px',
+      height: '30vh',
+      width: '25vw',
       data: {
-        title: 'Complete Appointment',
-        description: 'Are you sure you want to complete this appointment?'
+        title: 'Finish Appointment',
+        description: 'Are you sure you want to mark this appointment as finished?'
       }
     });
   
     dialogRef.afterClosed().subscribe(result => {
-      console.log(result)
-      if (result) {
+      let bool = result[0];
+      let desc = result[1]
+      if (bool) {
         this.completeAppointment();
       }
     });

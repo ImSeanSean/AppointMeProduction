@@ -1,0 +1,139 @@
+.main{
+height: 90vh;
+width: 94vw;
+}
+  
+.title{
+background-color: #D9D9D9;
+width: 100%;    
+height: 10vh;
+display: flex;
+align-items: center;
+font-weight: normal;
+border: none;
+}
+
+.main h2{
+padding-left: 30px;
+color: #000000;
+font-size: 30px;
+margin: 0;
+}
+
+.notification-list{
+    padding: 30px;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    overflow-y: auto;
+    height: 80vh;
+}
+
+.notification-group{
+    display: flex;
+    width: 100%;
+}
+
+.notification{
+    width: 80%;
+    border: 2.5px black solid;
+    border-radius: 20px;
+    background-color: #EAFAE5;
+}
+
+.preview {
+    display: grid;
+    grid-template-columns: 0.5fr 3fr 3fr 0.5fr;
+    border-bottom-left-radius: 20px;
+}
+
+.color{
+    background-color: #168021;
+    border-top-left-radius: 18px;
+    border-bottom-left-radius: 18px;
+    padding: 20px;
+    font-size: 40px;
+    color: white;
+}
+
+.notification-title{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-content: center;
+    padding-left: 15px;
+}
+
+.notification-title h3{
+    font-size: 25px;
+}
+
+.notification-title h4{
+    font-size: 18px;
+}
+
+.date{
+    display: flex;
+    align-items: center;
+    font-size: 20px;
+}
+
+.chevron{
+    font-size: 40px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+}
+
+.notification .description{
+    padding: 20px;
+}
+
+.notification .description-active{
+    border-top: 1px solid black;
+    padding: 20px;
+}
+
+.notification-buttons{
+    width: 20%;
+    display: flex;
+    align-items: center;
+    justify-content: space-around;
+}
+
+.notification-buttons button{
+    height: 60px;
+    width: 100px;
+    border-radius: 25px;
+    font-size: 30px;
+    cursor: pointer;
+}
+
+.notification-buttons button.done{
+    background-color: #168021;
+    color: white;
+}
+
+.notification-buttons button.done:hover{
+    background-color: #14691d;
+    cursor: pointer;
+}
+
+.notification-buttons button.trash{
+    background-color: #F78914;
+    color: white;
+}
+
+.notification-buttons button.trash:hover{
+    background-color: #c97113;
+    cursor: pointer;
+}
+
+.rejected-or-cancelled{
+    background: #FFEFD1;
+}
+
+.rejected-or-cancelled .color{
+    background: #F78914;
+}

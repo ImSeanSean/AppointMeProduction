@@ -1,0 +1,10 @@
+<h2>{{title}}</h2>
+<mat-dialog-content class="content">
+    <p>{{description}}</p>
+    <textarea [(ngModel)]="textareaContent"></textarea>
+</mat-dialog-content>
+
+<mat-dialog-actions align="end" class="action">
+    <button mat-button (click)="closeDialog(false)" class="no">No</button>
+    <button mat-button (click)="closeDialog(true)" class="yes">Yes</button>
+</mat-dialog-actions>
