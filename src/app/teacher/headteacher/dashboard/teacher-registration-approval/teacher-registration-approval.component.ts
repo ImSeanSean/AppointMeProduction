@@ -16,7 +16,7 @@ import { mainPort } from '../../../../app.component';
   styleUrl: './teacher-registration-approval.component.css'
 })
 export class TeacherRegistrationApprovalComponent {
-  private apiUrl = `${mainPort}/appointme/pdo/api/get_consultants`;
+  private apiUrl = `${mainPort}/pdo/api/get_consultants`;
   teachers: Teacher[] = [];
   approvedTeachers: any[] = [];
   selectedTeacher: Teacher | undefined;

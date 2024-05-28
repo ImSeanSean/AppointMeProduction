@@ -114,7 +114,7 @@ export class AppointmentViewComponent {
   }
   confirmAppointment() {
     const data = { appointment_id: this.appointmentId };
-    this.http.post(`${mainPort}/appointme/pdo/api/confirm_appointment`, data)
+    this.http.post(`${mainPort}/pdo/api/confirm_appointment`, data)
       .subscribe(
         (response) => {
           console.log('Appointment confirmed successfully:', response);
@@ -127,7 +127,7 @@ export class AppointmentViewComponent {
   }
   rejectAppointment() {
     const data = {appointment_id: this.appointmentId};
-    this.http.post(`${mainPort}/appointme/pdo/api/reject_appointment`, data)
+    this.http.post(`${mainPort}/pdo/api/reject_appointment`, data)
     .subscribe(
       (response) => {
         console.log('Appointment rejected successfully:', response);

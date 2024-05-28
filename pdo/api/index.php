@@ -63,6 +63,12 @@ switch ($_SERVER['REQUEST_METHOD']) {
             case 'get_day_schedule_student':
                 echo json_encode($get->get_day_schedule_student($request[1], $request[2]));
                 break;
+            case 'get_matching_schedule':
+                echo json_encode($get->is_schedule_occupied($request[1], $request[2]));
+                break;
+            case 'has_existing_appointment':
+                echo json_encode($get->has_existing_appointment($request[1]));
+                break;
             default:
                 http_response_code(403);
                 break;

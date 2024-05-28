@@ -287,4 +287,63 @@ class Get
             echo json_encode(array('message' => 'Token is invalid or Authorization header is missing'));
         }
     }
+    public function is_schedule_occupied($teacher_id, $date)
+    {
+        $tokenInfo = $this->middleware->validateToken();
+        if ($tokenInfo) {
+            //Decode Date
+            $decodedDate = base64_decode($date);
+            // Modified SQL query to join user and consultant tables
+            $sqlStr = "SELECT *
+            FROM appointment
+            WHERE ConsultantId = $teacher_id
+            AND AppointmentDate = '$decodedDate'
+            AND status = 1
+            LIMIT 25"; // Limit the number of returned rows to 25
+
+            $result = $this->executeQuery($sqlStr);
+
+            if ($result['code'] == 200) {
+                if (count($result['data']) > 0) {
+                    return $this->sendPayLoad($result['data'], "success", "Successfully retrieved schedules.", $result['code']);
+                } else {
+                    return $decodedDate;
+                }
+            }
+
+            return null;
+        } else {
+            http_response_code(401);
+            echo json_encode(array('message' => 'Token is invalid or Authorization header is missing'));
+        }
+    }
+    public function has_existing_appointment($teacher_id)
+    {
+        $tokenInfo = $this->middleware->validateToken();
+        if ($tokenInfo) {
+            //Get User ID
+            $userId = $tokenInfo->user_id;
+            // Modified SQL query to join user and consultant tables
+            $sqlStr = "SELECT *
+            FROM appointment
+            WHERE user_id = $userId
+            AND Completed = 0
+            AND ConsultantId = $teacher_id";
+
+            $result = $this->executeQuery($sqlStr);
+
+            if ($result['code'] == 200) {
+                if (count($result['data']) > 0) {
+                    return true;
+                } else {
+                    return false;
+                }
+            }
+
+            return false;
+        } else {
+            http_response_code(401);
+            echo json_encode(array('message' => 'Token is invalid or Authorization header is missing'));
+        }
+    }
 }

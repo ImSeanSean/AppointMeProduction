@@ -108,6 +108,11 @@
     background-color: #0D4913;
     box-shadow: 7px 9px 8px rgba(69, 69, 69, 0.1);
 }
+
+.schedules li.disabled{
+    background-color: gray;
+}
+
 .mode{
     display: flex;
     flex-direction: column;

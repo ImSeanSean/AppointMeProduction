@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { Appointment } from '../../interfaces/Appointment';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { DaySchedule } from '../../interfaces/DaySchedule';
 import { mainPort } from '../../app.component';
@@ -10,6 +10,7 @@ import { mainPort } from '../../app.component';
 })
 export class AppointmentValidationService {
   //Variables
+  token = localStorage.getItem('token');
   appointments: Appointment[] = [];
   schedule: DaySchedule[] = [];
   //Constructor
@@ -17,23 +18,21 @@ export class AppointmentValidationService {
     public http: HttpClient
   ) { }
 
-  //Check if Schedules are available for a specific day
+  //Actual Validator
+  //Check if Occupied
+  public getMatchingDate(teacherId: string, date:string): Observable<Appointment> {
+    const headers = new HttpHeaders().set('Authorization', `Bearer ${this.token}`);
+    let encodedDate = btoa(date)
+    return this.http.get<Appointment>(`${mainPort}/pdo/api/get_matching_schedule/${teacherId}/${encodedDate}`, { headers });
+  }
+  //Check if Student Already Has Appointment with the Teacher
+  public hasExistingAppointment(teacherId: string): Observable<Appointment> {
+    const headers = new HttpHeaders().set('Authorization', `Bearer ${this.token}`);
+    return this.http.get<Appointment>(`${mainPort}/pdo/api/has_existing_appointment/${teacherId}`, { headers });
+  }
+  //FAILURE
   public getTeacherDayAppointments(teacherId: string, date: Date): Observable<Appointment[]> {
-    return this.http.get<Appointment[]>(`${mainPort}/pdo/api/get_day_appointments/${teacherId}/${date}`)
-  }
-  public getDaySchedule(teacherId:string, day: number){
-    return this.http.get<DaySchedule[]>(`${mainPort}/pdo/api/get_day_schedule_student/${teacherId}/${day}`)
-  }
-  public findOccupiedSchedules(teacherId: string, date: Date){
-    //Get Appoinments for that Day
-    this.getTeacherDayAppointments(teacherId, date).subscribe(result=>{
-      this.appointments = result;
-    })
-    //Get Schedules for that Day
-    const day = date.getDay()
-    this.getDaySchedule(teacherId, day).subscribe(result=>{
-      this.schedule = result;
-    })
-    //Compare Schedule and Appointments
+    const headers = new HttpHeaders().set('Authorization', `Bearer ${this.token}`);
+    return this.http.get<Appointment[]>(`${mainPort}/pdo/api/get_day_appointments/${date}`, { headers })
   }
 }

@@ -23,13 +23,12 @@
                           <li 
                             [ngStyle]="{ 'background-color': time.scheduleId === selectedTimeId ? '#0D4913' : '' }"
                             *ngFor="let time of appointmentTimes" 
-                            (click)="selectTime(time.startTime, time.scheduleId)"
-                            [class.disabled]="isTimeOccupied(time.startTime)"> <!-- Apply 'disabled' class based on isTimeOccupied result -->
+                            (click)="selectTime(time.startTime, time.scheduleId)">
                             {{ convertToAMPM(time.startTime) }}
                           </li>
+                          <li class="disabled" *ngFor="let time of occupiedTimes">{{ convertToAMPM(time.startTime) }}</li>
                         </ul>
-                      </div>
-                      
+                      </div>              
                 </div>
                 <div class="bottom">
                     <div class="icons">

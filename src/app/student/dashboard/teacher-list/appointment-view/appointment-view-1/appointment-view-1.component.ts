@@ -34,6 +34,7 @@ export class AppointmentView1Component implements OnInit{
   token = localStorage.getItem('token');
   //Schedule Variables
   appointmentTimes: DaySchedule[] = [];
+  occupiedTimes: DaySchedule[] = [];
   dayAppointment: Appointment[] = [];
 
   constructor(
@@ -144,7 +145,6 @@ export class AppointmentView1Component implements OnInit{
   //Get Schedule
   getDaySchedule(day: number): Observable<DaySchedule[]> {
     const headers = new HttpHeaders().set('Authorization', `Bearer ${this.token}`);
-    
     return this.http.get<DaySchedule[]>(`${mainPort}/pdo/api/get_day_schedule_student/${this.teacherId}/${day}`, { headers }).pipe(
       map((data: DaySchedule[] | null) => {
         if (data === null) {
@@ -192,7 +192,9 @@ export class AppointmentView1Component implements OnInit{
     
     this.getDaySchedule(currentDayOfWeek).subscribe(
       (data: DaySchedule[]) => {
-        this.appointmentTimes = data;
+        data.forEach(time => {
+          this.isTimeOccupied(data.length, time, time.startTime);
+        });
       },
       (error) => {
 
@@ -200,20 +202,46 @@ export class AppointmentView1Component implements OnInit{
     );
   }
   //Validate if time is occupied
-  isTimeOccupied(time:String){
-    //Get Appointments for that Day
-    this.appointmentvalidator.getTeacherDayAppointments(this.teacherId, this.selectedDate).subscribe(result => {
-      this.dayAppointment = result;
-    })
-    this.dayAppointment.forEach((appointment: Appointment) => {
-      let appointmentDate = new Date(appointment.AppointmentDate)
-      let appointmentTime = appointmentDate.getHours() + ':' + appointmentDate.getMinutes
-      if(time == appointmentTime){
-        return true;
+  isTimeOccupied(data: number, time: DaySchedule, startTime:String){
+    let occupied:boolean = false;
+    let date = new Date(this.selectedDate);
+    let [hours, minutes] = startTime.split(':').map(Number);
+    date.setHours(hours, minutes, 0);
+    let formattedDate = this.parseDateString(date.toString());
+    this.appointmentvalidator.getMatchingDate(this.teacherId, formattedDate).subscribe(result=>{
+      if(result){
+        this.occupiedTimes.push(time)
       }
       else{
-        return false;
+        this.appointmentTimes.push(time);
       }
-    });
+      if (this.occupiedTimes.length + this.appointmentTimes.length == data) {
+        this.appointmentTimes.sort((a, b) => {
+          return new Date('1970/01/01 ' + a.startTime).getTime() - new Date('1970/01/01 ' + b.startTime).getTime();
+        });
+  
+        this.occupiedTimes.sort((a, b) => {
+          return new Date('1970/01/01 ' + a.startTime).getTime() - new Date('1970/01/01 ' + b.startTime).getTime();
+        });
+  
+        console.log("Available Times:", this.appointmentTimes);
+        console.log("Occupied Times:", this.occupiedTimes);
+      }
+    })
+  }
+  parseDateString(dateString: string): string {
+    // Parse the date string into a Date object
+    const date = new Date(dateString);
+    
+    // Extract year, month, day, hours, minutes, and seconds
+    const year = date.getFullYear();
+    const month = ('0' + (date.getMonth() + 1)).slice(-2);
+    const day = ('0' + date.getDate()).slice(-2);
+    const hours = ('0' + date.getHours()).slice(-2);
+    const minutes = ('0' + date.getMinutes()).slice(-2);
+    const seconds = ('0' + date.getSeconds()).slice(-2);
+    
+    // Return the formatted date string
+    return `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`;
   }
 }
