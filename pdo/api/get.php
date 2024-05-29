@@ -352,7 +352,32 @@ class Get
         if ($tokenInfo) {
             $sqlStr = "SELECT *
                        FROM notification
-                       WHERE UserId = $tokenInfo->user_id
+                       WHERE UserID = $tokenInfo->user_id
+                       ORDER BY NotificationAt DESC";
+
+            $result = $this->executeQuery($sqlStr);
+
+            if ($result['code'] == 200) {
+                if (count($result['data']) > 0) {
+                    return $this->sendPayLoad($result['data'], "success", "Successfully retrieved notifications.", $result['code']);
+                } else {
+                    return null;
+                }
+            }
+
+            return $this->sendPayLoad(null, "failed", "Failed to pull data.", $result['code']);
+        } else {
+            http_response_code(401);
+            echo json_encode(array('message' => 'Token is invalid or Authorization header is missing'));
+        }
+    }
+    public function get_notifications_teacher()
+    {
+        $tokenInfo = $this->middleware->validateToken();
+        if ($tokenInfo) {
+            $sqlStr = "SELECT *
+                       FROM notification
+                       WHERE ConsultantID = $tokenInfo->user_id
                        ORDER BY NotificationAt DESC";
 
             $result = $this->executeQuery($sqlStr);

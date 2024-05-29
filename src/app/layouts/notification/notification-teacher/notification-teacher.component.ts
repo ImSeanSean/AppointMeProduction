@@ -1,20 +1,19 @@
 import { DatePipe, NgClass, NgFor, NgIf } from '@angular/common';
-import { Component, OnInit } from '@angular/core';
-import { animate, state, style, transition, trigger } from '@angular/animations';
-import { Notification } from '../../../interfaces/Notification';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
-import { mainPort } from '../../../app.component';
+import { Component, OnInit } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
-import { ErrorComponent } from '../../../matdialogs/error/error.component';
-import {MatSnackBar} from '@angular/material/snack-bar';
+import { MatSnackBar } from '@angular/material/snack-bar';
+import { mainPort } from '../../../app.component';
+import { Notification } from '../../../interfaces/Notification';
 import { NotificationServicesService } from '../../../services/notification-services.service';
+import { trigger, state, style, transition, animate } from '@angular/animations';
 
 @Component({
-  selector: 'app-notification-tab',
+  selector: 'app-notification-teacher',
   standalone: true,
-  imports: [NgClass, NgFor, NgIf],
-  templateUrl: './notification-tab.component.html',
-  styleUrl: './notification-tab.component.css',
+  imports: [NgClass, NgIf, NgFor],
+  templateUrl: './notification-teacher.component.html',
+  styleUrl: './notification-teacher.component.css',
   animations: [
     trigger('descriptionToggle', [
       state('hidden', style({
@@ -34,7 +33,7 @@ import { NotificationServicesService } from '../../../services/notification-serv
     ])
   ]
 })
-export class NotificationTabComponent implements OnInit{
+export class NotificationTeacherComponent implements OnInit{
   constructor(
     private http: HttpClient,
     private datePipe: DatePipe,
@@ -48,7 +47,7 @@ export class NotificationTabComponent implements OnInit{
   ngOnInit(): void {
     const token = localStorage.getItem('token');
     const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
-    this.http.get<Notification[]>(`${mainPort}/pdo/api/get_notifications_student`, {headers}).subscribe(notifications=>{
+    this.http.get<Notification[]>(`${mainPort}/pdo/api/get_notifications_teacher`, {headers}).subscribe(notifications=>{
       this.notifications = notifications.map(notification => ({ ...notification, isActive: false }));
     })  
   }
@@ -72,22 +71,4 @@ export class NotificationTabComponent implements OnInit{
       }
     });
   }
-
-  deleteNotification(notificationId: number): void{
-    
-    this.notificationService.deleteNotification(notificationId).subscribe(result =>{
-      if(result){
-        const token = localStorage.getItem('token');
-        const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
-        this.http.get<Notification[]>(`${mainPort}/pdo/api/get_notifications_student`, {headers}).subscribe(notifications=>{
-          this.notifications = notifications.map(notification => ({ ...notification, isActive: false }));
-        })  
-        this._snackBar.open("Notification was Successfully Deleted.", "Confirm");
-      }
-      else{
-        this._snackBar.open("Notification was Unable to be Deleted.", "Confirm");
-      }
-    })
-  }
 }
-

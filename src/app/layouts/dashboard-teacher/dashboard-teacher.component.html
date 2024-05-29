@@ -4,8 +4,8 @@
         <h1><span style="color: #228B22;">Appoint</span><span style="color: #F78914;">Me</span></h1>
     </div>
     <div class="navbar">
-        <div class="notifications">
-            <i class='bx bx-bell'></i>
+        <div class="notifications" routerLink="./notification">
+            <i class='bx bx-bell' matBadge="{{unreadNotificationsCount}}" matBadgeSize="medium"></i>
             <label>Notifications</label>
         </div>
         <div class="profile">

@@ -14,7 +14,6 @@ export class NotificationServicesService {
   unreadNotifications$ = this.unreadNotificationsSubject.asObservable();
 
   countNotifications(): void {
-    console.log('hello')
     const token = localStorage.getItem('token');
     const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
     this.http.get<Notification[]>(`${mainPort}/pdo/api/get_notifications_student`, {headers}).subscribe(notifications => {
@@ -28,9 +27,27 @@ export class NotificationServicesService {
     });  
   }
 
+  countNotificationsTeacher(): void {
+    const token = localStorage.getItem('token');
+    const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
+    this.http.get<Notification[]>(`${mainPort}/pdo/api/get_notifications_teacher`, {headers}).subscribe(notifications => {
+      let unreadCount = 0;
+      for (let notification of notifications) {
+        if (!notification.marked) {
+          unreadCount++;
+        }
+      }
+      this.unreadNotificationsSubject.next(unreadCount);
+    });  
+  }
+
   markAsRead(notificationId: number): Observable<any> {
     this.countNotifications();
     return this.http.post<any>(`${mainPort}/pdo/api/mark_notification`, notificationId);
+  }
+
+  deleteNotification(notificationId: number){
+    return this.http.post(`${mainPort}/pdo/api/delete_notification`, notificationId);
   }
 
   createNotification(teacherid:number, userid:number, type:string, title:string, description:string){

@@ -137,3 +137,7 @@ margin: 0;
 .rejected-or-cancelled .color{
     background: #F78914;
 }
+
+.no-outline{
+    border: none;
+}

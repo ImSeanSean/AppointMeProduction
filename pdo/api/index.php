@@ -69,6 +69,9 @@ switch ($_SERVER['REQUEST_METHOD']) {
             case 'get_notifications_student':
                 echo json_encode($get->get_notifications_student());
                 break;
+            case 'get_notifications_teacher':
+                echo json_encode($get->get_notifications_teacher());
+                break;
             case 'has_existing_appointment':
                 echo json_encode($get->has_existing_appointment($request[1]));
                 break;
@@ -131,6 +134,9 @@ switch ($_SERVER['REQUEST_METHOD']) {
                 break;
             case 'create_notification':
                 echo json_encode($post->createNotification($data));
+                break;
+            case 'delete_notification':
+                echo json_encode($post->deleteNotification($data));
                 break;
             case 'check_ftf_appointments':
                 echo json_encode($post->checkFTFSchedule($data));

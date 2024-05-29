@@ -89,9 +89,14 @@ export class AppointmentViewComponent {
   
     dialogRef.afterClosed().subscribe(result => {
       let bool = result[0];
-      let desc = result[1]
+      let desc = result[1];
+      let setdate = this.appointments[0].AppointmentDate;
+      //Variable
+      const data = {
+        date:  setdate
+      }
       //If FTF, check first if there is already an FTF for that schedule
-      this.http.post(`${mainPort}/pdo/api/check_ftf_appointments`, this.appointments[0].AppointmentDate).subscribe(result=>{
+      this.http.post(`${mainPort}/pdo/api/check_ftf_appointments`, data).subscribe(result=>{
         if(result){
           this.dialog.open(ErrorComponent, {
             width: '300px',

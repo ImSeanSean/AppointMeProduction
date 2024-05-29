@@ -696,6 +696,23 @@ class Post
             return false;
         }
     }
+    public function deleteNotification($notificationId)
+    {
+        $sql = "DELETE FROM notification WHERE NotificationID = :notificationId";
+
+        try {
+            $stmt = $this->pdo->prepare($sql);
+            $stmt->bindParam(':notificationId', $notificationId, PDO::PARAM_INT);
+            $stmt->execute();
+            if ($stmt->rowCount() > 0) {
+                return true;
+            } else {
+                return false;
+            }
+        } catch (PDOException $e) {
+            return false;
+        }
+    }
     public function createNotification($data)
     {
         // Extract data
@@ -734,23 +751,14 @@ class Post
                     AppointmentDate <= :afterDate AND
                     Status = 1 AND
                     Completed = 0 AND
-                    mode = 'ftf'";
+                    mode = 'Face to Face'";
 
         $stmt = $this->pdo->prepare($sql);
-
-        // Debug output
-        echo "Date: $date";
-        echo "Query: $sql\n";
-        echo "Before Date: $beforeDate\n";
-        echo "After Date: $afterDate\n";
 
         $stmt->execute(array(':beforeDate' => $beforeDate, ':afterDate' => $afterDate));
 
         // Fetch result count
         $result = $stmt->fetch(PDO::FETCH_ASSOC);
-
-        // Debug output
-        var_dump($result);
 
         // Check if count is greater than 0
         return $result && $result['count'] > 0;

@@ -22,6 +22,7 @@ import { TeacherScheduleComponent } from './teacher/teacher-schedule/teacher-sch
 import { TeacherAnalyticsComponent } from './teacher/teacher-analytics/teacher-analytics.component';
 import { UserManagementComponent } from './admin/user-management/user-management.component';
 import { NotificationTabComponent } from './layouts/notification/notification-tab/notification-tab.component';
+import { NotificationTeacherComponent } from './layouts/notification/notification-teacher/notification-teacher.component';
 
 export const routes: Routes = [
     {path: '', component: HomepageComponent},
@@ -65,7 +66,7 @@ export const routes: Routes = [
                             {path: 'teacher-registration', component: TeacherRegistrationApprovalComponent}
                         ]
                     },
-                    {path: 'notification', component: NotificationTabComponent}
+                    {path: 'notification', component: NotificationTeacherComponent}
                 ]
             }
         ]

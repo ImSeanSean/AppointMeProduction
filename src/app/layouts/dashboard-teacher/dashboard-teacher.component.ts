@@ -7,13 +7,18 @@ import { SettingComponent } from "../setting/setting.component";
 import { NgIf } from '@angular/common';
 import { UserInformationService } from '../../services/user-information/user-information.service';
 import { mainPort } from '../../app.component';
+import { MatBadgeModule } from '@angular/material/badge';
+import { MatButtonModule } from '@angular/material/button';
+import { MatIconModule } from '@angular/material/icon';
+import { NavbarComponent } from '../navbar/navbar.component';
+import { NotificationServicesService } from '../../services/notification-services.service';
 
 @Component({
     selector: 'app-dashboard-teacher',
     standalone: true,
     templateUrl: './dashboard-teacher.component.html',
     styleUrl: './dashboard-teacher.component.css',
-    imports: [SettingComponent, RouterModule, NgIf, RouterLinkActive]
+    imports: [NavbarComponent, RouterModule, NgIf, SettingComponent, RouterLinkActive, MatBadgeModule, MatButtonModule, MatIconModule]
 })
 export class DashboardTeacherComponent {
   user: User[] = [];
@@ -22,8 +27,9 @@ export class DashboardTeacherComponent {
   firstName = "";
   lastName = "";
   headteacher = false;
+  unreadNotificationsCount = 0;
 
-  constructor(private http: HttpClient, private router: Router, private userInfo: UserInformationService) {}
+  constructor(private http: HttpClient, private router: Router, private userInfo: UserInformationService, private notificationService: NotificationServicesService) {}
 
   redirectToHomePage(){
     this.router.navigate(['']);
@@ -42,6 +48,19 @@ export class DashboardTeacherComponent {
     return this.http.get<Teacher[]>(`${mainPort}/pdo/api/get_teacher`, { headers });
   }
   ngOnInit(): void {
+    this.countUnreadNotifications();
+    if(this.usertype == "user"){
+      this.getUser().subscribe(
+        (data: User[]) => {
+          this.user = data;
+          this.firstName = this.user[0].FirstName; 
+          this.lastName = this.user[0].LastName; 
+        },
+        (error) => {
+          console.error('Error fetching teachers:', error);
+        }
+      );
+    }
     if(this.usertype == "user"){
       this.getUser().subscribe(
         (data: User[]) => {
@@ -71,5 +90,11 @@ export class DashboardTeacherComponent {
         }
       );
     }
+    this.notificationService.unreadNotifications$.subscribe(count => {
+      this.unreadNotificationsCount = count;
+    });
+  }
+  countUnreadNotifications() {
+    this.notificationService.countNotificationsTeacher(); 
   }
 }
