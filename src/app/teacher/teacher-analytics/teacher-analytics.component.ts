@@ -20,7 +20,8 @@ export class TeacherAnalyticsComponent {
   //Variables
   appointments: Appointment[] = [];
   usertype = localStorage.getItem('user');
-  dateToday = this.datePipe.transform(new Date(), 'MMMM dd, yyyy');
+  selectedDay = this.datePipe.transform(new Date(), 'EEEE');
+  selectedDate = this.datePipe.transform(new Date(), 'MMMM dd, yyyy');
 
   //Analytics Data
   getPending(): number {
@@ -106,9 +107,16 @@ export class TeacherAnalyticsComponent {
     return parseFloat(averageRating.toFixed(2)); 
   }
   //Appointment Card Functions
-  changeRoute(id:string) {
-    const currentUrl = this.router.url
-    this.router.navigate([`/teacher/dashboard/appointments/confirmed`, id]);
+  changeRoute(id:string, completed:boolean, status:boolean) {
+    if(status == false){
+      this.router.navigate([`/teacher/dashboard/appointments/pending`, id]);
+    }
+    else if(status == true && completed == false){
+      this.router.navigate([`/teacher/dashboard/appointments/confirmed`, id]);
+    }
+    else if(status == true && completed == true){
+      this.router.navigate([`/teacher/dashboard/appointments/completed`, id]);
+    }     
   }
 
   getAppointment(): Observable<Appointment[]> {
@@ -126,7 +134,7 @@ export class TeacherAnalyticsComponent {
   }
 
   filterAppointments(appointments: any[]): any[] {
-    return appointments.filter(appointment => appointment.Status === 1 && appointment.Completed === 0 && this.datePipe.transform(appointment.AppointmentDate, 'MMMM dd, yyyy') == this.dateToday);
+    return appointments.filter(appointment => this.datePipe.transform(appointment.AppointmentDate, 'MMMM dd, yyyy') == this.selectedDate);
   }
 
 
@@ -140,6 +148,31 @@ export class TeacherAnalyticsComponent {
     const time = datePipe.transform(date, 'MMMM dd, yyyy HH:mm')
     return datePipe.transform(time, 'shortTime')
   }
+
+  changeDay(day: number){
+    this.selectedDate = this.getDateForDayOfWeek(day+1)
+    this.selectedDay = this.getDayName(day)
+  }
+
+  getDayName(dayOfWeek: number): string {
+    const days = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+    if (dayOfWeek >= 0 && dayOfWeek <= 5) {
+        return days[dayOfWeek];
+    } else {
+        return 'Invalid Day';
+    }
+  }
+
+  getDateForDayOfWeek(dayOfWeek: number): string {
+    const now = new Date();
+    const currentDayOfWeek = now.getDay();
+    const diff = dayOfWeek - currentDayOfWeek;
+    const targetDate = new Date(now);
+    targetDate.setDate(now.getDate() + diff);
+
+    const formattedDate = this.datePipe.transform(targetDate, 'MMMM dd, yyyy');
+    return formattedDate || '';
+}
 
   ngOnInit(): void {
     if(this.usertype == "user"){

@@ -41,7 +41,6 @@ export const routes: Routes = [
                     {path: 'confirmed-appointments', component: AppointmentStudentConfirmedComponent},
                     {path: 'confirmed-appointments/completed/:appointmentId', component: AppointmentViewFinishedComponent},
                     {path: 'profile', component: ProfileStudentComponent},
-                    {path: 'admin', component: UserManagementComponent},
                     {path: 'notification', component: NotificationTabComponent}
                 ]
             }
@@ -66,7 +65,8 @@ export const routes: Routes = [
                             {path: 'teacher-registration', component: TeacherRegistrationApprovalComponent}
                         ]
                     },
-                    {path: 'notification', component: NotificationTeacherComponent}
+                    {path: 'notification', component: NotificationTeacherComponent},
+                    {path: 'admin', component: UserManagementComponent},
                 ]
             }
         ]

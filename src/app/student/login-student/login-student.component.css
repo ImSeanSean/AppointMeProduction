@@ -180,58 +180,41 @@
   
 @media (max-width: 1020px) {
   .input-box .input-field {
-      width: 80%;
+      width: 100%;
   }
 }
 
-@media (max-width: 800px) {
-  .slogan h2 {
-      font-size: 30px;
+@media (max-width: 885px) {
+  section .login-container:nth-child(2) {
+      display: none;
   }
 
-  .slogan h1 {
-      font-size: 50px;
+  section .login-container {
+      width: 100%;
   }
-  .slogan p {
-      font-size: 20px;
+}
+
+@media (min-width: 886px) {
+  section .login-container:nth-child(2){
+      display: flex; 
+  }
+
+  section .login-container {
+      width: 100%; 
   }
 }
 
 @media (max-width: 650px) {
   .input-box .input-field {
-      margin-left: 10px;
-      margin-right: 10px;
+      margin-left: 5px;
+      margin-right: 5px;
   }
-  .slogan{
-    margin-left: 10px;
-    margin-left: 10px;
-}
 }
 
 @media (max-width: 500px) {
-  .slogan h2 {
-      font-size: 20px;
-  }n
-
-  .slogan h1 {
-      font-size: 30px;
-  }
-
-  .slogan p {
-      font-size: 15px;
-  }
-
-  .login-header header {
-      font-size: 25px;
-  }
-
-  section {
-      font-size: 12px;
-  }
-
   .input-box .input-field {
       font-size: 16px;
-      width: 75%;
+      width: 100%;
   }
 
   .submit-btn {
@@ -245,51 +228,7 @@
   }
 }
 
-@media (max-width: 490px) {
-  header {
-    padding: 0;
-  }
-
-  header .title {
-    gap: 0;
-  }
-
-  header .title h1 {
-    font-size: 18px;
-    padding: 0;
-  }
-
-  header .title img {
-    height: 40px;
-  }
-
-  header .navbar {
-    gap: 0;
-  }
-
-  header .navbar .nav {
-    padding: 0;
-  }
-
-  header i {
-    margin-right: 0;
-    font-size: 24px;
-  }
-}
-
 @media (max-width: 445px) {
- .slogan h2 {
-      font-size: 19px;
-  }
-
-  .slogan h1 {
-      font-size: 29px;
-  }
-
-  .slogan p {
-      font-size: 14px;
-  }
-
   .login-header header {
       font-size: 23px;
   }

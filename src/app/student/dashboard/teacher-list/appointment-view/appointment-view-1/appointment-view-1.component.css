@@ -211,3 +211,106 @@
     background: #F78914;
     color: white;
 }
+@media screen and (max-width: 830px) {
+    .title {
+        height: 8vh;
+    }
+
+    .title h2 {
+        font-size: 24px;
+    }
+}
+@media (max-width: 430px) {
+    .title {
+        height: 4vh;
+    }
+
+    .title h2 {
+        font-size: 18px;
+    }
+}
+
+@media (max-width: 900px) {
+    .title {
+        height: 5vh;
+    }
+
+    .content {
+        flex-direction: column;
+    }
+
+    .title h2 {
+        font-size: 15px;
+    }
+
+    .group {
+        display: flex;
+        flex-direction: column;
+    }
+
+    .mode {
+        display: flex;
+        flex-direction: row;
+    }
+
+
+    .text h2 {
+        font-size: 20px;
+    }
+
+    .text p {
+        font-size: 15px;
+    }
+
+    .schedules li {
+        height: 20px;
+        width: 50px;
+        font-size: 10px;
+    }
+
+    .buttons {
+        flex-direction: row;
+    }
+
+    .button-box p {
+        font-size: 11px;
+    }
+
+    .confirmation {
+        height: 25px;
+        width: 12vh;
+        font-size: 12px;
+    }
+
+    .confirmation p {
+        margin-top: 3px;
+    }
+
+    .radio__label {
+        font-size: 14px;
+    }
+    .border {
+        height: 150px;
+    }
+}
+@media  (max-width: 900px) {
+    .buttons {
+      padding: 0px; 
+      width: 80%; 
+    }
+    .mode h2{
+        display:none;
+    }
+}
+@media  (max-width: 700px) {
+    .buttons {
+      font-size: 12px; 
+      flex-direction: column;
+    }
+    .border {
+        height: 50px;
+    }
+    .top .text{
+        font-size: 1px;
+    }
+}

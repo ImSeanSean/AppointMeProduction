@@ -99,3 +99,40 @@ textarea{
     margin: 0%;
     margin-top: 0% !important;
 }
+
+@media  (max-width: 830px) {
+    .title {
+      height: 50px;
+    }
+    .title  h2{
+        font-size: 30px;
+    }
+    
+}
+@media  (max-width: 570px) {
+    .title {
+      height: 40px;
+    }
+    .title  h2{
+        font-size: 20px;
+    }
+    .top .date .text{
+        font-size: 3px;
+    }
+
+    
+}
+@media  (max-width: 380px) {
+    .title {
+      height: 30px;
+    }
+    .title  h2{
+        font-size: 15px;
+    }
+    .top .date h4{
+        font-size: 6px;
+    }
+    .top .date .text{
+        font-size: 2px;
+    }
+}

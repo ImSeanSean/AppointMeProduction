@@ -288,3 +288,100 @@ small{
     }
     
 }
+
+@media (max-width: 710px) {
+    .coll input, .coll select {
+        height: 40px;
+        padding: 8px 20px;
+        font-size: 16px;
+    }
+
+    .btn-signup {
+        width: 120px;
+        height: 40px;
+        font-size: 14px;
+    }
+
+    .logo-img {
+        width: 80px;
+    }
+
+    .blue-text {
+        font-size: 25px;
+    }
+
+    .birthday-sex-container .coll #birthday,
+    .birthday-sex-container .coll #sex {
+        height: 40px;
+        padding: 8px 20px;
+        font-size: 16px;
+    }
+
+    .row.course-block-year .coll {
+        max-width: calc(50% - 5px); 
+    }
+
+    .item {
+        font-size: 30px;
+        gap: 20px;
+    }
+
+    .text-center {
+        font-size: 14px;
+    }
+}
+
+@media (max-width: 400px) {
+    .coll input, .coll select {
+        height: 30px;
+        padding: 6px 15px;
+        font-size: 12px;
+    }
+
+    .btn-signup {
+        width: 100px;
+        height: 30px;
+        font-size: 12px;
+    }
+
+    .logo-img {
+        width: 60px;
+    }
+
+    .blue-text {
+        font-size: 20px;
+    }
+
+    .birthday-sex-container .coll #birthday,
+    .birthday-sex-container .coll #sex {
+        height: 30px;
+        padding: 6px 15px;
+        font-size: 12px;
+    }
+
+    .row.course-block-year .coll {
+        max-width: 100%;
+    }
+
+    .item {
+        font-size: 20px;
+        gap: 10px;
+    }
+
+    .text-center {
+        font-size: 12px;
+    }
+
+    .email-container .coll input {
+        font-size: 12px;
+    }
+
+    .custom-checkbox {
+        font-size: 12px;
+    }
+
+    .form-check-input {
+        width: 15px;
+        height: 15px;
+    }
+}

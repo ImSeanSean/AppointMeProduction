@@ -35,7 +35,7 @@
             
             <div class="notification-buttons">
                 <button class="done" (click)="markAsRead(notification.NotificationID)"><i class='bx bx-check' ></i></button>
-                <button class="trash"><i class='bx bx-trash-alt' ></i></button>
+                <button class="trash" (click)="deleteNotification(notification.NotificationID)"><i class='bx bx-trash-alt' ></i></button>
             </div>
         </div>
     </div>

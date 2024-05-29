@@ -41,3 +41,113 @@
     color: red; 
     font-weight: bold;
 }
+.appointment-card {
+    height: 115px;
+    width: 500px;
+    background-color: #FFEFD1;
+    border-radius: 30px;
+    box-shadow: 0 11px 8px rgba(0, 0, 0, 0.1);
+    margin: 20px;
+    border: 3px solid #F78914;
+    display: flex;
+    overflow: hidden;
+    cursor: pointer;
+}
+
+.box {
+    height: 115px;
+    width: 60px;
+    background-color: #F78914;
+}
+
+.Text {
+    padding-left: 15px;
+    margin-top: 15px;
+}
+
+.title, .p {
+    font-weight: bold;
+    font-size: 17px;
+}
+
+.title, .mid, .bottom, p, .extra {
+    margin: 0px;
+    padding: 0px;
+}
+
+.mid, .bottom, .extra {
+    font-size: 15px;
+}
+
+.mid, .bottom, .extra {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    column-gap: 2vw;
+}
+
+.urgent-appointment {
+    color: red;
+    font-weight: bold;
+}
+
+@media (max-width: 600px) {
+    .appointment-card {
+        height: 90px;
+        width: 300px;
+        margin: 10px;
+    }
+
+    .box {
+        height: 90px;
+        width: 50px;
+    }
+
+    .Text {
+        padding-left: 10px;
+        margin-top: 10px;
+    }
+
+    .title, .p {
+        font-size: 14px;
+    }
+
+    .mid, .bottom, .extra {
+        font-size: 12px;
+    }
+
+    .mid, .bottom, .extra {
+        grid-template-columns: 1fr;
+        column-gap: 1vw;
+    }
+}
+
+@media (max-width: 370px) {
+    .appointment-card {
+        height: 60px;
+        width: 220px;
+        margin: 5px;
+    }
+
+    .box {
+        height: 60px;
+        width: 30px;
+    }
+
+    .Text {
+        padding-left: 5px;
+        margin-top: 5px;
+    }
+
+    .title, .p {
+        font-size: 12px;
+    }
+
+    .mid, .bottom, .extra {
+        font-size: 10px;
+    }
+
+    .mid, .bottom, .extra {
+        grid-template-columns: 1fr;
+        column-gap: 0.5vw;
+    }
+}

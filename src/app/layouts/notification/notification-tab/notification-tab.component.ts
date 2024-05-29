@@ -81,8 +81,8 @@ export class NotificationTabComponent implements OnInit{
         const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
         this.http.get<Notification[]>(`${mainPort}/pdo/api/get_notifications_student`, {headers}).subscribe(notifications=>{
           this.notifications = notifications.map(notification => ({ ...notification, isActive: false }));
+          this._snackBar.open("Notification was Successfully Deleted.", "Confirm");
         })  
-        this._snackBar.open("Notification was Successfully Deleted.", "Confirm");
       }
       else{
         this._snackBar.open("Notification was Unable to be Deleted.", "Confirm");

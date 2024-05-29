@@ -219,3 +219,10 @@
     overflow-y: auto;
     height: 100%;
 }
+.pending{
+    border: 3px solid #F78914 !important;
+    background-color: #FFEFD1;
+}
+.pending .box{
+    background-color: #F78914;
+}

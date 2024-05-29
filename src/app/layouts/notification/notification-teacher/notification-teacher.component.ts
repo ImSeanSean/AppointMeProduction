@@ -71,4 +71,21 @@ export class NotificationTeacherComponent implements OnInit{
       }
     });
   }
+
+  deleteNotification(notificationId: number): void{
+    
+    this.notificationService.deleteNotification(notificationId).subscribe(result =>{
+      if(result){
+        const token = localStorage.getItem('token');
+        const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
+        this.http.get<Notification[]>(`${mainPort}/pdo/api/get_notifications_student`, {headers}).subscribe(notifications=>{
+          this.notifications = notifications.map(notification => ({ ...notification, isActive: false }));
+          this._snackBar.open("Notification was Successfully Deleted.", "Confirm");
+        })  
+      }
+      else{
+        this._snackBar.open("Notification was Unable to be Deleted.", "Confirm");
+      }
+    })
+  }
 }

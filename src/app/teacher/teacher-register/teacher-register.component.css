@@ -310,3 +310,127 @@ small{
     }
     
 }
+@media (max-width: 485px) {
+    .coll input, .coll select {
+        height: 35px;
+        padding: 8px 20px;
+        font-size: 16px;
+    }
+
+    .btn-signup {
+        width: 120px;
+        height: 40px;
+        font-size: 14px;
+    }
+
+    .logo-img {
+        width: 70px;
+    }
+
+    .blue-text {
+        font-size: 25px;
+    }
+
+    .birthday-sex-container .coll #birthday,
+    .birthday-sex-container .coll #sex {
+        height: 35px;
+        padding: 8px 20px;
+        font-size: 16px;
+    }
+
+    .row.course-block-year .coll {
+        max-width: calc(50% - 5px);
+    }
+
+    .item {
+        font-size: 25px;
+        gap: 15px;
+    }
+
+    .text-center {
+        font-size: 14px;
+    }
+
+    .email-container .coll input {
+        font-size: 14px;
+    }
+
+    .custom-checkbox {
+        font-size: 14px;
+    }
+
+    .form-check-input {
+        width: 18px;
+        height: 18px; 
+    }
+
+    .row-code-container .code {
+        height: 35px;
+        font-size: 12px;
+    }
+}
+
+@media (max-width: 385px) {
+    .coll input, .coll select {
+        height: 30px;
+        padding: 5px 15px;
+        font-size: 14px;
+    }
+
+    .btn-signup {
+        width: 100px;
+        height: 35px;
+        font-size: 12px;
+    }
+
+    .logo-img {
+        width: 60px;
+    }
+
+    .blue-text {
+        font-size: 20px;
+    }
+
+    .birthday-sex-container .coll #birthday,
+    .birthday-sex-container .coll #sex {
+        height: 30px;
+        padding: 5px 15px;
+        font-size: 14px;
+    }
+
+    .row.course-block-year .coll {
+        max-width: calc(50% - 5px);
+    }
+
+    .item {
+        font-size: 20px;
+        gap: 10px;
+    }
+
+    .text-center {
+        font-size: 12px;
+    }
+
+    .email-container .coll input {
+        font-size: 12px;
+    }
+
+    .custom-checkbox {
+        font-size: 12px;
+    }
+
+    .form-check-input {
+        width: 15px;
+        height: 15px;
+    }
+
+    .row-code-container .code {
+        height: 30px;
+        font-size: 10px;
+    }
+
+    .btn-secondary {
+        height: 25px;
+        font-size: 10px;
+    }
+}

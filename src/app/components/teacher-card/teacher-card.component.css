@@ -76,3 +76,45 @@
 .nosched{
     text-align: center;
 }
+
+@media (max-width: 420px) {
+    .card {
+        height: 140px;
+        width: 220px;
+        border-radius: 12px; 
+        margin-bottom: 10px;
+    }
+
+    .top h4 {
+        font-size: 12px; 
+    }
+
+    .top {
+        height: 25%; 
+        gap: 8px; 
+        padding-left: 10px; 
+    }
+
+    .top img {
+        height: 35px; 
+        border: 2px solid #F08A3F; 
+    }
+
+    .bottom {
+        height: 75%;
+    }
+
+    .bottom ul {
+        padding: 3px;
+    }
+
+    .bottom li {
+        font-size: 10px;
+    }
+
+    .card-container {
+        padding-top: 3px; 
+        padding-bottom: 3px; 
+        row-gap: 5px; 
+    }
+}

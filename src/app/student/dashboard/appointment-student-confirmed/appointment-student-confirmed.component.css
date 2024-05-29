@@ -216,3 +216,63 @@
     margin: 10px 0;
     margin: auto;
 }
+@media (max-width: 830px) {
+    .title {
+        height: 50px;
+    }
+
+    .title h2 {
+        font-size: 28px;
+    }
+}
+@media (max-width: 365px) {
+    .title {
+        height: 50px;
+    }
+
+    .title h2 {
+        font-size: 20px;
+    }
+}
+
+
+@media (max-width: 1300px) {
+    .card-container {
+        grid-template-columns: 1fr;
+    }
+    .account-details {
+        width:400px;
+        height: 400px;
+    }
+    .group {
+        font-size: 10px;
+    }
+    .input-box{
+        width: 300px;
+    }
+    .inputbox{
+        width: 300px;
+    }
+    .submit-btn{
+        width: 100px;
+}
+}
+@media (max-width: 530px) {
+    .account-details {
+        width:300px;
+        height: 350px;
+    }
+    .group {
+        font-size: 10px;
+    }
+    .input-box{
+        width: 200px;
+    }
+    .inputbox{
+        width: 200px;
+    }
+    .submit-btn{
+        width: 50px;
+        margin-bottom: 130px;
+}
+}

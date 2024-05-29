@@ -63,32 +63,32 @@
                             <li>
                                 <h3>Monday</h3> 
                                 <p>{{getAppointmentsForDayOfWeek(0)}} Total Appoinments</p>
-                                <a>See More</a>
+                                <a (click)="changeDay(0)">See More</a>
                             </li>
                             <li>
                                 <h3>Tuesday</h3> 
                                 <p>{{getAppointmentsForDayOfWeek(1)}} Total Appoinments</p>
-                                <a>See More</a>
+                                <a (click)="changeDay(1)">See More</a>
                             </li>
                             <li>
                                 <h3>Wednesday</h3> 
                                 <p>{{getAppointmentsForDayOfWeek(2)}} Total Appoinments</p>
-                                <a>See More</a>
+                                <a (click)="changeDay(2)">See More</a>
                             </li>
                             <li>
                                 <h3>Thursday</h3> 
                                 <p>{{getAppointmentsForDayOfWeek(3)}} Total Appoinments</p>
-                                <a>See More</a>
+                                <a (click)="changeDay(3)">See More</a>
                             </li>
                             <li>
                                 <h3>Friday</h3> 
                                 <p>{{getAppointmentsForDayOfWeek(4)}} Total Appoinments</p>
-                                <a>See More</a>
+                                <a (click)="changeDay(4)">See More</a>
                             </li>
                             <li>
                                 <h3>Saturday</h3> 
                                 <p>{{getAppointmentsForDayOfWeek(5)}} Total Appoinments</p>
-                                <a>See More</a>
+                                <a (click)="changeDay(5)">See More</a>
                             </li>
                         </ul>
                     </div>
@@ -98,10 +98,11 @@
                 <div class="appointment-box">
                     <div class="appointment-list">
                         <div class="second-box-top">
-                            <h3>Monday Appointments</h3>
+                            <h3>{{selectedDay}} Appointments</h3>
                         </div>
                         <div class="card-container">
-                            <div class="appointment-card" *ngFor="let appointment of filterAppointments(appointments)" (click)="changeRoute(appointment.AppointmentID)">
+                            <div class="appointment-card" *ngFor="let appointment of filterAppointments(appointments)" (click)="changeRoute(appointment.AppointmentID, appointment.Completed, appointment.Status)" 
+                            [ngClass]="{'pending': appointment.Status === 0}">
                                 <div class="box"></div>
                                 <div class="Text">
                                     <div class="appointment-card-title">
