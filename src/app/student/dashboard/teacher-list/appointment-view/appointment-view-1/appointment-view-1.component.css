@@ -29,7 +29,8 @@
 }
 
 .information-card{
-    display: flex;
+    display: grid;
+    grid-template-columns: 4fr 6fr;
     width: 90%;
     padding: 20px;
     background-color: #FFEFD1;
@@ -49,11 +50,9 @@
 }
 .information p{
    background-color: #F6F6F6;
-   height: 35px;
-   width: 350%;
    border: 2px solid black;
    margin-bottom: 10px;
-   padding: 5%;
+   padding: 3%;
    padding-left: 10%;
 }
 
