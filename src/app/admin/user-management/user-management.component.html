@@ -1,42 +1,46 @@
-<div class="Upper">
-    <div class="top">      
-        <p>User Management</p>
-    </div>
-    <div class="bot">
-        <p>Teacher Management</p>
-    </div>
-</div>
-<hr>
-<div class="lower">
-    <div class="title">
-        <p>Teachers Accounts</p>
-        <div class="act">
-            <p>Actions</p>
-        </div>
-        <div class="head">
-            <p>Head Teacher</p>
+<div class="whole">
+    <div class="Upper">
+        <!-- <div class="top" (click)="switchMode('Students')">      
+            <p>User Management</p>
+        </div> -->
+        <div class="bot" (click)="switchMode('Teachers')">
+            <p>Teacher Management</p>
         </div>
     </div>
-    <div class="teacher-row">
-         <div class="teachercard">
-            <div class="left"></div>
-            <div class="info">
-                <p>Full Name: Loudel Manaloto</p>
-                <p>Emaill: manaloto.loudel&#64;gordoncollege.edu.ph</p>
+    <hr>
+    <div class="lower">
+        <div class="title">
+            <p>{{selectedMode}} Accounts</p>
+            <div class="act">
+                <p>Actions</p>
             </div>
-            <div class="teacher">
-                <p>TEACHER</p>
-            </div>
-         </div>
-         <div class="action">
-            <button class="edit">Edit</button>
-            <button class="add">Add</button>
-            <button class="delete">Delete</button>
-         </div>
-    
-        <label class="switch">
-            <input type="checkbox">
-            <span class="slider round"></span>
-        </label>
+            <!-- <div class="head">
+                <p>Head Teacher</p>
+            </div> -->
+        </div>
+        <div class="group">
+            <div class="teacher-row" *ngFor="let teacher of teachers">
+                <div class="teachercard">
+                   <div class="left"></div>
+                   <div class="info">
+                       <p>Full Name: {{teacher.first_name}} {{teacher.last_name}}</p>
+                       <p>Email: {{teacher.Email}}</p>
+                   </div>
+                   <div class="teacher">
+                       <p>TEACHER</p>
+                   </div>
+                </div>
+                <div class="action">
+                   <button class="edit" (click)="editTeacher(teacher.ConsultantID)">Edit</button>
+                   <!-- <button class="add">Add</button> -->
+                   <button class="delete" (click)="confirmDeleteTeacher(teacher.ConsultantID, teacher.first_name, teacher.last_name)">Delete</button>
+                </div>
+           
+               <!-- <label class="switch">
+                   <input type="checkbox" [(ngModel)]="isChecked" (ngModelChange)="onCheckboxChange()">
+                   <span class="slider round"></span>
+               </label> -->
+           </div>
+        </div>
     </div>
 </div>

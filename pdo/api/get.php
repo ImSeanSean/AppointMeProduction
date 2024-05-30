@@ -80,6 +80,19 @@ class Get
         return $this->get_records("consultant", $conditions);
     }
 
+    public function get_users()
+    {
+        $tokenInfo = $this->middleware->validateToken();
+        if ($tokenInfo) {
+            // Token is valid, proceed to fetch all user data
+            return $this->get_records("user");
+        } else {
+            // Token is invalid or Authorization header is missing, return an error response
+            http_response_code(401);
+            echo json_encode(array('message' => 'Token is invalid or Authorization header is missing'));
+        }
+    }
+
     public function get_user()
     {
         $tokenInfo = $this->middleware->validateToken();

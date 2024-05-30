@@ -1,0 +1,37 @@
+<h2>Edit Teacher</h2>
+<mat-dialog-content class="content">
+    <mat-form-field>
+        <mat-label>Choose an option</mat-label>
+        <mat-select [(ngModel)]="selectedValue">
+          <mat-option value="Email">Email</mat-option>
+          <mat-option value="Password">Password</mat-option>
+          <mat-option value="first_name">First Name</mat-option>
+          <mat-option value="last_name">Last Name</mat-option>
+          <mat-option value="bday">Birthday</mat-option>
+          <mat-option value="gender">Gender</mat-option>
+          <mat-option value="headteacher">Headteacher</mat-option>
+        </mat-select>
+      </mat-form-field>
+      <textarea [(ngModel)]="textareaContent" *ngIf="selectedValue !== 'bday' && selectedValue !== 'gender'" && selectedValue != 'headteacher'></textarea>
+      <input class="date" type="date" [(ngModel)]="textareaContent" *ngIf="selectedValue == 'bday'">
+      <mat-form-field *ngIf="selectedValue == 'gender'">
+        <mat-label>Choose an option</mat-label>
+        <mat-select [(ngModel)]="textareaContent">
+          <mat-option value="Male">Male</mat-option>
+          <mat-option value="Female">Female</mat-option>
+          <mat-option value="Other">Other</mat-option>
+        </mat-select>
+      </mat-form-field>
+      <mat-form-field *ngIf="selectedValue == 'headteacher'">
+        <mat-label>Choose an option</mat-label>
+        <mat-select [(ngModel)]="textareaContent">
+          <mat-option value="1">Headteacher</mat-option>
+          <mat-option value="0">Not a Headteacher</mat-option>
+        </mat-select>
+      </mat-form-field>
+</mat-dialog-content>
+
+<mat-dialog-actions align="end" class="action">
+    <button mat-button class="no">Cancel</button>
+    <button mat-button class="yes" (click)="updateTeacher()">Confirm Edit</button>
+</mat-dialog-actions>

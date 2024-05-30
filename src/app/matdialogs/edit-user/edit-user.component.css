@@ -1,0 +1,56 @@
+h2{
+    padding: 20px;
+    background-color: #F78914;
+    color: white;
+    font-size: 30px;
+}
+.content{
+    padding: 0;
+    padding-top: 10px;
+    padding-left: 20px;
+    padding-right: 20px;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+}
+p{
+    font-size: 20px;
+    color: black;
+}
+.action{
+    gap: 15px;
+}
+button{
+    width: 20%;
+    border-radius: 5px;
+    font-size: 18px;
+    padding: 5px;
+    cursor: pointer;
+}
+.no{
+    background-color: #FFEFD1;
+}
+.yes{
+    background-color: #EAFAE5;
+}
+.no:hover{
+    background-color: #F78914;
+    color: white;
+}
+.yes:hover{
+    background-color: #168021;
+    color: white;
+}
+textarea{
+    padding: 15px;
+    width: 100%;
+    height: 60%;
+    font-size: 20px;
+    border: 1px black solid;
+}
+.date{
+    height: 50%;
+    font-size: 20px;
+    padding: 10px;
+    border: 1px black solid;
+}

@@ -42,6 +42,9 @@ switch ($_SERVER['REQUEST_METHOD']) {
                     echo json_encode($get->get_consultants());
                 }
                 break;
+            case 'get_users':
+                echo json_encode($get->get_users());
+                break;
             case 'get_user':
                 echo json_encode($get->get_user());
                 break;
@@ -95,6 +98,12 @@ switch ($_SERVER['REQUEST_METHOD']) {
                 break;
             case 'register_teacher':
                 echo json_encode($post->registerTeacher($data));
+                break;
+            case 'update_teacher':
+                echo json_encode($post->updateTeacher($data));
+                break;
+            case 'delete_teacher':
+                echo json_encode($post->deleteTeacher($data));
                 break;
             case 'verification_code':
                 echo json_encode($post->sendCode($data));

@@ -172,6 +172,76 @@ class Post
             return $e;
         }
     }
+    public function deleteTeacher($data)
+    {
+        // ID
+        $id = $data->id;
+        // Authenticate User
+        $jwt = $data->key;
+
+        try {
+            $key = JWT::decode($jwt, new Key($this->secretKey, 'HS256'));
+        } catch (Exception $e) {
+            return "Unauthorized: Invalid JWT token.";
+        }
+
+        // Check authorization here (example: verify that the user is authorized to create an appointment)
+        if ($key->type !== 'teacher') {
+            return "Unauthorized: Only the Head Teacher is allowed to approve registrations.";
+        }
+
+        // Delete from consultant table
+        $query = "DELETE FROM consultant WHERE ConsultantId = :id";
+
+        try {
+            $stmt = $this->pdo->prepare($query);
+            $stmt->bindParam(':id', $id, PDO::PARAM_INT);
+            if ($stmt->execute()) {
+                return true;
+            } else {
+                return false;
+            }
+        } catch (PDOException $e) {
+            return "Database error: " . $e->getMessage();
+        }
+    }
+    public function updateTeacher($data)
+    {
+        // Validate input data
+        if (!isset($data->consultantId) || !isset($data->column) || !isset($data->value)) {
+            throw new InvalidArgumentException('Invalid input data');
+        }
+
+        // Extract data from input
+        $consultantId = $data->consultantId;
+        $column = $data->column;
+        $value = $data->value;
+
+        // Prepare SQL statement
+        $sqlUpdate = "UPDATE consultant SET $column = :value WHERE ConsultantID = :consultantId";
+
+        try {
+            // Prepare the statement
+            $stmt = $this->pdo->prepare($sqlUpdate);
+
+            // Bind parameters
+            $stmt->bindParam(':value', $value);
+            $stmt->bindParam(':consultantId', $consultantId);
+
+            // Execute the statement
+            $stmt->execute();
+
+            // Check if any rows were updated
+            if ($stmt->rowCount() > 0) {
+                return true;
+            } else {
+                return false;
+            }
+        } catch (PDOException $e) {
+            // Handle exception
+            return false;
+        }
+    }
     public function sendCode($data)
     {
         $email = $data->email;
