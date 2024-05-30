@@ -18,99 +18,36 @@
     font-size: 30px;
     margin: 0;
 }
+.left{
+    width: 100%;
+}
 .top{
+    margin-bottom: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 3vh;
+}
+
+.information-card{
     display: flex;
     justify-content: space-between;
-    margin-bottom: 20px;
-
+    width: 100%;
+    padding: 20px;
+    background-color: #FFEFD1;
+    border-top: 7px solid #F08000;
+    border-bottom: 7px solid #F08000;
+    border-left: 7px solid #168021;
+    border-right: 7px solid #168021;
 }
 .content{ 
-    padding: 30px;
+    padding: 30px 50px;
     width: 100%;
 }
-.text h2{
-    color: #F78914;
-    font-size: 30px;
-}   
-.text p{
-    font-size: 25px;
-}
 
-.date{
-    background-color: white;
-    border: 2px solid #F78914;
-    height: 50px;
-    display: flex;
-    align-items: center;
-    border-radius: 20px;
-    overflow: hidden;
-    justify-items: center;
-}
-.date p{
-    padding: 10px;
-    margin: 0%;
-}
-.box h4{
-    align-items: center;
-    color: white;
-    margin: 0%;
-    font-weight: 500;
-}
-
-.box{
-    background-color: #F78914;
-    width: 75px;
-    height: 48px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    border-top-left-radius: 19px;
-    border-bottom-left-radius: 19px;
-}
-.border{
-    border: 2px solid black;
-    height: 48vh;
-    width: 100%;
-    display: flex;
-    align-items: center;
-}
 .group{
     display: grid;
-    grid-template-columns: 4.5fr 1.5fr;
+    grid-template-columns: 3fr 1.5fr;
     width: 100%;
-}
-.schedules{
-    padding: 20px;
-    width: 100%;
-    height: 100%;
-}
-.schedules ul{
-    display: grid;
-    grid-template-columns: repeat(4, 1fr);
-    gap: 65px;
-    list-style: none;
-    justify-items: center;
-}
-.schedules li{
-    background-color: #168021;
-    height: 50px;
-    width: 110px;
-    align-items: center;
-    justify-content: center;
-    display: flex; 
-    border-radius: 30px;
-    color: white;
-    box-shadow: 7px 9px 8px rgba(0, 0, 0, 0.1);
-    cursor: pointer;
-}
-
-.schedules li:hover{
-    background-color: #0D4913;
-    box-shadow: 7px 9px 8px rgba(69, 69, 69, 0.1);
-}
-
-.schedules li.disabled{
-    background-color: gray;
 }
 
 .mode{
@@ -119,6 +56,7 @@
     align-items: center;
     margin-top: 10vh;
 }
+
 .buttons{
     padding: 20px;
     display: flex;
@@ -135,8 +73,18 @@
     width: 100%;
 
 }
+.information-card img{
+    height: 30vh;
+    border-radius: 180px;
+}
 .bottom{
+    width: 100%;
     margin-top: 30px;
+    display: flex;
+    justify-content: space-between;
+}
+.bottom .queue{
+
 }
 .button-box{
     display: flex;

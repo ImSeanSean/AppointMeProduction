@@ -29,5 +29,5 @@ export class AppComponent {
     });
   }
 }
-// export const mainPort = "http://localhost/appointme";
-export const mainPort = "https://appointme.site";
+export const mainPort = "http://localhost/appointme";
+// export const mainPort = "https://appointme.site";

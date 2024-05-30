@@ -27,7 +27,7 @@ export class TeacherCardComponent implements OnInit {
     this.getTeachers().subscribe(
       (data: Teacher[]) => {
         this.teachers = data;
-        this.approvedTeachers = this.teachers.filter(teacher => teacher.approved == true);
+        this.approvedTeachers = data;
         this.approvedTeachers.forEach(teacher => {
           this.getDaySchedule(teacher.ConsultantID);
         });

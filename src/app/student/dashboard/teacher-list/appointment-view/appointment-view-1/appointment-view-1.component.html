@@ -4,60 +4,45 @@
     </div>
     <div class="content">
         <div class="group">
-            <div>
+            <div class="left">
                 <div class="top">
-                    <div class="text">
-                        <h2>{{teachers[0]?.first_name}} {{teachers[0]?.last_name}}</h2>
-                        <p>Instructor Schedule</p>
-                    </div>
-                    <div class="date">
-                        <div class="box">
-                            <h4>Date</h4>
+                    <h2>Faculty Member Information</h2>
+                    <div class="information-card">
+                        <div class="information-card-left">
+                            <img src="assets/profile.jpeg">
                         </div>
-                        <p>{{formattedDate}}</p>
+                        <div class="information-card-right">
+                            <div class="information">
+                                <h3>Full Name:</h3>
+                                <p>Kenneth Bautista</p>
+                            </div>
+                            <div class="information">
+                                <h3>Department:</h3>
+                                <p>Computer Science</p>
+                            </div>
+                            <div class="information">
+                                <h3>Position:</h3>
+                                <p>Faculty Member</p>
+                            </div>
+                        </div>
                     </div>
-                </div>
-                <div class="border">
-                    <div class="schedules">
-                        <ul>
-                          <li 
-                            [ngStyle]="{ 'background-color': time.scheduleId === selectedTimeId ? '#0D4913' : '' }"
-                            *ngFor="let time of appointmentTimes" 
-                            (click)="selectTime(time.startTime, time.scheduleId)">
-                            {{ convertToAMPM(time.startTime) }}
-                          </li>
-                          <li class="disabled" *ngFor="let time of occupiedTimes">{{ convertToAMPM(time.startTime) }}</li>
-                        </ul>
-                      </div>              
                 </div>
                 <div class="bottom">
-                    <div class="icons">
-                        <i class='bx bxs-chevron-left' (click)="decreaseFormattedDate()"></i>
-                        <i class='bx bxs-chevron-right' (click)="increaseFormattedDate()"></i>
+                    <div class="tab">
+                        <h3>Queue</h3>
+                        <div class="tab-box">
+                            <p>145 Students</p>
+                        </div>
+                    </div>
+                    <div class="tab-box">
+                        <h3>Appointments</h3>
+                        <p>14 Appointments</p>
                     </div>
                 </div>
             </div>
             <div class="mode">
                 <h2>Appointment Options:</h2>
                 <div class="buttons">
-                    <div>
-                        <h3>Appointment Mode:</h3>
-                        <div class="radio">
-                            <input class="radio__input" type="radio" value="Online" name="mode" id="online" [(ngModel)]="selectedMode">
-                            <label class="radio__label" for="online">Online</label>
-                            <input class="radio__input" type="radio" value="Face to Face" name="mode" id="ftf" [(ngModel)]="selectedMode">
-                            <label class="radio__label" for="ftf">Face to Face</label>
-                        </div>
-                    </div>
-                    <div>
-                        <h3>Appointment Urgency:</h3>
-                        <div class="radio">
-                            <input class="radio__input" type="radio" value="Urgent" name="urgent" id="urgent" [(ngModel)]="selectedUrgency">
-                            <label class="radio__label" for="urgent">Urgent</label>
-                            <input class="radio__input" type="radio" value="Not Urgent" name="urgent" id="not_urgent" [(ngModel)]="selectedUrgency">
-                            <label class="radio__label" for="not_urgent">Not Urgent</label>
-                        </div>
-                    </div>
                     <div class="appointment-details">
                         <div>
                             <h4>Date:</h4>
@@ -76,9 +61,27 @@
                             <p>{{selectedUrgency}}</p>
                         </div>
                     </div>
+                    <div>
+                        <h3>Appointment Mode:</h3>
+                        <div class="radio">
+                            <input class="radio__input" type="radio" value="Online" name="mode" id="online" [(ngModel)]="selectedMode">
+                            <label class="radio__label" for="online">Online</label>
+                            <input class="radio__input" type="radio" value="Face to Face" name="mode" id="ftf" [(ngModel)]="selectedMode">
+                            <label class="radio__label" for="ftf">Face to Face</label>
+                        </div>
+                    </div>
+                    <div>
+                        <h3>Appointment Urgency:</h3>
+                        <div class="radio">
+                            <input class="radio__input" type="radio" value="Urgent" name="urgent" id="urgent" [(ngModel)]="selectedUrgency">
+                            <label class="radio__label" for="urgent">Urgent</label>
+                            <input class="radio__input" type="radio" value="Not Urgent" name="urgent" id="not_urgent" [(ngModel)]="selectedUrgency">
+                            <label class="radio__label" for="not_urgent">Not Urgent</label>
+                        </div>
+                    </div>
                     <div class="button-box">
                         <div class="confirmation" (click)="changeRoute()">
-                            <p>GET AN APPOINTMENT</p>
+                            <p>QUEUE AN APPOINTMENT</p>
                         </div>
                     </div>
                 </div>
