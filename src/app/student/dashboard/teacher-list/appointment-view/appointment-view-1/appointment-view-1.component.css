@@ -30,15 +30,33 @@
 
 .information-card{
     display: flex;
-    justify-content: space-between;
-    width: 100%;
+    width: 90%;
     padding: 20px;
     background-color: #FFEFD1;
-    border-top: 7px solid #F08000;
-    border-bottom: 7px solid #F08000;
-    border-left: 7px solid #168021;
-    border-right: 7px solid #168021;
+    border-top: 9px solid #F08000;
+    border-bottom: 9px solid #F08000;
+    border-left: 9px solid #168021;
+    border-right: 9px solid #168021;
+    box-shadow: 10px 10px 19px rgba(0, 0, 0, 0.3);
+    border-radius: 30px;
+} 
+.information{
+    margin-left: 35px;
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+    padding-bottom: 5px;
 }
+.information p{
+   background-color: #F6F6F6;
+   height: 35px;
+   width: 350%;
+   border: 2px solid black;
+   margin-bottom: 10px;
+   padding: 5%;
+   padding-left: 10%;
+}
+
 .content{ 
     padding: 30px 50px;
     width: 100%;
@@ -83,8 +101,23 @@
     display: flex;
     justify-content: space-between;
 }
-.bottom .queue{
-
+.bottom, .tab, .tab-box{
+    background-color: #EAFAE5;
+    width: 25%;
+    height: 55px;
+    border: 2px solid #168021;
+    border-radius: 20px;
+}
+.bottom, .tab, .tab-box h3{
+    padding-left: 15px;
+    padding-top: 5px;
+}
+.tab-box{
+    background-color: #EAFAE5;
+    width: 25%;
+    height: 55px;
+    border: 2px solid #168021;
+    border-radius: 20px;
 }
 .button-box{
     display: flex;
