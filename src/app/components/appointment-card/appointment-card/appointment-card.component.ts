@@ -39,7 +39,7 @@ export class AppointmentCardComponent {
   }
 
   filterAppointments(appointments: any[]): any[] {
-    return appointments.filter(appointment => appointment.Status === 0);
+    return appointments;
   }
 
 
