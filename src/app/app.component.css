@@ -1,0 +1,18 @@
+.generate-btn {
+  background-color: #71a5dc; /* Blue background */
+  color: white; /* White text */
+  border: none; /* No border */
+  padding: 10px 20px; /* Padding for the button */
+  font-size: 16px; /* Font size */
+  border-radius: 5px; /* Rounded corners */
+  cursor: pointer; /* Pointer cursor on hover */
+}
+
+.generate-btn:hover {
+  background-color: #0056b3; /* Darker blue on hover */
+}
+
+/* 
+I dont know where to put the button? SO i guess ill put the css here also nyehehehe
+Forgive me BOSSING
+*/

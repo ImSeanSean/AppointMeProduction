@@ -1,131 +1,163 @@
 <div class="main">
-    <div class="title">
-        <h2>Analytics</h2>
-    </div>
-    <div class="content">
-        <div class="top">
-            <div class="large-box">
-                <div class="number">
-                    <h1>{{getPending()}}</h1> 
-                </div>
-                <div class="details">
-                    <h2>PENDING</h2>
-                </div>
-            </div>
-            <div class="large-box">
-                <div class="number">
-                    <h1>{{getConfirmed()}}</h1> 
-                </div>
-                <div class="details">
-                    <h2>CONFIRMED</h2>
-                </div>
-            </div>
-            <div class="large-box">
-                <div class="number">
-                    <h1>{{getCompleted()}}</h1> 
-                </div>
-                <div class="details">
-                    <h2>TOTAL<br>APPOINMENTS</h2>
-                </div>
-            </div>
-            <div class="large-box-green">
-                <div class="number">
-                    <h1>{{getRating()}}</h1> 
-                </div>
-                <div class="details">
-                    <h2>OVERALL RATING</h2>
-                </div>
-            </div>
-            <div class="large-box-green">
-                <div class="number">
-                    <h1>{{getRatingForWeek()}}</h1> 
-                </div>
-                <div class="details">
-                    <h2>WEEKLY RATING</h2>
-                </div>
-            </div>
+  <div class="title">
+    <h2>Analytics</h2>
+  </div>
+  <div class="content">
+    <div class="top">
+      <div class="large-box">
+        <div class="number">
+          <h1>{{ getPending() }}</h1>
         </div>
-        <div class="main-content">
-            <div class="left">
-                <div class="appointment-box">
-                    <div class="app-box-top">
-                        <div class="app-box-top-left">
-                            <h1>Appointments</h1>
-                            <label>Scheduled for the Week</label>
-                        </div>
-                        <div class="app-box-top-right">
-                            <h2>{{getAppointmentsThisWeek()}}</h2>
-                            <label>Total</label>
-                        </div>
-                    </div>
-                    <div class="app-box-content">
-                        <ul>
-                            <li>
-                                <h3>Monday</h3> 
-                                <p>{{getAppointmentsForDayOfWeek(0)}} Total Appoinments</p>
-                                <a (click)="changeDay(0)">See More</a>
-                            </li>
-                            <li>
-                                <h3>Tuesday</h3> 
-                                <p>{{getAppointmentsForDayOfWeek(1)}} Total Appoinments</p>
-                                <a (click)="changeDay(1)">See More</a>
-                            </li>
-                            <li>
-                                <h3>Wednesday</h3> 
-                                <p>{{getAppointmentsForDayOfWeek(2)}} Total Appoinments</p>
-                                <a (click)="changeDay(2)">See More</a>
-                            </li>
-                            <li>
-                                <h3>Thursday</h3> 
-                                <p>{{getAppointmentsForDayOfWeek(3)}} Total Appoinments</p>
-                                <a (click)="changeDay(3)">See More</a>
-                            </li>
-                            <li>
-                                <h3>Friday</h3> 
-                                <p>{{getAppointmentsForDayOfWeek(4)}} Total Appoinments</p>
-                                <a (click)="changeDay(4)">See More</a>
-                            </li>
-                            <li>
-                                <h3>Saturday</h3> 
-                                <p>{{getAppointmentsForDayOfWeek(5)}} Total Appoinments</p>
-                                <a (click)="changeDay(5)">See More</a>
-                            </li>
-                        </ul>
-                    </div>
-                </div>
-            </div>
-            <div class="right">
-                <div class="appointment-box">
-                    <div class="appointment-list">
-                        <div class="second-box-top">
-                            <h3>{{selectedDay}} Appointments</h3>
-                        </div>
-                        <div class="card-container">
-                            <div class="appointment-card" *ngFor="let appointment of filterAppointments(appointments)" (click)="changeRoute(appointment.AppointmentID, appointment.Completed, appointment.Status)" 
-                            [ngClass]="{'pending': appointment.Status === 0}">
-                                <div class="box"></div>
-                                <div class="Text">
-                                    <div class="appointment-card-title">
-                                        <p>{{appointment.appointment_title}}</p>
-                                    </div>
-                                    <div class="mid">
-                                        <p>Date: {{getFormattedDate(appointment.AppointmentDate)}}</p>
-                                        <p>Time: {{getFormattedTime(appointment.AppointmentDate)}}</p>
-                                    </div>
-                                    <div class="bottom">
-                                        <p>Teacher: {{appointment.ConsultantFirstName}} {{appointment.ConsultantLastName}}</p>
-                                        <p>Student: {{appointment.UserName}} {{appointment.UserLastName}}</p>
-                                    </div>
-                                    <div class="extra">
-                                        <p>Mode: {{appointment.mode}}</p>
-                                        <p >Urgency: <label [ngClass]="{'urgent-appointment': appointment.urgency == 'Urgent'}">{{appointment.urgency}}</label></p>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
+        <div class="details">
+          <h2>PENDING</h2>
         </div>
+      </div>
+      <div class="large-box">
+        <div class="number">
+          <h1>{{ getConfirmed() }}</h1>
+        </div>
+        <div class="details">
+          <h2>CONFIRMED</h2>
+        </div>
+      </div>
+      <div class="large-box">
+        <div class="number">
+          <h1>{{ getCompleted() }}</h1>
+        </div>
+        <div class="details">
+          <h2>TOTAL<br />APPOINMENTS</h2>
+        </div>
+      </div>
+      <div class="large-box-green">
+        <div class="number">
+          <h1>{{ getRating() }}</h1>
+        </div>
+        <div class="details">
+          <h2>OVERALL RATING</h2>
+        </div>
+      </div>
+      <div class="large-box-green">
+        <div class="number">
+          <h1>{{ getRatingForWeek() }}</h1>
+        </div>
+        <div class="details">
+          <h2>WEEKLY RATING</h2>
+        </div>
+      </div>
     </div>
+    <div class="main-content">
+      <div class="left">
+        <div class="appointment-box">
+          <div class="app-box-top">
+            <div class="app-box-top-left">
+              <h1>Appointments</h1>
+              <label>Scheduled for the Week</label>
+            </div>
+            <div class="app-box-top-right">
+              <h2>{{ getAppointmentsThisWeek() }}</h2>
+              <label>Total</label>
+            </div>
+          </div>
+          <div class="app-box-content">
+            <ul>
+              <li>
+                <h3>Monday</h3>
+                <p>{{ getAppointmentsForDayOfWeek(0) }} Total Appoinments</p>
+                <a (click)="changeDay(0)">See More</a>
+              </li>
+              <li>
+                <h3>Tuesday</h3>
+                <p>{{ getAppointmentsForDayOfWeek(1) }} Total Appoinments</p>
+                <a (click)="changeDay(1)">See More</a>
+              </li>
+              <li>
+                <h3>Wednesday</h3>
+                <p>{{ getAppointmentsForDayOfWeek(2) }} Total Appoinments</p>
+                <a (click)="changeDay(2)">See More</a>
+              </li>
+              <li>
+                <h3>Thursday</h3>
+                <p>{{ getAppointmentsForDayOfWeek(3) }} Total Appoinments</p>
+                <a (click)="changeDay(3)">See More</a>
+              </li>
+              <li>
+                <h3>Friday</h3>
+                <p>{{ getAppointmentsForDayOfWeek(4) }} Total Appoinments</p>
+                <a (click)="changeDay(4)">See More</a>
+              </li>
+              <li>
+                <h3>Saturday</h3>
+                <p>{{ getAppointmentsForDayOfWeek(5) }} Total Appoinments</p>
+                <a (click)="changeDay(5)">See More</a>
+              </li>
+            </ul>
+          </div>
+        </div>
+      </div>
+      <div class="right">
+        <div class="appointment-box">
+          <div class="appointment-list">
+            <div class="second-box-top">
+              <h3>{{ selectedDay }} Appointments</h3>
+            </div>
+            <div class="card-container">
+              <div
+                class="appointment-card"
+                *ngFor="let appointment of filterAppointments(appointments)"
+                (click)="
+                  changeRoute(
+                    appointment.AppointmentID,
+                    appointment.Completed,
+                    appointment.Status
+                  )
+                "
+                [ngClass]="{ pending: appointment.Status === 0 }"
+              >
+                <div class="box"></div>
+                <div class="Text">
+                  <div class="appointment-card-title">
+                    <p>{{ appointment.appointment_title }}</p>
+                  </div>
+                  <div class="mid">
+                    <p>
+                      Date: {{ getFormattedDate(appointment.AppointmentDate) }}
+                    </p>
+                    <p>
+                      Time: {{ getFormattedTime(appointment.AppointmentDate) }}
+                    </p>
+                  </div>
+                  <div class="bottom">
+                    <p>
+                      Teacher: {{ appointment.ConsultantFirstName }}
+                      {{ appointment.ConsultantLastName }}
+                    </p>
+                    <p>
+                      Student: {{ appointment.UserName }}
+                      {{ appointment.UserLastName }}
+                    </p>
+                  </div>
+                  <div class="extra">
+                    <p>Mode: {{ appointment.mode }}</p>
+                    <p>
+                      Urgency:
+                      <label
+                        [ngClass]="{
+                          'urgent-appointment': appointment.urgency == 'Urgent'
+                        }"
+                        >{{ appointment.urgency }}</label
+                      >
+                    </p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
 </div>
+
+
+
+

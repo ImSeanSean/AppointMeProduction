@@ -1,11 +1,12 @@
-<div class="main">
+<div class="main" id="theContentofViewFinished">
+  //Tried adding ID to it for the function to work
   <div class="title">
     <h2>Appointment Details</h2>
   </div>
   <div class="content">
     <div class="top">
       <div class="textName">
-        <h1>{{appointments[0]?.appointment_title}}</h1>
+        <h1>{{ appointments[0]?.appointment_title }}</h1>
       </div>
     </div>
     <div class="group">
@@ -14,7 +15,10 @@
           <h4>Teacher</h4>
         </div>
         <div class="textDate">
-          <p>{{appointments[0]?.ConsultantFirstName}} {{appointments[0]?.ConsultantLastName}}</p>
+          <p>
+            {{ appointments[0]?.ConsultantFirstName }}
+            {{ appointments[0]?.ConsultantLastName }}
+          </p>
         </div>
       </div>
 
@@ -23,7 +27,9 @@
           <h4>Student</h4>
         </div>
         <div class="textDate">
-          <p>{{appointments[0]?.UserName}} {{appointments[0]?.UserLastName}}</p>
+          <p>
+            {{ appointments[0]?.UserName }} {{ appointments[0]?.UserLastName }}
+          </p>
         </div>
       </div>
 
@@ -32,7 +38,7 @@
           <h4>Date</h4>
         </div>
         <div class="textDate">
-          <p>{{getFormattedDate(this.appointments[0]?.AppointmentDate)}}</p>
+          <p>{{ getFormattedDate(this.appointments[0]?.AppointmentDate) }}</p>
         </div>
       </div>
 
@@ -41,7 +47,7 @@
           <h4>Time</h4>
         </div>
         <div class="textDate">
-          <p>{{getFormattedTime(this.appointments[0]?.AppointmentDate)}}</p>
+          <p>{{ getFormattedTime(this.appointments[0]?.AppointmentDate) }}</p>
         </div>
       </div>
 
@@ -50,7 +56,7 @@
           <h4>Mode</h4>
         </div>
         <div class="textDate">
-          <p>{{this.appointments[0]?.mode}}</p>
+          <p>{{ this.appointments[0]?.mode }}</p>
         </div>
       </div>
 
@@ -59,7 +65,7 @@
           <h4>Urgency</h4>
         </div>
         <div class="textDate">
-          <p>{{this.appointments[0]?.urgency}}</p>
+          <p>{{ this.appointments[0]?.urgency }}</p>
         </div>
       </div>
       <div class="date">
@@ -67,7 +73,7 @@
           <h4>Rating</h4>
         </div>
         <div class="textDate">
-          <p>{{this.appointments[0]?.rating || 'Yet to be rated'}}</p>
+          <p>{{ this.appointments[0]?.rating || "Yet to be rated" }}</p>
         </div>
       </div>
     </div>
@@ -76,11 +82,18 @@
         <p>Remarks:</p>
       </div>
       <div class="textarea-container">
-        <textarea placeholder="Provide your remarks here." [(ngModel)]="remarks"></textarea>
+        <textarea
+          placeholder="Provide your remarks here."
+          [(ngModel)]="remarks"
+        ></textarea>
       </div>
     </div>
     <div class="buttons">
-      <div class="confirmation" (click)="openRating()" *ngIf="this.appointments[0]?.rating == null && usertype == 'user'">
+      <div
+        class="confirmation"
+        (click)="openRating()"
+        *ngIf="this.appointments[0]?.rating == null && usertype == 'user'"
+      >
         <p>PROVIDE FEEDBACK</p>
       </div>
       <div class="close" (click)="closeWindow()">
@@ -89,3 +102,5 @@
     </div>
   </div>
 </div>
+
+
