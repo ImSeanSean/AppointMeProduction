@@ -6,7 +6,8 @@ export interface Teacher {
   last_name: string;
   bday: string;
   gender: string;
+  department: string;
+  position: string;
   creation_time: Date;
-  approved: boolean;
   headteacher: boolean;
 }

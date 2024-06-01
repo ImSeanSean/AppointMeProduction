@@ -387,7 +387,7 @@ class Post
                 return "User is not authorized to confirm this appointment.";
             }
         } catch (\Firebase\JWT\ExpiredException $e) {
-            return "Unauthorized: Token has expired.";
+            return "Unauthorized: Token has expired. Please login again.";
         } catch (\Firebase\JWT\BeforeValidException $e) {
             return "Unauthorized: Token is not yet valid.";
         } catch (\Firebase\JWT\SignatureInvalidException $e) {
@@ -428,7 +428,7 @@ class Post
                 return $this->sendPayLoad(null, "failed", "Failed to reject registration. Appointment not found.", 404);
             }
         } catch (\Firebase\JWT\ExpiredException $e) {
-            return "Unauthorized: Token has expired.";
+            return "Unauthorized: Token has expired. Please login again.";
         } catch (\Firebase\JWT\BeforeValidException $e) {
             return "Unauthorized: Token is not yet valid.";
         } catch (\Firebase\JWT\SignatureInvalidException $e) {
@@ -489,7 +489,7 @@ class Post
             // Optionally, return success response or handle accordingly
             return "Appointment created successfully.";
         } catch (\Firebase\JWT\ExpiredException $e) {
-            return "Unauthorized: Token has expired.";
+            return "Unauthorized: Token has expired. Please login again.";
         } catch (\Firebase\JWT\BeforeValidException $e) {
             return "Unauthorized: Token is not yet valid.";
         } catch (\Firebase\JWT\SignatureInvalidException $e) {
@@ -612,7 +612,70 @@ class Post
             // Optionally, return success response or handle accordingly
             return "Appointment rated successfully.";
         } catch (\Firebase\JWT\ExpiredException $e) {
-            return "Unauthorized: Token has expired.";
+            return "Unauthorized: Token has expired. Please login again.";
+        } catch (\Firebase\JWT\BeforeValidException $e) {
+            return "Unauthorized: Token is not yet valid.";
+        } catch (\Firebase\JWT\SignatureInvalidException $e) {
+            return "Unauthorized: Invalid token signature.";
+        } catch (PDOException $e) {
+            // Handle the exception, return an error response, or log the error
+            return "Error rating appointment" . $e->getMessage();
+        }
+    }
+    //Queue
+    public function add_queue($data)
+    {
+        try {
+            $jwt = $data->key;
+            error_log("JWT Token: " . $jwt);
+            $key = JWT::decode($jwt, new Key($this->secretKey, 'HS256'));
+            // Check authorization 
+            if ($key->type !== 'student') {
+                return "Unauthorized: Only students are allowed to add a queue.";
+            }
+            $decodedArray = (array) $key;
+            $teacher_id = $data->teacher_id;
+            $student_id = $decodedArray['user_id'];
+            $mode = $data->mode;
+            $urgency = $data->urgency;
+            $day = $data->day;
+            $time = $data->time;
+            $reason = $data->reason;
+            //Check if already has queue
+            $checkSql = "SELECT COUNT(*) FROM `queue` WHERE `teacher_id` = :teacher_id AND `student_id` = :student_id";
+            $checkStmt = $this->pdo->prepare($checkSql);
+            $checkStmt->bindParam(':teacher_id', $teacher_id, PDO::PARAM_INT);
+            $checkStmt->bindParam(':student_id', $student_id, PDO::PARAM_INT);
+            $checkStmt->execute();
+            $count = $checkStmt->fetchColumn();
+
+            if ($count > 0) {
+                return '1';
+            }
+
+            //Insert
+            $sql = "INSERT INTO `queue` (`teacher_id`, `student_id`, `mode`, `urgency`, `day`, `time`, `reason`)
+            VALUES (:teacher_id, :student_id, :mode, :urgency, :day, :time, :reason)";
+
+            $stmt = $this->pdo->prepare($sql);
+
+            // Bind the parameters to the query
+            $stmt->bindParam(':teacher_id', $teacher_id, PDO::PARAM_INT);
+            $stmt->bindParam(':student_id', $student_id, PDO::PARAM_INT);
+            $stmt->bindParam(':mode', $mode, PDO::PARAM_STR);
+            $stmt->bindParam(':urgency', $urgency, PDO::PARAM_STR);
+            $stmt->bindParam(':day', $day, PDO::PARAM_STR);
+            $stmt->bindParam(':time', $time, PDO::PARAM_STR);
+            $stmt->bindParam(':reason', $reason, PDO::PARAM_STR);
+
+            $stmt->execute();
+            if ($stmt->execute()) {
+                return '0';
+            } else {
+                return '2';
+            }
+        } catch (\Firebase\JWT\ExpiredException $e) {
+            return "Unauthorized: Token has expired. Please login again.";
         } catch (\Firebase\JWT\BeforeValidException $e) {
             return "Unauthorized: Token is not yet valid.";
         } catch (\Firebase\JWT\SignatureInvalidException $e) {
@@ -657,7 +720,7 @@ class Post
             // Optionally, return success response or handle accordingly
             return "Appointment rated successfully.";
         } catch (\Firebase\JWT\ExpiredException $e) {
-            return "Unauthorized: Token has expired.";
+            return "Unauthorized: Token has expired. Please login again. Please login again.";
         } catch (\Firebase\JWT\BeforeValidException $e) {
             return "Unauthorized: Token is not yet valid.";
         } catch (\Firebase\JWT\SignatureInvalidException $e) {
@@ -697,7 +760,7 @@ class Post
                 return "No appointment found with the given schedule ID.";
             }
         } catch (\Firebase\JWT\ExpiredException $e) {
-            return "Unauthorized: Token has expired.";
+            return "Unauthorized: Token has expired. Please login again.";
         } catch (\Firebase\JWT\BeforeValidException $e) {
             return "Unauthorized: Token is not yet valid.";
         } catch (\Firebase\JWT\SignatureInvalidException $e) {
@@ -738,7 +801,7 @@ class Post
                 return "No appointment found with the given schedule day.";
             }
         } catch (\Firebase\JWT\ExpiredException $e) {
-            return "Unauthorized: Token has expired.";
+            return "Unauthorized: Token has expired. Please login again.";
         } catch (\Firebase\JWT\BeforeValidException $e) {
             return "Unauthorized: Token is not yet valid.";
         } catch (\Firebase\JWT\SignatureInvalidException $e) {

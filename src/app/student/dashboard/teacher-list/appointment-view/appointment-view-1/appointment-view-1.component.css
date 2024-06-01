@@ -56,6 +56,17 @@
    padding-left: 10%;
 }
 
+.information-card-left{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.information-card img{
+    height: 30vh;
+    border-radius: 180px;
+}
+
 .content{ 
     padding: 30px 50px;
     width: 100%;
@@ -71,7 +82,6 @@
     display: flex;
     flex-direction: column;
     align-items: center;
-    margin-top: 10vh;
 }
 
 .buttons{
@@ -90,10 +100,7 @@
     width: 100%;
 
 }
-.information-card img{
-    height: 30vh;
-    border-radius: 180px;
-}
+
 .bottom{
     width: 85%;
     margin-top: 30px;
@@ -197,6 +204,23 @@
     background: #F78914;
     color: white;
 }
+
+.radio .time{
+    width: 100%;
+    background-color: #FFEFD1;
+    font-size: 17px;
+    padding: 10px 20px;  
+}
+
+.reason{
+    border-radius: 15px;
+    background-color: #FFEFD1;
+    font-size: 16px;
+    padding: 10px;
+    width: 100%;
+    resize: none;
+}
+
 @media screen and (max-width: 830px) {
     .title {
         height: 8vh;

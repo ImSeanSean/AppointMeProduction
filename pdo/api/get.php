@@ -173,20 +173,6 @@ class Get
             echo json_encode(array('message' => 'Token is invalid or Authorization header is missing'));
         }
     }
-    // public function get_appointment($id)
-    // {
-    //     $tokenInfo = $this->middleware->validateToken();
-    //     if ($tokenInfo) {
-    //         $conditions = null;
-    //         if ($id != null) {
-    //             $conditions = "AppointmentID = $id";
-    //         }
-    //         return $this->get_records("appointment", $conditions);
-    //     } else {
-    //         http_response_code(401);
-    //         echo json_encode(array('message' => 'Token is invalid or Authorization header is missing'));
-    //     }
-    // }
     public function get_appointment($appointmentId)
     {
         $tokenInfo = $this->middleware->validateToken();
@@ -212,42 +198,58 @@ class Get
             echo json_encode(array('message' => 'Token is invalid or Authorization header is missing'));
         }
     }
-    // public function get_day_appointment($teacher_id, $date)
-    // {
-    //     $tokenInfo = $this->middleware->validateToken();
-    //     if ($tokenInfo) {
-    //         // Modified SQL query to join user and consultant tables
-    //         $sqlStr = "SELECT *
-    //         FROM appointment
-    //         WHERE DATE(AppointmentDate) = :date AND ConsultantID = :teacher_id";
+    public function get_appointment_teacher($teacher_Id)
+    {
+        $tokenInfo = $this->middleware->validateToken();
+        if ($tokenInfo) {
+            // Modified SQL query to join user and consultant tables
+            $sqlStr = "SELECT appointment.*, 
+                   user.FirstName AS UserName, user.LastName AS UserLastName,
+                   consultant.first_name AS ConsultantFirstName, consultant.last_name AS ConsultantLastName
+              FROM appointment
+              LEFT JOIN user ON appointment.user_id = user.UserID
+              LEFT JOIN consultant ON appointment.ConsultantID = consultant.ConsultantID
+              WHERE appointment.ConsultantID = $teacher_Id";
 
-    //         // Prepare the SQL statement
-    //         $stmt = $this->db->prepare($sqlStr);
+            $result = $this->executeQuery($sqlStr);
 
-    //         // Bind parameters
-    //         $stmt->bindParam(':date', $date);
-    //         $stmt->bindParam(':teacher_id', $teacher_id);
+            if ($result['code'] == 200) {
+                return $this->sendPayLoad($result['data'], "success", "Successfully retrieved appointments with user and consultant names.", $result['code']);
+            }
 
-    //         // Execute the query
-    //         if ($stmt->execute()) {
-    //             // Fetch all rows
-    //             $appointments = $stmt->fetchAll(PDO::FETCH_ASSOC);
+            return $this->sendPayLoad(null, "failed", "Failed to pull data.", $result['code']);
+        } else {
+            http_response_code(401);
+            echo json_encode(array('message' => 'Token is invalid or Authorization header is missing'));
+        }
+    }
+    public function get_queue_teacher($teacher_Id)
+    {
+        $tokenInfo = $this->middleware->validateToken();
+        if ($tokenInfo) {
+            // Modified SQL query to join user and consultant tables
+            $sqlStr =
+                "SELECT * FROM queue
+                WHERE teacher_id = $teacher_Id
+                ORDER BY 
+                CASE 
+                    WHEN urgency = 'Urgent' THEN 1
+                    ELSE 2
+                END,
+                time_created ASC";
 
-    //             // Check if any rows were returned
-    //             if ($appointments) {
-    //                 // Return the appointments
-    //                 return $this->sendPayLoad($appointments, "success", "Successfully retrieved appointments for the day.", 200);
-    //             } else {
-    //                 return $this->sendPayLoad(null, "failed", "No appointments found for the specified day.", 404);
-    //             }
-    //         } else {
-    //             return $this->sendPayLoad(null, "failed", "Failed to execute query.", 500);
-    //         }
-    //     } else {
-    //         http_response_code(401);
-    //         echo json_encode(array('message' => 'Token is invalid or Authorization header is missing'));
-    //     }
-    // }
+            $result = $this->executeQuery($sqlStr);
+
+            if ($result['code'] == 200) {
+                return $this->sendPayLoad($result['data'], "success", "Successfully retrieved appointments with user and consultant names.", $result['code']);
+            }
+
+            return $this->sendPayLoad(null, "failed", "Failed to pull data.", $result['code']);
+        } else {
+            http_response_code(401);
+            echo json_encode(array('message' => 'Token is invalid or Authorization header is missing'));
+        }
+    }
     public function get_day_schedule($day)
     {
         $tokenInfo = $this->middleware->validateToken();

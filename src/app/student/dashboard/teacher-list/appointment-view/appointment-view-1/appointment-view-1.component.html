@@ -14,15 +14,15 @@
                         <div class="information-card-right">
                             <div class="information">
                                 <h3>Full Name:</h3>
-                                <p>Kenneth Bautista</p>
+                                <p>{{teachers[0].first_name}} {{teachers[0].last_name}}</p>
                             </div>
                             <div class="information">
                                 <h3>Department:</h3>
-                                <p>Computer Science</p>
+                                <p>{{teachers[0].department}}</p>
                             </div>
                             <div class="information">
                                 <h3>Position:</h3>
-                                <p>Faculty Member</p>
+                                <p>{{teachers[0].position}}</p>
                             </div>
                         </div>
                     </div>
@@ -31,13 +31,13 @@
                     <div class="tab">
                         <h3>Queue</h3>
                         <div class="tab-box">
-                            <p>145 Students</p>
+                            <p>{{this.queue.length}} Students</p>
                         </div>
                     </div>
                     <div class="tab">
                         <h3>Appointments</h3>
                         <div class="tab-box">
-                            <p>14 Appointments</p>
+                            <p>{{this.appointments.length}} Appointments</p>
                         </div>
                     </div>
                 </div>
@@ -45,24 +45,6 @@
             <div class="mode">
                 <h2>Appointment Options:</h2>
                 <div class="buttons">
-                    <div class="appointment-details">
-                        <div>
-                            <h4>Date:</h4>
-                            <p>{{formattedDate}}</p>
-                        </div>
-                        <div>
-                            <h4>Time:</h4>
-                            <p>{{selectedTime}}</p>
-                        </div>
-                        <div>
-                            <h4>Mode:</h4>
-                            <p>{{selectedMode}}</p>
-                        </div>
-                        <div>
-                            <h4>Urgency:</h4>
-                            <p>{{selectedUrgency}}</p>
-                        </div>
-                    </div>
                     <div>
                         <h3>Appointment Mode:</h3>
                         <div class="radio">
@@ -76,13 +58,40 @@
                         <h3>Appointment Urgency:</h3>
                         <div class="radio">
                             <input class="radio__input" type="radio" value="Urgent" name="urgent" id="urgent" [(ngModel)]="selectedUrgency">
-                            <label class="radio__label" for="urgent">Urgent</label>
+                            <label class="radio__label" for="urgent" matTooltip="Please make sure that your appointment is really urgent.">Urgent</label>
                             <input class="radio__input" type="radio" value="Not Urgent" name="urgent" id="not_urgent" [(ngModel)]="selectedUrgency">
                             <label class="radio__label" for="not_urgent">Not Urgent</label>
                         </div>
                     </div>
+                    <div>
+                        <h3>Preferred Day:</h3>
+                        <div class="radio">
+                            <input class="radio__input" type="radio" value="Monday" name="day" id="Monday" [(ngModel)]="selectedDay">
+                            <label class="radio__label" for="Monday">M</label>
+                            <input class="radio__input" type="radio" value="Tuesday" name="day" id="Tuesday" [(ngModel)]="selectedDay">
+                            <label class="radio__label" for="Tuesday">T</label>
+                            <input class="radio__input" type="radio" value="Wednesday" name="day" id="Wednesday" [(ngModel)]="selectedDay">
+                            <label class="radio__label" for="Wednesday">W</label>
+                            <input class="radio__input" type="radio" value="Thursday" name="day" id="Thursday" [(ngModel)]="selectedDay">
+                            <label class="radio__label" for="Thursday">TH</label>
+                            <input class="radio__input" type="radio" value="Friday" name="day" id="Friday" [(ngModel)]="selectedDay">
+                            <label class="radio__label" for="Friday">F</label>
+                            <input class="radio__input" type="radio" value="Saturday" name="day" id="Saturday" [(ngModel)]="selectedDay">
+                            <label class="radio__label" for="Saturday">S</label>
+                        </div>
+                    </div>
+                    <div>
+                        <h3>Purpose/Reason:</h3>
+                        <textarea class="reason" [(ngModel)]="reason"></textarea>
+                    </div>
+                    <div>
+                        <h3>Preferred Time:</h3>
+                        <div class="radio">
+                            <input type="time" class="time" [(ngModel)]="selectedTime">
+                        </div>
+                    </div>
                     <div class="button-box">
-                        <div class="confirmation" (click)="changeRoute()">
+                        <div class="confirmation" (click)="addQueue()">
                             <p>QUEUE AN APPOINTMENT</p>
                         </div>
                     </div>

@@ -57,8 +57,14 @@ switch ($_SERVER['REQUEST_METHOD']) {
             case 'get_appointments_teacher':
                 echo json_encode($get->get_appointments_teacher());
                 break;
+            case 'get_appointment_teacher':
+                echo json_encode($get->get_appointment_teacher($request[1]));
+                break;
             case 'get_appointment':
                 echo json_encode($get->get_appointment($request[1]));
+                break;
+            case 'get_queue_teacher':
+                echo json_encode($get->get_queue_teacher($request[1]));
                 break;
             case 'get_day_schedule':
                 echo json_encode($get->get_day_schedule($request[1]));
@@ -128,6 +134,9 @@ switch ($_SERVER['REQUEST_METHOD']) {
                 break;
             case 'rate_appointment':
                 echo json_encode($post->rate_appointment($data));
+                break;
+            case 'add_queue':
+                echo json_encode($post->add_queue($data));
                 break;
             case 'add_schedule':
                 echo json_encode($post->add_schedule($data));

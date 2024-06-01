@@ -60,7 +60,7 @@ export class TeacherRegistrationApprovalComponent {
           this.getTeachers().subscribe(
             (data: Teacher[]) => {
               this.teachers = data;
-              this.approvedTeachers = this.teachers.filter(teacher => teacher.approved == false);
+              this.approvedTeachers = this.teachers
             },
             (error) => {
               console.error('Error fetching teachers:', error);
@@ -109,7 +109,7 @@ export class TeacherRegistrationApprovalComponent {
           this.getTeachers().subscribe(
             (data: Teacher[]) => {
               this.teachers = data;
-              this.approvedTeachers = this.teachers.filter(teacher => teacher.approved == false);
+              this.approvedTeachers = this.teachers
             },
             (error) => {
               console.error('Error fetching teachers:', error);
@@ -135,7 +135,7 @@ export class TeacherRegistrationApprovalComponent {
     this.getTeachers().subscribe(
       (data: Teacher[]) => {
         this.teachers = data;
-        this.approvedTeachers = this.teachers.filter(teacher => teacher.approved == false);
+        this.approvedTeachers = this.teachers
       },
       (error) => {
         console.error('Error fetching teachers:', error);
