@@ -88,11 +88,22 @@
     display: flex;
     flex-direction: column; /* Added to align items vertically */
   }
+
+  .textarea-container{
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: end;
+  }
+
+  .purpose-text{
+    width: 65%;
+  }
   
   textarea {
     background-color: #ffefd1;
-    height: 15vw;
-    width: 100%;
+    height: 20vw;
+    width: 65%;
     border: 3px solid #f78914;
     padding: 25px;
     font-size: 15px;

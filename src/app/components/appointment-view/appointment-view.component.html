@@ -67,9 +67,12 @@
       </div>
       <div class="body">
         <div class="purpose">
-          <p>Appointment Purpose/Concerns:</p>
+
         </div>
         <div class="textarea-container">
+          <div class="purpose-text">
+            <p>Appointment Purpose/Concerns:</p>
+          </div>
           <textarea placeholder="No Appointment Purpose Stated" readonly>{{queue[0]?.reason}}</textarea>
         </div>
       </div>
@@ -80,7 +83,7 @@
         <div (click)="openConfirmationReject()" *ngIf="usertype == 'teacher'" class="reject">
           <p>REJECT REQUEST</p>
         </div>
-        <div *ngIf="usertype == 'teacher'" class="confirmation">
+        <div (click)="changeRoute()" *ngIf="usertype == 'teacher'" class="confirmation">
           <p>CREATE APPOINTMENT</p>
         </div>
       </div>

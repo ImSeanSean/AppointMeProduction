@@ -24,6 +24,7 @@ import { UserManagementComponent } from './admin/user-management/user-management
 import { NotificationTabComponent } from './layouts/notification/notification-tab/notification-tab.component';
 import { NotificationTeacherComponent } from './layouts/notification/notification-teacher/notification-teacher.component';
 import { TeacherReportComponent } from './teacher/teacher-report/teacher-report.component';
+import { TeacherAppointmentCreateComponent } from './teacher/teacher-appointment-create/teacher-appointment-create.component';
 
 export const routes: Routes = [
     {path: '', component: HomepageComponent},
@@ -55,6 +56,7 @@ export const routes: Routes = [
                 children: [
                     {path: 'appointments', component: AppointmentStudentComponent},
                     {path: 'appointments/pending/:appointmentId', component: AppointmentViewComponent},
+                    {path: 'appointments/pending/create/:appointmentId', component: TeacherAppointmentCreateComponent},
                     {path: 'appointments/confirmed/:appointmentId', component: AppointmentViewConfirmedComponent},
                     {path: 'confirmed-appointments', component: AppointmentStudentConfirmedComponent},
                     {path: 'confirmed-appointments/completed/:appointmentId', component: AppointmentViewFinishedComponent},

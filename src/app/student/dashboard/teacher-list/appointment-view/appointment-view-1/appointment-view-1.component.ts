@@ -181,7 +181,7 @@ export class AppointmentView1Component implements OnInit{
       (data: Teacher[]) => {
         this.teachers = data;
         //Set the Variables
-        this.teacherName = this.teachers[0].first_name + this.teachers[0].last_name
+        this.teacherName = this.teachers[0].first_name + " " + this.teachers[0].last_name
         this.teacherDepartment = this.teachers[0].department
         this.teacherPosition = this.teachers[0].position
 

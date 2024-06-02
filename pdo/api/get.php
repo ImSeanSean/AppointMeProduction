@@ -217,7 +217,7 @@ class Get
                 return $this->sendPayLoad($result['data'], "success", "Successfully retrieved appointments with user and consultant names.", $result['code']);
             }
 
-            return $this->sendPayLoad(null, "failed", "Failed to pull data.", $result['code']);
+            return $this->sendPayLoad([], "success", "No appointments found for the teacher.", 200);
         } else {
             http_response_code(401);
             echo json_encode(array('message' => 'Token is invalid or Authorization header is missing'));
@@ -256,7 +256,7 @@ class Get
             if ($result) {
                 return $this->sendPayLoad($result, "success", "Successfully retrieved appointments with user and consultant names.", 200);
             } else {
-                return $this->sendPayLoad(null, "failed", "Failed to pull data.", 404);
+                return $this->sendPayLoad([], "success", "No appointments found for the teacher.", 200);
             }
         } else {
             http_response_code(401);
@@ -350,7 +350,7 @@ class Get
                 }
             }
 
-            return $this->sendPayLoad(null, "failed", "Failed to pull data.", $result['code']);
+            return $this->sendPayLoad([], "success", "No appointments found for the teacher.", 200);
         } else {
             http_response_code(401);
             echo json_encode(array('message' => 'Token is invalid or Authorization header is missing'));
@@ -430,11 +430,11 @@ class Get
                 if (count($result['data']) > 0) {
                     return $this->sendPayLoad($result['data'], "success", "Successfully retrieved notifications.", $result['code']);
                 } else {
-                    return null;
+                    return $this->sendPayLoad([], "success", "No appointments found for the teacher.", 200);
                 }
             }
 
-            return $this->sendPayLoad(null, "failed", "Failed to pull data.", $result['code']);
+            return $this->sendPayLoad([], "success", "No appointments found for the teacher.", 200);
         } else {
             http_response_code(401);
             echo json_encode(array('message' => 'Token is invalid or Authorization header is missing'));
