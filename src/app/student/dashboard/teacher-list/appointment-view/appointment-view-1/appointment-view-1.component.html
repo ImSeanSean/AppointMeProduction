@@ -103,20 +103,20 @@
                         <h2>Number in Queue: {{queueIndex}}</h2>
                     </div>
                     <div>
-                        <h4>Preferred Day:</h4>
-                        <p></p>
+                        <h4>Preferred Day: </h4>
+                        <p>{{studentQueue?.day}}</p>
                     </div>
                     <div>
                         <h4>Preferred Time:</h4>
-                        <p>{{selectedTime}}</p>
+                        <p>{{getFormattedTime(studentQueue?.time)}}</p>
                     </div>
                     <div>
                         <h4>Preferred Mode:</h4>
-                        <p>{{selectedMode}}</p>
+                        <p>{{studentQueue?.mode}}</p>
                     </div>
                     <div>
                         <h4>Urgency:</h4>
-                        <p>{{selectedUrgency}}</p>
+                        <p>{{studentQueue?.urgency}}</p>
                     </div>
                 </div>
             </div>

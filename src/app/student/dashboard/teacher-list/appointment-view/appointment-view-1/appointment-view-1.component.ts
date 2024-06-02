@@ -53,7 +53,8 @@ export class AppointmentView1Component implements OnInit{
     private http: HttpClient, 
     private route: ActivatedRoute, 
     public dialog: MatDialog,
-    private router: Router
+    private router: Router,
+    private datePipe: DatePipe
   ) {};
   //Teacher-Related Functions
   getTeachers(): Observable<Teacher[]> {
@@ -83,7 +84,8 @@ export class AppointmentView1Component implements OnInit{
               description: 'You have been successfully added to the queue.'
             }
           })
-          this.closeWindow();
+
+          this.updateData();
         }
         else if(response == 1){
           this.dialog.open(ErrorComponent, {
@@ -137,14 +139,40 @@ export class AppointmentView1Component implements OnInit{
     const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
     return this.http.get<Appointment[]>(`${mainPort}/pdo/api/get_appointment_teacher/${this.teacherId}`, {headers});
   }
-
   //Other Functions
+  updateData(){
+    this.getAppointments().subscribe(
+      (data: Appointment[]) => {
+        this.appointments = data;
+        this.appointmentLength = this.appointments.length
+      }
+    );
+    this.getQueue().subscribe(
+      (data: Queue[]) => {
+        this.queue = data;
+        this.queueLength = this.queue.length
+        this.isInQueue();
+        this.isDataLoaded = true;
+      }
+    );
+  }
   closeWindow() {
     var user = localStorage.getItem('user')
     if (user == "user"){
       user = "student";
     }
     this.router.navigate([`${user}/dashboard/main`]);
+  }
+  getFormattedTime(date:string | undefined){
+    if(!date){
+      return "";
+    }
+    const today = new Date();
+    const [hours, minutes, seconds] = date.split(':');
+    today.setHours(parseInt(hours), parseInt(minutes), parseInt(seconds));
+
+    // Format the Date object to a string using DatePipe
+    return this.datePipe.transform(today, 'h:mm a');
   }
   //onInitFunction
   ngOnInit(): void {

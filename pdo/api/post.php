@@ -668,7 +668,6 @@ class Post
             $stmt->bindParam(':time', $time, PDO::PARAM_STR);
             $stmt->bindParam(':reason', $reason, PDO::PARAM_STR);
 
-            $stmt->execute();
             if ($stmt->execute()) {
                 return '0';
             } else {

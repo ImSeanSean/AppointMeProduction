@@ -100,8 +100,7 @@
 }
 
 .appointment-details div{
-    display: grid;
-    grid-template-columns: 1fr 1fr;
+    display: flex
 }
 
 .bottom{
