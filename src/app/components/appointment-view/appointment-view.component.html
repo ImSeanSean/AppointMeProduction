@@ -9,82 +9,72 @@
           <h1>Meeting with {{queue[0]?.student_name}}</h1>
         </div>
       </div>
-      <div class="group">
-        <div class="date">
-          <div class="box">
-            <h4>Teacher</h4>
-          </div>
-          <div class="textDate">
-            <p>{{queue[0].teacher_name}}</p>
-          </div>
-        </div>
-  
-        <div class="date">
-          <div class="box">
-            <h4>Student</h4>
-          </div>
-          <div class="textDate">
-            <p>{{queue[0].student_name}}</p>
-          </div>
-        </div>
-  
-        <div class="date">
-          <div class="box">
-            <h4>Date</h4>
-          </div>
-          <div class="textDate">
-            <p>{{this.queue[0]?.day}}</p>
-          </div>
-        </div>
-  
-        <div class="date">
-          <div class="box">
-            <h4>Time</h4>
-          </div>
-          <div class="textDate">
-            <p>{{getFormattedTime(this.queue[0].time)}}</p>
-          </div>
-        </div>
-
-        <div class="date">
-          <div class="box">
-            <h4>Mode</h4>
-          </div>
-          <div class="textDate">
-            <p>{{this.queue[0]?.mode}}</p>
-          </div>
-        </div>
-
-        <div class="date">
-          <div class="box">
-            <h4>Urgency</h4>
-          </div>
-          <div class="textDate">
-            <p>{{this.queue[0]?.urgency}}</p>
-          </div>
-        </div>
-      
-      </div>
       <div class="body">
-        <div class="purpose">
-
+        <div class="group"> 
+          <h3>Request Information</h3>
+          <div class="date">
+            <div class="box">
+              <h4>Student</h4>
+            </div>
+            <div class="textDate">
+              <p>{{this.queue[0]?.student_name}}</p>
+            </div>
+          </div>
+          
+          <div class="date">
+            <div class="box">
+              <h4>Preferred Day</h4>
+            </div>
+            <div class="textDate">
+              <p>{{this.queue[0]?.day}}</p>
+            </div>
+          </div>
+    
+          <div class="date">
+            <div class="box">
+              <h4>Preferred Time</h4>
+            </div>
+            <div class="textDate">
+              <p>{{getFormattedTime(this.queue[0].time)}}</p>
+            </div>
+          </div>
+  
+          <div class="date">
+            <div class="box">
+              <h4>Preferred Mode</h4>
+            </div>
+            <div class="textDate">
+              <p>{{this.queue[0]?.mode}}</p>
+            </div>
+          </div>
+  
+          <div class="date">
+            <div class="box">
+              <h4>Urgency</h4>
+            </div>
+            <div class="textDate">
+              <p>{{this.queue[0]?.urgency}}</p>
+            </div>
+          </div>
         </div>
         <div class="textarea-container">
-          <div class="purpose-text">
-            <p>Appointment Purpose/Concerns:</p>
+          <div class="textarea">
+            <div class="purpose-text">
+              <p>Appointment Purpose/Concerns:</p>
+            </div>
+            <textarea placeholder="No Appointment Purpose Stated" readonly>{{queue[0]?.reason}}</textarea>
           </div>
-          <textarea placeholder="No Appointment Purpose Stated" readonly>{{queue[0]?.reason}}</textarea>
-        </div>
-      </div>
-      <div class="buttons">
-        <div class="close">
-          <p (click)="closeWindow()">CLOSE REQUEST</p>
-        </div>
-        <div (click)="openConfirmationReject()" *ngIf="usertype == 'teacher'" class="reject">
-          <p>REJECT REQUEST</p>
-        </div>
-        <div (click)="changeRoute()" *ngIf="usertype == 'teacher'" class="confirmation">
-          <p>CREATE APPOINTMENT</p>
+          <div class="buttons">
+            <div class="close">
+              <p (click)="closeWindow()">CLOSE REQUEST</p>
+            </div>
+            <div (click)="openConfirmationReject()" *ngIf="usertype == 'teacher'" class="reject">
+              <p>REJECT REQUEST</p>
+            </div>
+            <div (click)="changeRoute()" *ngIf="usertype == 'teacher'" class="confirmation">
+              <p>CREATE APPOINTMENT</p>
+            </div>
+          </div>
         </div>
       </div>
     </div>
