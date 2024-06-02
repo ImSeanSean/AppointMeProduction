@@ -82,46 +82,9 @@ export class AppointmentViewComponent {
     });
   }
 
-  // openConfirmationAccept(): void {
-  //   const dialogRef = this.dialog.open(ConfirmationInputComponent, {
-  //     height: '50vh',
-  //     width: '50vw',
-  //     data: {
-  //       title: 'Confirm Appointment',
-  //       description: 'Are you sure you want to confirm this appointment?'
-  //     }
-  //   });
-  
-  //   dialogRef.afterClosed().subscribe(result => {
-  //     let bool = result[0];
-  //     let desc = result[1];
-  //     let setdate = this.queue[0].day;
-  //     //Variable
-  //     const data = {
-  //       date:  setdate
-  //     }
-  //     //If FTF, check first if there is already an FTF for that schedule
-  //     this.http.post(`${mainPort}/pdo/api/check_ftf_appointments`, data).subscribe(result=>{
-  //       if(result){
-  //         this.dialog.open(ErrorComponent, {
-  //           width: '300px',
-  //           data: {
-  //             title: 'Appointment Conflict',
-  //             description: 'A Face to Face Appointment Already Exists for the Schedule'
-  //           }
-  //         });
-  //         this.closeWindow();
-  //         return;
-  //       }
-  //       else{
-  //         if (bool) {
-  //           this.confirmAppointment();
-  //           this.notificationService.createNotification(this.appointments[0].ConsultantID, this.appointments[0].user_id, "Approved", this.appointments[0].appointment_title, desc)
-  //         }
-  //       }
-  //     })
-  //   });
-  // }
+  changeRoute() {
+    this.router.navigate(['teacher/dashboard/appointments/pending/create', this.queueId]);
+  }
 
   getQueue(): Observable<Queue[]> {
     const token = localStorage.getItem('token');

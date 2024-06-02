@@ -14,15 +14,15 @@
                         <div class="information-card-right">
                             <div class="information">
                                 <h3>Full Name:</h3>
-                                <p>{{teacherName}}</p>
+                                <p>{{teacherName ? teacherName : 'N/A'}}</p>
                             </div>
                             <div class="information">
                                 <h3>Department:</h3>
-                                <p>{{teacherDepartment}}</p>
+                                <p>{{teacherDepartment ? teacherDepartment : 'N/A'}}</p>
                             </div>
                             <div class="information">
                                 <h3>Position:</h3>
-                                <p>{{teacherPosition}}</p>
+                                <p>{{teacherPosition ? teacherPosition : 'N/A' }}</p>
                             </div>
                         </div>
                     </div>
@@ -31,13 +31,13 @@
                     <div class="tab">
                         <h3>Queue</h3>
                         <div class="tab-box">
-                            <p>{{queueLength}} Students</p>
+                            <p>{{queueLength}} {{ queueLength === 1 || queueLength === 0 ? 'Student' : 'Students' }}</p>
                         </div>
                     </div>
                     <div class="tab">
                         <h3>Appointments</h3>
                         <div class="tab-box">
-                            <p>{{appointmentLength}} Appointments</p>
+                            <p>{{ appointmentLength }} {{ appointmentLength === 1 || appointmentLength === 0 ? 'Appointment' : 'Appointments' }}</p>
                         </div>
                     </div>
                 </div>
@@ -118,6 +118,9 @@
                         <h4>Urgency:</h4>
                         <p>{{studentQueue?.urgency}}</p>
                     </div>
+                </div>
+                <div class="update-button">
+                    <button>Update Request</button>
                 </div>
             </div>
         </div>
