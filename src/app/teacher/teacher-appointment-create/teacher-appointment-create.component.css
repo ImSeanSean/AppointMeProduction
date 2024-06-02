@@ -27,6 +27,12 @@
     column-gap: 5vw;
 }
 
+.appointment-details{
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
 .details-box{
     border: 2.5px solid #F78914;
     border-radius: 10px;
@@ -82,14 +88,35 @@
     color: white;
 }
 
+.appointment-view{
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
 .date{
     display: flex;
-    border: #F78914 solid 2px;
+    align-items: center;
+    border: #F78914 solid 3px;
+    border-radius: 15px;
+    width: 60%;
 }
 
 .date h3{
+    border-top-left-radius: 12px;
+    border-bottom-left-radius: 12px;
     background-color: #F08000;
     color: white;
+    padding: 10px;
+}
+
+.date p{
+    padding: 10px;
+    height: 100%;
+    width: 100%;
+    border-top-right-radius: 10px;
+    border-bottom-right-radius: 10px;
+    background-color: white;
 }
 
 .time-box{
