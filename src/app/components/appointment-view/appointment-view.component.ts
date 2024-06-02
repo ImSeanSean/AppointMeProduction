@@ -12,6 +12,7 @@ import { UserInformationService } from '../../services/user-information/user-inf
 import { ErrorComponent } from '../../matdialogs/error/error.component';
 import { ConfirmationInputComponent } from '../../matdialogs/confirmation-input/confirmation-input/confirmation-input.component';
 import { NotificationServicesService } from '../../services/notification-services.service';
+import { Queue } from '../../interfaces/Queue';
 
 @Component({
   selector: 'app-appointment-view',
@@ -22,24 +23,28 @@ import { NotificationServicesService } from '../../services/notification-service
 })
 export class AppointmentViewComponent {
   usertype = localStorage.getItem('user');
-  appointmentId: string | null = null;
-  appointments: Appointment[] = [];
+  teacherId = localStorage.getItem('id')
+  queueId: string | null = null;
+  queue: Queue[] = [];
 
   constructor(
     private http: HttpClient, 
     private router: Router, 
+    private route: ActivatedRoute,
     private activatedRoute: ActivatedRoute, 
     public dialog: MatDialog, 
     private appointmentValidation: AppointmentValidationService,
     private userInformation: UserInformationService,
-    private notificationService: NotificationServicesService
+    private notificationService: NotificationServicesService,
+    private datePipe: DatePipe
   ) {}
 
   ngOnInit() {
-    this.getAppointment().subscribe(
-      (data: Appointment[]) => {
+    this.queueId = this.route.snapshot.params['appointmentId'];
+    this.getQueue().subscribe(
+      (data: Queue[]) => {
         // Handle successful response
-        this.appointments = data; 
+        this.queue = data; 
       },
       (error) => {
         // Handle errors
@@ -72,65 +77,58 @@ export class AppointmentViewComponent {
       let desc = result[1]
       if (bool) {
         this.rejectAppointment();
-        this.notificationService.createNotification(this.appointments[0].ConsultantID, this.appointments[0].user_id, "Rejected", this.appointments[0].appointment_title, desc)
+        this.notificationService.createNotification(this.queue[0].teacher_id, this.queue[0].student_id, "Rejected", "Meeting with" + this.queue[0].teacher_name, desc)
       }
     });
   }
 
-  openConfirmationAccept(): void {
-    const dialogRef = this.dialog.open(ConfirmationInputComponent, {
-      height: '50vh',
-      width: '50vw',
-      data: {
-        title: 'Confirm Appointment',
-        description: 'Are you sure you want to confirm this appointment?'
-      }
-    });
+  // openConfirmationAccept(): void {
+  //   const dialogRef = this.dialog.open(ConfirmationInputComponent, {
+  //     height: '50vh',
+  //     width: '50vw',
+  //     data: {
+  //       title: 'Confirm Appointment',
+  //       description: 'Are you sure you want to confirm this appointment?'
+  //     }
+  //   });
   
-    dialogRef.afterClosed().subscribe(result => {
-      let bool = result[0];
-      let desc = result[1];
-      let setdate = this.appointments[0].AppointmentDate;
-      //Variable
-      const data = {
-        date:  setdate
-      }
-      //If FTF, check first if there is already an FTF for that schedule
-      this.http.post(`${mainPort}/pdo/api/check_ftf_appointments`, data).subscribe(result=>{
-        if(result){
-          this.dialog.open(ErrorComponent, {
-            width: '300px',
-            data: {
-              title: 'Appointment Conflict',
-              description: 'A Face to Face Appointment Already Exists for the Schedule'
-            }
-          });
-          this.closeWindow();
-          return;
-        }
-        else{
-          if (bool) {
-            this.confirmAppointment();
-            this.notificationService.createNotification(this.appointments[0].ConsultantID, this.appointments[0].user_id, "Approved", this.appointments[0].appointment_title, desc)
-          }
-        }
-      })
-    });
-  }
+  //   dialogRef.afterClosed().subscribe(result => {
+  //     let bool = result[0];
+  //     let desc = result[1];
+  //     let setdate = this.queue[0].day;
+  //     //Variable
+  //     const data = {
+  //       date:  setdate
+  //     }
+  //     //If FTF, check first if there is already an FTF for that schedule
+  //     this.http.post(`${mainPort}/pdo/api/check_ftf_appointments`, data).subscribe(result=>{
+  //       if(result){
+  //         this.dialog.open(ErrorComponent, {
+  //           width: '300px',
+  //           data: {
+  //             title: 'Appointment Conflict',
+  //             description: 'A Face to Face Appointment Already Exists for the Schedule'
+  //           }
+  //         });
+  //         this.closeWindow();
+  //         return;
+  //       }
+  //       else{
+  //         if (bool) {
+  //           this.confirmAppointment();
+  //           this.notificationService.createNotification(this.appointments[0].ConsultantID, this.appointments[0].user_id, "Approved", this.appointments[0].appointment_title, desc)
+  //         }
+  //       }
+  //     })
+  //   });
+  // }
 
-  getAppointment(): Observable<Appointment[]> {
-    this.appointmentId = this.activatedRoute.snapshot.params['appointmentId'];
+  getQueue(): Observable<Queue[]> {
     const token = localStorage.getItem('token');
     const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
-
-    return this.http.get<Appointment[]>(`${mainPort}/pdo/api/get_appointment/${this.appointmentId}`, { headers })
-      .pipe(
-        catchError((error) => {
-          console.error('HTTP error:', error);
-          return [];
-        })
-      );
+    return this.http.get<Queue[]>(`${mainPort}/pdo/api/get_queue_teacher/${this.teacherId}/${this.queueId }`, {headers});
   }
+
   getFormattedDate(date:string | undefined): string | null{
     if(date){
       const datePipe = new DatePipe('en-US');
@@ -140,57 +138,43 @@ export class AppointmentViewComponent {
       return datePipe.transform(date, 'MMMM dd, yyyy')
     }
   }
-  getFormattedTime(date:string | undefined): string | null{
-    if(date){
-      const datePipe = new DatePipe('en-US');
-      const time = datePipe.transform(date, 'MMMM dd, yyyy HH:mm')
-      return datePipe.transform(time, 'shortTime')
-    } else {
-      return null;
-    }
+
+  getFormattedTime(date:string){
+    const today = new Date();
+    const [hours, minutes, seconds] = date.split(':');
+    today.setHours(parseInt(hours), parseInt(minutes), parseInt(seconds));
+
+    // Format the Date object to a string using DatePipe
+    return this.datePipe.transform(today, 'h:mm a');
   }
-  confirmAppointment() {
-    const data = { appointment_id: this.appointmentId };
-    const token = localStorage.getItem('token');
-    const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
-    //Check if an Appointment Exists for that Day
-    this.appointmentValidation.getMatchingDate(this.userInformation.userId, this.appointments[0].AppointmentDate).subscribe(result => {
-      if(result){
+  rejectAppointment() {
+    const data = {
+      key: localStorage.getItem('token'),
+      queue_id: this.queueId
+    };
+    console.log(data)
+    this.http.post(`${mainPort}/pdo/api/delete_queue`, data)
+    .subscribe(
+      (response) => {
         this.dialog.open(ErrorComponent, {
           width: '300px',
           data: {
-            title: 'Appointment Conflict',
-            description: 'You already have an Appointment Exists for the Schedule'
+            title: 'Delete Status',
+            description: response
           }
-        });
+        })
         this.closeWindow();
-        return;
-      }
-      else{
-        this.http.post(`${mainPort}/pdo/api/confirm_appointment`, data)
-        .subscribe(
-          (response) => {
-            console.log('Appointment confirmed successfully:', response);
-          },
-          (error) => {
-            console.error('Error confirming appointment:', error);
-          }
-        );
-      this.closeWindow();
-      }
-    })
-  }
-  rejectAppointment() {
-    const data = {appointment_id: this.appointmentId};
-    this.http.post(`${mainPort}/pdo/api/reject_appointment`, data)
-    .subscribe(
-      (response) => {
-        console.log('Appointment rejected successfully:', response);
       },
       (error) => {
-        console.error('Error rejecting appointment:', error);
+        this.dialog.open(ErrorComponent, {
+          width: '300px',
+          data: {
+            title: 'Delete Status',
+            description: error
+          }
+        })
+        this.closeWindow();
       }
     );
-    this.closeWindow();
   }
 }

@@ -6,6 +6,7 @@ import { UsertypedialogComponent } from '../../matdialogs/usertypedialog/usertyp
 import { MatDialog } from '@angular/material/dialog';
 import { NavbarComponent } from "../../layouts/navbar/navbar.component";
 import { TeacherRegistrationApprovalComponent } from "../../teacher/headteacher/dashboard/teacher-registration-approval/teacher-registration-approval.component";
+import { jwtDecode } from 'jwt-decode';
 
 @Component({
     selector: 'app-login-student',
@@ -44,6 +45,9 @@ export class LoginStudentComponent implements OnInit {
             console.log('Correct Authentication')
             localStorage.setItem('token', token);
             localStorage.setItem('user', 'user')
+            const decodedToken: any = jwtDecode(token);
+            const userId = decodedToken.user_id;
+            localStorage.setItem('id', userId)
             this.router.navigate(['student/dashboard/main'])
           } else {
             console.log('Wrong Authentication')

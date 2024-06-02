@@ -1,4 +1,4 @@
-<div class="main">
+<div class="main" *ngIf="isDataLoaded === true">
     <div class="title">
         <h2>View Appointments</h2>
     </div>
@@ -14,15 +14,15 @@
                         <div class="information-card-right">
                             <div class="information">
                                 <h3>Full Name:</h3>
-                                <p>{{teachers[0].first_name}} {{teachers[0].last_name}}</p>
+                                <p>{{teacherName}}</p>
                             </div>
                             <div class="information">
                                 <h3>Department:</h3>
-                                <p>{{teachers[0].department}}</p>
+                                <p>{{teacherDepartment}}</p>
                             </div>
                             <div class="information">
                                 <h3>Position:</h3>
-                                <p>{{teachers[0].position}}</p>
+                                <p>{{teacherPosition}}</p>
                             </div>
                         </div>
                     </div>
@@ -31,18 +31,18 @@
                     <div class="tab">
                         <h3>Queue</h3>
                         <div class="tab-box">
-                            <p>{{this.queue.length}} Students</p>
+                            <p>{{queueLength}} Students</p>
                         </div>
                     </div>
                     <div class="tab">
                         <h3>Appointments</h3>
                         <div class="tab-box">
-                            <p>{{this.appointments.length}} Appointments</p>
+                            <p>{{appointmentLength}} Appointments</p>
                         </div>
                     </div>
                 </div>
             </div>
-            <div class="mode">
+            <div class="mode" *ngIf="inQueue === false">
                 <h2>Appointment Options:</h2>
                 <div class="buttons">
                     <div>
@@ -94,6 +94,29 @@
                         <div class="confirmation" (click)="addQueue()">
                             <p>QUEUE AN APPOINTMENT</p>
                         </div>
+                    </div>
+                </div>
+            </div>
+            <div class="mode" *ngIf="inQueue === true">
+                <div class="appointment-details">
+                    <div>
+                        <h2>Number in Queue: {{queueIndex}}</h2>
+                    </div>
+                    <div>
+                        <h4>Preferred Day:</h4>
+                        <p></p>
+                    </div>
+                    <div>
+                        <h4>Preferred Time:</h4>
+                        <p>{{selectedTime}}</p>
+                    </div>
+                    <div>
+                        <h4>Preferred Mode:</h4>
+                        <p>{{selectedMode}}</p>
+                    </div>
+                    <div>
+                        <h4>Urgency:</h4>
+                        <p>{{selectedUrgency}}</p>
                     </div>
                 </div>
             </div>

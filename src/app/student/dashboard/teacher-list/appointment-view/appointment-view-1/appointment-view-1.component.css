@@ -95,10 +95,13 @@
     border: 3px solid gray;
     padding: 10px;
     display: grid;
-    grid-template-columns: 1fr 1fr;
     row-gap: 10px;
     width: 100%;
+}
 
+.appointment-details div{
+    display: grid;
+    grid-template-columns: 1fr 1fr;
 }
 
 .bottom{

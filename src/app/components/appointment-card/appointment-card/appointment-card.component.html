@@ -1,21 +1,21 @@
 <div class="card-container">
-    <div class="appointment-card" *ngFor="let appointment of filterAppointments(appointments)" (click)="changeRoute(appointment.AppointmentID)">
+    <div class="appointment-card" *ngFor="let queue of queue" (click)="changeRoute(queue.queue_id)">
         <div class="box"></div>
         <div class="Text">
             <div class="title">
-                <p>{{appointment.appointment_title}}</p>
+                <p>Meeting with {{queue.student_name}}</p>
             </div>
             <div class="mid">
-                <p>Date: {{getFormattedDate(appointment.AppointmentDate)}}</p>
-                <p>Time: {{getFormattedTime(appointment.AppointmentDate)}}</p>
+                <p>Student: {{queue.student_name}}</p>
+                <p>Requested on: {{getFormattedDate(queue.time_created)}}</p>
             </div>
             <div class="bottom">
-                <p>Teacher: {{appointment.ConsultantFirstName}} {{appointment.ConsultantLastName}}</p>
-                <p>Student: {{appointment.UserName}} {{appointment.UserLastName}}</p>
+                <p>Preferred Date: {{queue.day}}</p>
+                <p>Preferred Mode: {{queue.mode}}</p>
             </div>
             <div class="extra">
-                <p>Mode: {{appointment.mode}}</p>
-                <p >Urgency: <label [ngClass]="{'urgent-appointment': appointment.urgency == 'Urgent'}">{{appointment.urgency}}</label></p>
+                <p>Preferred Time: {{getFormattedTime(queue.time)}}</p>
+                <p >Urgency: <label [ngClass]="{'urgent-appointment': queue.urgency == 'Urgent'}">{{queue.urgency}}</label></p>
             </div>
         </div>
     </div>

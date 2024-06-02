@@ -5,6 +5,8 @@ import { Appointment } from '../../../interfaces/Appointment';
 import { Observable } from 'rxjs';
 import { DatePipe, NgClass, NgFor } from '@angular/common';
 import { mainPort } from '../../../app.component';
+import { Queue } from '../../../interfaces/Queue';
+import { UserInformationService } from '../../../services/user-information/user-information.service';
 
 @Component({
   selector: 'app-appointment-card',
@@ -14,67 +16,40 @@ import { mainPort } from '../../../app.component';
   styleUrl: './appointment-card.component.css'
 })
 export class AppointmentCardComponent {
-  constructor(private http: HttpClient, private router: Router) {};
+  constructor(private http: HttpClient, private router: Router, private userInformation: UserInformationService, private datePipe: DatePipe) {};
 
-  changeRoute(id:string) {
+  changeRoute(id:number) {
     const currentUrl = this.router.url
     this.router.navigate([`${currentUrl}/pending`, id]);
   }
+  
+  teacherId = this.userInformation.userId;
+  queue: Queue[] = [];
 
-  appointments: Appointment[] = [];
-  usertype = localStorage.getItem('user');
-
-  getAppointment(): Observable<Appointment[]> {
+  getQueue(): Observable<Queue[]> {
     const token = localStorage.getItem('token');
     const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
-    console.log(token);
-    return this.http.get<Appointment[]>(`${mainPort}/pdo/api/get_appointments`, { headers });
+    return this.http.get<Queue[]>(`${mainPort}/pdo/api/get_queue_teacher/${this.teacherId}`, {headers});
   }
-
-  getAppointmentTeacher(): Observable<Appointment[]> {
-    const token = localStorage.getItem('token');
-    const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
-    return this.http.get<Appointment[]>(`${mainPort}/pdo/api/get_appointments_teacher`, { headers });
-  }
-
-  filterAppointments(appointments: any[]): any[] {
-    return appointments;
-  }
-
 
   getFormattedDate(date:string){
     const datePipe = new DatePipe('en-US');
     return datePipe.transform(date, 'MMMM dd, yyyy')
-  }
+  } 
 
   getFormattedTime(date:string){
-    const datePipe = new DatePipe('en-US');
-    const time = datePipe.transform(date, 'MMMM dd, yyyy HH:mm')
-    return datePipe.transform(time, 'shortTime')
+    const today = new Date();
+    const [hours, minutes, seconds] = date.split(':');
+    today.setHours(parseInt(hours), parseInt(minutes), parseInt(seconds));
+
+    // Format the Date object to a string using DatePipe
+    return this.datePipe.transform(today, 'h:mm a');
   }
 
   ngOnInit(): void {
-    if(this.usertype == "user"){
-      this.getAppointment().subscribe(
-        (data: Appointment[]) => {
-          this.appointments = data;
-          console.log(this.appointments);
-        },
-        (error) => {
-          console.error('Error fetching appointments:', error);
-        }
-      );
-    }
-    if(this.usertype == "teacher"){
-      this.getAppointmentTeacher().subscribe(
-        (data: Appointment[]) => {
-          this.appointments = data;
-          console.log(this.appointments);
-        },
-        (error) => {
-          console.error('Error fetching appointments:', error);
-        }
-      );
-    }
+    this.teacherId = localStorage.getItem('id')
+    this.getQueue().subscribe(result =>{
+      this.queue = result;
+    })
   }
 }

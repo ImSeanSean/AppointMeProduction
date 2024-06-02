@@ -682,7 +682,46 @@ class Post
             return "Unauthorized: Invalid token signature.";
         } catch (PDOException $e) {
             // Handle the exception, return an error response, or log the error
-            return "Error rating appointment" . $e->getMessage();
+            return "Error adding you to queue" . $e->getMessage();
+        }
+    }
+    public function delete_queue($data)
+    {
+        try {
+            $jwt = $data->key;
+            error_log("JWT Token: " . $jwt);
+            $key = JWT::decode($jwt, new Key($this->secretKey, 'HS256'));
+            // Check authorization here (example: verify that the user is authorized to create an appointment)
+            if ($key->type !== 'teacher') {
+                return "Unauthorized: Only teachers are allowed to delete a queue.";
+            }
+            // The rest of the function
+            $queueId = $data->queue_id;
+            //Insert
+            $sql = "DELETE FROM queue WHERE queue_id = :queueId;";
+
+            $stmt = $this->pdo->prepare($sql);
+
+            $stmt->bindParam(':queueId', $queueId);
+
+            $stmt->execute();
+            // Optionally, return success response or handle accordingly
+            if ($stmt->rowCount() > 0) {
+                // Appointment successfully removed
+                return "Request removed successfully.";
+            } else {
+                // No record found with the given scheduleId
+                return "No queue found with the given ID.";
+            }
+        } catch (\Firebase\JWT\ExpiredException $e) {
+            return "Unauthorized: Token has expired. Please login again.";
+        } catch (\Firebase\JWT\BeforeValidException $e) {
+            return "Unauthorized: Token is not yet valid.";
+        } catch (\Firebase\JWT\SignatureInvalidException $e) {
+            return "Unauthorized: Invalid token signature.";
+        } catch (PDOException $e) {
+            // Handle the exception, return an error response, or log the error
+            return "Error removing the schedule" . $e->getMessage();
         }
     }
     //Teacher Schedule 

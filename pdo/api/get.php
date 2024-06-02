@@ -228,23 +228,77 @@ class Get
         $tokenInfo = $this->middleware->validateToken();
         if ($tokenInfo) {
             // Modified SQL query to join user and consultant tables
-            $sqlStr =
-                "SELECT * FROM queue
-                WHERE teacher_id = $teacher_Id
+            $sqlStr = "
+                SELECT 
+                    q.*,
+                    CONCAT(u.FirstName, ' ', u.LastName) AS student_name,
+                    CONCAT(c.first_name, ' ', c.last_name) AS teacher_name
+                FROM 
+                    queue q
+                JOIN 
+                    user u ON q.student_id = u.UserID
+                JOIN 
+                    consultant c ON q.teacher_id = c.ConsultantID
+                WHERE 
+                    q.teacher_id = :teacher_id
                 ORDER BY 
-                CASE 
-                    WHEN urgency = 'Urgent' THEN 1
-                    ELSE 2
-                END,
-                time_created ASC";
+                    CASE 
+                        WHEN q.urgency = 'Urgent' THEN 1
+                        ELSE 2
+                    END,
+                    q.time_created ASC";
 
-            $result = $this->executeQuery($sqlStr);
+            $stmt = $this->pdo->prepare($sqlStr);
+            $stmt->bindParam(':teacher_id', $teacher_Id, PDO::PARAM_INT);
+            $stmt->execute();
+            $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
-            if ($result['code'] == 200) {
-                return $this->sendPayLoad($result['data'], "success", "Successfully retrieved appointments with user and consultant names.", $result['code']);
+            if ($result) {
+                return $this->sendPayLoad($result, "success", "Successfully retrieved appointments with user and consultant names.", 200);
+            } else {
+                return $this->sendPayLoad(null, "failed", "Failed to pull data.", 404);
             }
+        } else {
+            http_response_code(401);
+            echo json_encode(array('message' => 'Token is invalid or Authorization header is missing'));
+        }
+    }
+    public function get_specific_queue_teacher($teacher_Id, $queue_Id)
+    {
+        $tokenInfo = $this->middleware->validateToken();
+        if ($tokenInfo) {
+            // Modified SQL query to join user and consultant tables
+            $sqlStr = "
+                SELECT 
+                    q.*,
+                    CONCAT(u.FirstName, ' ', u.LastName) AS student_name,
+                    CONCAT(c.first_name, ' ', c.last_name) AS teacher_name
+                FROM 
+                    queue q
+                JOIN 
+                    user u ON q.student_id = u.UserID
+                JOIN 
+                    consultant c ON q.teacher_id = c.ConsultantID
+                WHERE 
+                    q.teacher_id = :teacher_id AND q.queue_id = :queue_id
+                ORDER BY 
+                    CASE 
+                        WHEN q.urgency = 'Urgent' THEN 1
+                        ELSE 2
+                    END,
+                    q.time_created ASC";
 
-            return $this->sendPayLoad(null, "failed", "Failed to pull data.", $result['code']);
+            $stmt = $this->pdo->prepare($sqlStr);
+            $stmt->bindParam(':teacher_id', $teacher_Id, PDO::PARAM_INT);
+            $stmt->bindParam(':queue_id', $queue_Id, PDO::PARAM_INT);
+            $stmt->execute();
+            $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+            if ($result) {
+                return $this->sendPayLoad($result, "success", "Successfully retrieved appointments with user and consultant names.", 200);
+            } else {
+                return $this->sendPayLoad(null, "failed", "Failed to pull data.", 404);
+            }
         } else {
             http_response_code(401);
             echo json_encode(array('message' => 'Token is invalid or Authorization header is missing'));

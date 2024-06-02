@@ -23,6 +23,7 @@ import { TeacherAnalyticsComponent } from './teacher/teacher-analytics/teacher-a
 import { UserManagementComponent } from './admin/user-management/user-management.component';
 import { NotificationTabComponent } from './layouts/notification/notification-tab/notification-tab.component';
 import { NotificationTeacherComponent } from './layouts/notification/notification-teacher/notification-teacher.component';
+import { TeacherReportComponent } from './teacher/teacher-report/teacher-report.component';
 
 export const routes: Routes = [
     {path: '', component: HomepageComponent},
@@ -60,6 +61,7 @@ export const routes: Routes = [
                     {path: 'schedule', component: TeacherScheduleComponent},
                     {path: 'analytics', component: TeacherAnalyticsComponent},
                     {path: 'profile', component: ProfileStudentComponent},
+                    {path: 'report', component: TeacherReportComponent},
                     {path: 'headteacher', 
                         children: [
                             {path: 'teacher-registration', component: TeacherRegistrationApprovalComponent}
