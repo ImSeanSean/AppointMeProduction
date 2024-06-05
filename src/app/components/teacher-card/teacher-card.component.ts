@@ -6,6 +6,8 @@ import { Observable, catchError, map, of } from 'rxjs';
 import { CommonModule, NgFor, NgIf } from '@angular/common';
 import { DaySchedule } from '../../interfaces/DaySchedule';
 import { mainPort } from '../../app.component';
+import { Queue } from '../../interfaces/Queue';
+import { Appointment } from '../../interfaces/Appointment';
 
 @Component({
   selector: 'app-teacher-card',
@@ -20,6 +22,11 @@ export class TeacherCardComponent implements OnInit {
   approvedTeachers: any[] = [];
   token = localStorage.getItem('token');
   teacherScheduleMap: Map<number, DaySchedule[]> = new Map();
+  queue$: {[key:string]: Observable<Queue[]>} = {};
+  appointments$: {[key:string]: Observable<Appointment[]>} = {};
+  queueStatus$: { [key: string]: Observable<boolean> } = {};
+  queueLength$: {[key:string]: Observable<number>} = {};
+  appointmentLength$: {[key:string]: Observable<number>} = {};
 
   constructor(private http: HttpClient, private router: Router) { }
 
@@ -29,7 +36,9 @@ export class TeacherCardComponent implements OnInit {
         this.teachers = data;
         this.approvedTeachers = data;
         this.approvedTeachers.forEach(teacher => {
-          this.getDaySchedule(teacher.ConsultantID);
+          this.queueStatus$[teacher.ConsultantID] = this.isInQueue(teacher.ConsultantID);
+          this.queueLength$[teacher.ConsultantID] = this.getQueueLength(teacher.ConsultantID);
+          this.appointmentLength$[teacher.ConsultantID] = this.getAppointmentsLength(teacher.ConsultantID);
         });
       },
       (error) => {
@@ -46,32 +55,36 @@ export class TeacherCardComponent implements OnInit {
     this.router.navigate(['student/dashboard/appointment-view', teacherId]);
   }
 
-  getDaySchedule(teacherId: number): void {
-    const day = new Date().getDay();
-    const headers = new HttpHeaders().set('Authorization', `Bearer ${this.token}`);
-    this.http.get<DaySchedule[]>(`${mainPort}/pdo/api/get_day_schedule_student/${teacherId}/${day}`, { headers }).pipe(
-      catchError((error) => {
-        console.error('Error fetching day schedule:', error);
-        return of([]);
+  //Get Appointments
+  getAppointmentsLength(teacherId: string): Observable<number> {
+    const token = localStorage.getItem('token');
+    const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
+    return this.http.get<Appointment[]>(`${mainPort}/pdo/api/get_appointment_teacher/${teacherId}`, {headers}).pipe(
+      map(appointments => appointments.length)
+    );
+  }
+  //Get Queue
+  getQueue(teacherId:string): Observable<Queue[]> {
+    const token = localStorage.getItem('token');
+    const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
+    return this.http.get<Queue[]>(`${mainPort}/pdo/api/get_queue_teacher/${teacherId}`, {headers});
+  }
+  getQueueLength(teacherId: string): Observable<number> {
+    const token = localStorage.getItem('token');
+    const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
+    return this.http.get<Queue[]>(`${mainPort}/pdo/api/get_queue_teacher/${teacherId}`, {headers}).pipe(
+      map(result => result.length)
+    );
+  }
+  //Check in Queue
+  isInQueue(teacherId: string): Observable<boolean> {
+    return this.getQueue(teacherId).pipe(
+      map(queue => {
+        const studentId = localStorage.getItem('id');
+        return queue.some(q => q.student_id.toString() === studentId);
       })
-    ).subscribe((schedule: DaySchedule[]) => {
-      if(schedule.length == 0){
-        return
-      }
-      // Sort the schedule before storing
-      schedule.sort((a, b) => {
-        // Assuming startTime is a string in "HH:mm" format
-        const timeA = a.startTime.split(':').map(Number);
-        const timeB = b.startTime.split(':').map(Number);
-        if (timeA[0] !== timeB[0]) {
-          return timeA[0] - timeB[0]; // Sort by hour
-        } else {
-          return timeA[1] - timeB[1]; // If hours are the same, sort by minute
-        }
-      });
-      this.teacherScheduleMap.set(teacherId, schedule);
-    });
-}
+    );
+  }
 
   convertToAMPM(time: String): string {
     const [hours, minutes, seconds] = time.split(':');

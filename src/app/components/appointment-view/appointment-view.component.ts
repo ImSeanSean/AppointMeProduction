@@ -64,8 +64,8 @@ export class AppointmentViewComponent {
 
   openConfirmationReject(): void {
     const dialogRef = this.dialog.open(ConfirmationInputComponent, {
-      height: '50vh',
-      width: '50vw',
+      height: '40vh',
+      width: '30vw',
       data: {
         title: 'Reject Appointment',
         description: 'Are you sure you want to reject this appointment?'

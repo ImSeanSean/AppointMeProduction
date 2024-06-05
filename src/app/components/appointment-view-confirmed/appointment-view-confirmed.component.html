@@ -1,39 +1,33 @@
 <div class="main">
-    <div class="title">
-      <h2>Appointment Details</h2>
-    </div>
-    <div class="content">
-      <div class="top">
-        <div class="textName">
-          <p>Appointment</p>
-          <h1>{{appointments[0]?.appointment_title}}</h1>
-        </div>
+  <div class="title">
+    <h2>Appointment Request Details</h2>
+  </div>
+  <div class="content">
+    <div class="top">
+      <div class="textName">
+        <p>Appointment</p>
+        <h1 *ngIf="">Meeting with {{appointments[0]?.UserName}}</h1>
+        <h1>Meeting with {{appointments[0]?.ConsultantFirstName}}</h1>
       </div>
-      <div class="group">
-        <div class="date">
-          <div class="box">
-            <h4>Teacher</h4>
-          </div>
-          <div class="textDate">
-            <p>{{appointments[0]?.ConsultantFirstName}} {{appointments[0]?.ConsultantLastName}}</p>
-          </div>
-        </div>
-  
+    </div>
+    <div class="body">
+      <div class="group"> 
+        <h3>Request Information</h3>
         <div class="date">
           <div class="box">
             <h4>Student</h4>
           </div>
           <div class="textDate">
-            <p>{{appointments[0]?.UserName}} {{appointments[0]?.UserLastName}}</p>
+            <p>{{this.appointments[0]?.UserName}} {{this.appointments[0].UserLastName}}</p>
           </div>
         </div>
-  
+        
         <div class="date">
           <div class="box">
             <h4>Date</h4>
           </div>
           <div class="textDate">
-            <p>{{getFormattedDate(this.appointments[0]?.AppointmentDate)}}</p>
+            <p>{{this.appointments[0]?.AppointmentDate}}</p>
           </div>
         </div>
   
@@ -42,7 +36,7 @@
             <h4>Time</h4>
           </div>
           <div class="textDate">
-            <p>{{getFormattedTime(this.appointments[0]?.AppointmentDate)}}</p>
+            <p>{{getFormattedTime(this.appointments[0].AppointmentDate)}}</p>
           </div>
         </div>
 
@@ -55,35 +49,26 @@
           </div>
         </div>
 
-        <div class="date">
-          <div class="box">
-            <h4>Urgency</h4>
-          </div>
-          <div class="textDate">
-            <p>{{this.appointments[0]?.urgency}}</p>
-          </div>
-        </div>
-        
       </div>
-      <div class="body">
-        <div class="purpose">
-          <p>Appointment Purpose/Concerns:</p>
+      <div class="textarea-container">
+        <div class="textarea">
+          <div class="purpose-text">
+            <p>Teacher's Message:</p>
+          </div>
+          <textarea placeholder="No Appointment Purpose Stated" readonly></textarea>
         </div>
-        <div class="textarea-container">
-          <textarea placeholder="No Appointment Purpose Stated" readonly>{{appointments[0]?.AppointmentInfo}}</textarea>
-        </div>
-      </div>
-      <div class="buttons">
-        <div class="close">
-          <p (click)="closeWindow()">CLOSE APPOINTMENT</p>
-        </div>
-        <div *ngIf="usertype == 'teacher'" class="reject">
-          <p (click)="openConfirmationReject()">CANCEL APPOINTMENT</p>
-        </div>
-        <div *ngIf="usertype == 'teacher'" class="confirmation">
-          <p (click)="openConfirmationComplete()">MARK AS COMPLETED</p>
+        <div class="buttons">
+          <div class="close">
+            <p (click)="closeWindow()">CLOSE</p>
+          </div>
+          <div (click)="openConfirmationReject()" *ngIf="usertype == 'teacher'" class="reject">
+            <p>CANCEL APPOINTMENT</p>
+          </div>
+          <div (click)="openConfirmationComplete()" *ngIf="usertype == 'teacher'" class="confirmation">
+            <p>COMPLETE APPOINTMENT</p>
+          </div>
         </div>
       </div>
     </div>
   </div>
-  
+</div>

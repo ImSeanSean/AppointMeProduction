@@ -11,7 +11,7 @@
             <th>QUEUE</th>
           </tr>
           <tr>
-            <td>145</td>
+            <td>{{ queueLength$[teacher.ConsultantID] | async }}</td>
           </tr>
         </table>
       </div>
@@ -21,7 +21,7 @@
             <th>APPOINTMENTS</th>
           </tr>
           <tr>
-            <td>14</td>
+            <td>{{ appointmentLength$[teacher.ConsultantID] | async }}</td>
           </tr>
         </table>
       </div>
@@ -31,7 +31,8 @@
             <th>STATUS</th>
           </tr>
           <tr>
-            <td>Appointed</td>
+            <td *ngIf="queueStatus$[teacher.ConsultantID] | async; else notInQueue">In Queue</td>
+            <ng-template #notInQueue><td>Not in Queue</td></ng-template>
           </tr>
         </table>
       </div>

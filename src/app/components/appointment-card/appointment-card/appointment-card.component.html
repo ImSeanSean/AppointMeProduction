@@ -1,14 +1,15 @@
 <div class="card-container">
-    <div class="appointment-card" *ngFor="let queue of queue; let i = index" (click)="changeRoute(queue.queue_id)">
+    <div class="appointment-card" *ngFor="let queue of queue; let i = index" (click)="changeRoute(queue)">
         <div class="box">
             <p>{{i + 1}}</p>
         </div>
         <div class="Text">
             <div class="title">
-                <p>Meeting with {{queue.student_name}}</p>
+                <p>Meeting with {{ userType === 'user' ? queue.teacher_name : queue.student_name }}</p>
             </div>
             <div class="mid">
-                <p>Student: {{queue.student_name}}</p>
+                <p *ngIf="userType == 'teacher'">Student: {{queue.student_name}}</p>
+                <p *ngIf="userType == 'user'"> Teacher: {{queue.teacher_name}}</p>
                 <p>Requested on: {{getFormattedDate(queue.time_created)}}</p>
             </div>
             <!-- <div class="bottom">
@@ -22,4 +23,3 @@
         </div>
     </div>
 </div>
-

@@ -1,52 +1,79 @@
-<div class="main">
+<div class="main" *ngIf="allIsLoaded == true">
     <div class="title">
-        <h2>Create Appointment</h2>
+      <h2>Create Appointment</h2>
     </div>
     <div class="content">
-        <div class="appointment-information">
-            <div class="appointment-details">
-                <h2>Request Details:</h2>
-                <div class="details-box">
-                    <div class="name">
-                        <h3>Name</h3>
-                        <h3>Urgency</h3>
-                    </div>
-                    <h3>Mode</h3>
-                    <h3>Preferred Day</h3>
-                    <h3>Preferred Time</h3>
-                </div>
-                <div class="schedule">
-                    <h2>Schedule your Time:</h2>
-                    <div class="day">
-                        <h4>Choose Day:</h4>
-                        <input type="date">
-                    </div>
-                    <div class="time">
-                        <h4>Add a Time for Appointment:</h4>
-                        <input type="time">
-                    </div>
-                    <div>
-                        <button class="schedule_button">Create Appointment</button>
-                    </div>
-                </div>
+      <div class="appointment-information">
+        <div class="appointment-details">
+          <h2>Request Details:</h2>
+          <div class="details-box">
+            <div class="text">
+              <h3>Name</h3>
+              <p>{{ queue[0].student_name }}</p>
             </div>
+            <div class="information">
+              <div class="text">
+                <h3>Urgency</h3>
+                <p>{{ queue[0].urgency }}</p>
+                <h3>Mode</h3>
+                <p>{{ queue[0].mode }}</p>
+              </div>
+              <div class="text">
+                <h3>Preferred Day</h3>
+                <p>{{ queue[0].day }}</p>
+                <h3>Preferred Time</h3>
+                <p>{{ queue[0].time }}</p>
+              </div>
+            </div>
+          </div>
+          <div class="schedule">
+            <h2>Schedule Appointment:</h2>
+            <div class="select-date">
+              <div class="day">
+                <h4>Choose Date:</h4>
+                <input type="date" [(ngModel)]="selectedDate" (ngModelChange)="updateFilteredAppointments()">
+              </div>
+              <div class="time">
+                <h4>Choose time:</h4>
+                <input type="time" [(ngModel)]="selectedTime">
+              </div>
+            </div>
+            <div class="mode">
+              <h4>Choose Mode:</h4>
+              <select [(ngModel)]="selectedMode">
+                <option [value]="'Face to Face'">Face to Face</option>
+                <option [value]="'Online'">Online</option>
+              </select>
+            </div>
+            <div>
+              <button class="schedule_button" (click)="createAppointment()">Create Appointment</button>
+            </div>
+          </div>
         </div>
-        <div class="appointment-view">
-            <div class="date">
-                <h3>Date</h3>
-                <p>Thursday, May 30, 2024</p>
-            </div>
-            <div class="appointment-box">
-                <h2>Your Appointments</h2>
-                <div class="time-box">
-                    <ul>
-                        <li>4pm</li>
-                        <li>4pm</li>
-                        <li>4pm</li>
-                        <li>4pm</li>
-                    </ul>
-                </div>
-            </div>
+      </div>
+      <div class="appointment-view">
+        <div class="date">
+          <h3>Date</h3>
+          <p>{{ convertDate(selectedDate) }}</p>
         </div>
+        <div class="appointment-box">
+          <h2>{{ getDay(selectedDate) }} Appointments</h2>
+          <div class="time-box" click="">
+            <div class="appointment-card" *ngFor="let appointment of filteredAppointment" (click)="changeRoute(appointment.AppointmentID)">
+              <div class="top">
+                <h4>Appointment with {{ appointment.UserName }} {{ appointment.UserLastName }}</h4>
+              </div>
+              <div class="bottom">
+                <div class="left">
+                  <p>Time: {{ appointment.AppointmentDate }}</p>
+                </div>
+                <div class="right">
+                  <p>{{ appointment.UserName }} {{ appointment.UserLastName }}</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
-</div>
+  </div>

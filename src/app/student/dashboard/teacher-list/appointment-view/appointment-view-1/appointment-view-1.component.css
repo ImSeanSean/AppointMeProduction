@@ -80,8 +80,13 @@
 
 .mode{
     display: flex;
+    justify-content: center;
     flex-direction: column;
-    align-items: center;
+    padding: 20px 0px;
+}
+
+.mode i{
+    font-size: 30px;
 }
 
 .buttons{
@@ -91,16 +96,39 @@
     width: 90%;
     gap: 20px;
 }
+
 .appointment-details{
-    border: 3px solid gray;
+    border: 3px solid black;
+    border-radius: 20px;
     padding: 10px;
     display: grid;
     row-gap: 10px;
     width: 100%;
 }
 
-.appointment-details div{
-    display: flex
+.appointment-details .queue{
+    padding: 10px;
+    border-bottom: 2px solid gray;
+}
+
+.appointment-information{
+    padding: 10px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.appointment-information div{
+    display: flex;
+    gap: 10px;
+}
+
+.appointment-information div h4{
+    font-size: 18px;
+}
+
+.appointment-information div p{
+    font-size: 18px;
 }
 
 .bottom{
@@ -170,7 +198,37 @@
     justify-content: center;
     font-size: 40px;
 }
-
+.update-button{
+    margin-top: 20px;
+    display: flex;
+    gap: 10px;
+    justify-content: center;
+}
+.update-button button{
+    background-color: #FEEFCF;
+    font-size: 20px;
+    border-radius: 20px;
+    padding: 10px 20px;
+    cursor: pointer;
+    color: gray;
+}
+.update-button button:hover{
+    background-color: #F78914;
+    color: white;
+}
+input{
+    border: black 1px solid;
+    font-size: 16px;
+    padding: 5px;
+}
+select{
+    padding: 5px;
+    font-size: 16px;
+    border: black 1px solid;
+}
+option{
+    font-size: 16px;
+}
 /*Radio*/
 .radio{
     width: 100%;

@@ -8,7 +8,7 @@ import { MatDialog } from '@angular/material/dialog';
 import { ErrorComponent } from '../../../../../matdialogs/error/error.component';
 import { Observable, catchError, map, of } from 'rxjs';
 import {MatSlideToggleModule} from '@angular/material/slide-toggle';
-import { FormsModule } from '@angular/forms';
+import { FormsModule, NgModel } from '@angular/forms';
 import { DaySchedule } from '../../../../../interfaces/DaySchedule';
 import { UserInformationService } from '../../../../../services/user-information/user-information.service';
 import { AppointmentValidationService } from '../../../../../services/appointment/appointment-validation.service';
@@ -17,6 +17,7 @@ import { mainPort } from '../../../../../app.component';
 import {MatTooltipModule} from '@angular/material/tooltip';
 import { Queue } from '../../../../../interfaces/Queue';
 import { HTMLResponse } from '../../../../../interfaces/HTMLResponse';
+import { ConfirmationComponent } from '../../../../../matdialogs/confirmation/confirmation.component';
 
 @Component({
   selector: 'app-appointment-view-1',
@@ -46,8 +47,16 @@ export class AppointmentView1Component implements OnInit{
   appointmentLength: number = 0;
   //If inQueue
   inQueue: boolean = false;
+  queueId: number = 0;
   queueIndex: number = 0;
   studentQueue: Queue | undefined = undefined;
+  preferredDay: string = "";
+  preferredTime: string = "";
+  preferredMode: string = "";
+  urgency: string = "";
+  daysOfWeek: string[] = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+  //Allow Edit
+  edit: boolean = false;
   //Functions
   constructor(
     private http: HttpClient, 
@@ -116,6 +125,57 @@ export class AppointmentView1Component implements OnInit{
       }
     );
   }
+  //Update Queue
+  updateQueue(){
+    const confirmation = this.dialog.open(ConfirmationComponent, {
+      width: '300px',
+      data: {
+        title: 'Update Request',
+        description: 'Are you sure you want to update your request?'
+      }
+    })
+
+    confirmation.afterClosed().subscribe(result => {
+      if(result){
+        const data = {
+          key: localStorage.getItem('token'),
+          queue_id: this.queueId,
+          day: this.preferredDay,
+          time: this.preferredTime + ":00",
+          mode: this.preferredMode,
+          urgency: this.urgency
+        }
+        this.http.post(`${mainPort}/pdo/api/update_queue`, data).subscribe(result =>{
+          this.edit = false;
+          this.updateData();
+        });
+      }
+    })
+    return;
+  }
+  //Delete Queue
+  deleteQueue(){
+    const confirmation = this.dialog.open(ConfirmationComponent, {
+        width: '300px',
+        data: {
+          title: 'Cancel Queue',
+          description: 'Are you sure you want to cancel your queue?'
+        }
+      }
+    )
+    confirmation.afterClosed().subscribe(result => {
+      if(result){
+        const data = {
+          key: localStorage.getItem('token'),
+          queue_id: this.queueId,
+        }
+        this.http.post(`${mainPort}/pdo/api/delete_queue`, data).subscribe(result =>{
+          this.updateData();
+        });
+      }
+    })
+    return;
+  }
   //Get Queue
   getQueue(): Observable<Queue[]> {
     const token = localStorage.getItem('token');
@@ -127,9 +187,20 @@ export class AppointmentView1Component implements OnInit{
     const studentId = localStorage.getItem('id');
     const matchingQueue = this.queue.find(queue => queue.student_id.toString() === studentId);
     if (matchingQueue){
-        this.inQueue = true;
-        this.queueIndex = this.queue.findIndex(queue => queue.student_id.toString() === studentId) + 1; 
-        this.studentQueue = matchingQueue;
+      this.inQueue = true;
+      this.queueId = matchingQueue.queue_id
+      this.queueIndex = this.queue.findIndex(queue => queue.student_id.toString() === studentId) + 1; 
+      this.studentQueue = matchingQueue;
+      this.preferredDay = matchingQueue.day;
+      this.urgency = matchingQueue.urgency;
+      // Parse the time string and extract only the hour and minute part
+      const [hour, minute] = matchingQueue.time.split(':');
+      // Format the hour and minute part to match the "HH:MM" format
+      this.preferredTime = `${hour}:${minute}`;
+      this.preferredMode = matchingQueue.mode;
+    }
+    else{
+      this.inQueue = false;
     }
   }
   //Appointment-Related Functions
@@ -140,6 +211,9 @@ export class AppointmentView1Component implements OnInit{
     return this.http.get<Appointment[]>(`${mainPort}/pdo/api/get_appointment_teacher/${this.teacherId}`, {headers});
   }
   //Other Functions
+  toggleEdit(){
+    this.edit = !this.edit
+  }
   updateData(){
     this.getAppointments().subscribe(
       (data: Appointment[]) => {
@@ -152,7 +226,6 @@ export class AppointmentView1Component implements OnInit{
         this.queue = data;
         this.queueLength = this.queue.length
         this.isInQueue();
-        this.isDataLoaded = true;
       }
     );
   }

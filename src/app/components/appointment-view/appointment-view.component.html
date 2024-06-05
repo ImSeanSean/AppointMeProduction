@@ -1,82 +1,81 @@
 <div class="main">
-    <div class="title">
+  <div class="title">
       <h2>Appointment Request Details</h2>
-    </div>
-    <div class="content">
+  </div>
+  <div class="content">
       <div class="top">
-        <div class="textName">
-          <p>Appointment</p>
-          <h1>Meeting with {{queue[0]?.student_name}}</h1>
-        </div>
+          <div class="textName">
+              <p>Appointment</p>
+              <h1>Meeting with {{queue[0]?.student_name || 'N/A'}}</h1>
+          </div>
       </div>
       <div class="body">
-        <div class="group"> 
-          <h3>Request Information</h3>
-          <div class="date">
-            <div class="box">
-              <h4>Student</h4>
-            </div>
-            <div class="textDate">
-              <p>{{this.queue[0]?.student_name}}</p>
-            </div>
+          <div class="group"> 
+              <h3>Request Information</h3>
+              <div class="date">
+                  <div class="box">
+                      <h4>Student</h4>
+                  </div>
+                  <div class="textDate">
+                      <p>{{queue[0]?.student_name || 'N/A'}}</p>
+                  </div>
+              </div>
+              
+              <div class="date">
+                  <div class="box">
+                      <h4>Preferred Day</h4>
+                  </div>
+                  <div class="textDate">
+                      <p>{{queue[0]?.day || 'N/A'}}</p>
+                  </div>
+              </div>
+      
+              <div class="date">
+                  <div class="box">
+                      <h4>Preferred Time</h4>
+                  </div>
+                  <div class="textDate">
+                      <p>{{queue[0]?.time ? getFormattedTime(queue[0].time) : 'N/A'}}</p>
+                  </div>
+              </div>
+      
+              <div class="date">
+                  <div class="box">
+                      <h4>Preferred Mode</h4>
+                  </div>
+                  <div class="textDate">
+                      <p>{{queue[0]?.mode || 'N/A'}}</p>
+                  </div>
+              </div>
+      
+              <div class="date">
+                  <div class="box">
+                      <h4>Urgency</h4>
+                  </div>
+                  <div class="textDate">
+                      <p>{{queue[0]?.urgency || 'N/A'}}</p>
+                  </div>
+              </div>
           </div>
-          
-          <div class="date">
-            <div class="box">
-              <h4>Preferred Day</h4>
-            </div>
-            <div class="textDate">
-              <p>{{this.queue[0]?.day}}</p>
-            </div>
+          <div class="textarea-container">
+              <div class="textarea">
+                  <div class="purpose-text">
+                      <p>Appointment Purpose/Concerns:</p>
+                  </div>
+                  <textarea placeholder="No Appointment Purpose Stated" readonly>{{queue[0]?.reason || 'N/A'}}</textarea>
+              </div>
+              <div class="buttons">
+                  <div class="close">
+                      <p (click)="closeWindow()">CLOSE REQUEST</p>
+                  </div>
+                  <div (click)="openConfirmationReject()" *ngIf="usertype == 'teacher'" class="reject">
+                      <p>REJECT REQUEST</p>
+                  </div>
+                  <div (click)="changeRoute()" *ngIf="usertype == 'teacher'" class="confirmation">
+                      <p>CREATE APPOINTMENT</p>
+                  </div>
+              </div>
           </div>
-    
-          <div class="date">
-            <div class="box">
-              <h4>Preferred Time</h4>
-            </div>
-            <div class="textDate">
-              <p>{{getFormattedTime(this.queue[0].time)}}</p>
-            </div>
-          </div>
-  
-          <div class="date">
-            <div class="box">
-              <h4>Preferred Mode</h4>
-            </div>
-            <div class="textDate">
-              <p>{{this.queue[0]?.mode}}</p>
-            </div>
-          </div>
-  
-          <div class="date">
-            <div class="box">
-              <h4>Urgency</h4>
-            </div>
-            <div class="textDate">
-              <p>{{this.queue[0]?.urgency}}</p>
-            </div>
-          </div>
-        </div>
-        <div class="textarea-container">
-          <div class="textarea">
-            <div class="purpose-text">
-              <p>Appointment Purpose/Concerns:</p>
-            </div>
-            <textarea placeholder="No Appointment Purpose Stated" readonly>{{queue[0]?.reason}}</textarea>
-          </div>
-          <div class="buttons">
-            <div class="close">
-              <p (click)="closeWindow()">CLOSE REQUEST</p>
-            </div>
-            <div (click)="openConfirmationReject()" *ngIf="usertype == 'teacher'" class="reject">
-              <p>REJECT REQUEST</p>
-            </div>
-            <div (click)="changeRoute()" *ngIf="usertype == 'teacher'" class="confirmation">
-              <p>CREATE APPOINTMENT</p>
-            </div>
-          </div>
-        </div>
       </div>
-    </div>
   </div>
-  
+</div>

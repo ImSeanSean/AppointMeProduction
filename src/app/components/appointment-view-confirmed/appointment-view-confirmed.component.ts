@@ -9,6 +9,7 @@ import { ConfirmationComponent } from '../../matdialogs/confirmation/confirmatio
 import { mainPort } from '../../app.component';
 import { ConfirmationInputComponent } from '../../matdialogs/confirmation-input/confirmation-input/confirmation-input.component';
 import { NotificationServicesService } from '../../services/notification-services.service';
+import { ErrorComponent } from '../../matdialogs/error/error.component';
 
 @Component({
   selector: 'app-appointment-view-confirmed',
@@ -49,11 +50,11 @@ export class AppointmentViewConfirmedComponent {
 
   openConfirmationReject(): void {
     const dialogRef = this.dialog.open(ConfirmationInputComponent, {
-      height: '50vh',
-      width: '50vw',
+      height: '40vh',
+      width: '30vw',
       data: {
         title: 'Cancel Appointment',
-        description: 'Are you sure you want to cancel this appointment?'
+        description: 'Optional message to student...'
       }
     });
   
@@ -78,10 +79,36 @@ export class AppointmentViewConfirmedComponent {
     });
   
     dialogRef.afterClosed().subscribe(result => {
-      let bool = result[0];
-      let desc = result[1]
-      if (bool) {
-        this.completeAppointment();
+      if (result) {
+        const followup = this.dialog.open(ConfirmationComponent, {
+          height: '30vh',
+          width: '25vw',
+          data: {
+            title: 'Follow-up Appointment',
+            description: 'Queue Student for a Follow-up Appointment?'
+          }
+        })
+        followup.afterClosed().subscribe(result => {
+          if(result){
+            const reason = this.dialog.open(ConfirmationInputComponent, {
+              height: '40vh',
+              width: '30vw',
+              data: {
+                title: 'Follow-up Appointment Note',
+                description: 'Add a note...'
+              }
+            })
+            reason.afterClosed().subscribe(result => {
+              if(result[0]){
+                this.addQueue(result[1])
+                this.completeAppointment()
+              }
+            })
+          }
+          else{
+            this.completeAppointment()
+          }
+        })
       }
     });
   }
@@ -143,4 +170,60 @@ export class AppointmentViewConfirmedComponent {
     );
   this.closeWindow();
   }
+
+  addQueue(note: string){
+    const data = {
+      key: localStorage.getItem('token'),
+      student_id: this.appointments[0].user_id,
+      teacher_id: this.appointments[0].ConsultantID,
+      mode: null,
+      urgency: null,
+      day: null,
+      time: null,
+      reason: note
+    }
+    console.log(data)
+    this.http.post(`${mainPort}/pdo/api/add_queue_teacher`, data).subscribe(
+      (response: any) => { 
+        console.log(response)
+        if(response == 0){
+          this.dialog.open(ErrorComponent, {
+            width: '300px',
+            data: {
+              title: 'Added to Queue',
+              description: 'You have been successfully added to the queue.'
+            }
+          })
+        }
+        else if(response == 1){
+          this.dialog.open(ErrorComponent, {
+            width: '300px',
+            data: {
+              title: 'Already Queued',
+              description: 'You already have a queue with the Faculty Member.'
+            }
+          })
+          this.closeWindow();
+        }
+        else if(response == 2){
+          this.dialog.open(ErrorComponent, {
+            width: '300px',
+            data: {
+              title: 'Error adding to Queue',
+              description: 'An error was encountered in the queueing process.'
+            }
+          })
+          this.closeWindow();
+        }
+        else{
+  
+        }
+      },
+      error => {
+        console.error('HTTP Error:', error);
+      }
+    );
+  }
 }
+
+

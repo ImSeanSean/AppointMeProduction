@@ -446,15 +446,14 @@ class Post
             error_log("JWT Token: " . $jwt);
             $key = JWT::decode($jwt, new Key($this->secretKey, 'HS256'));
             // Check authorization here (example: verify that the user is authorized to create an appointment)
-            if ($key->type !== 'student') {
-                return "Unauthorized: Only students are allowed to create appointments.";
+            if ($key->type !== 'teacher') {
+                return "Unauthorized: Only teachers are allowed to create appointments.";
             }
-            $user_id = $key->user_id;
+            $user_id = $data->user_id;
             $teacher_id = $data->teacher;
             $date = $data->date;
             $time = $data->time;
             $mode = $data->mode;
-            $urgency = $data->urgency;
             $mysqlDatetime = date("Y-m-d H:i:s", strtotime("$date $time"));
             // Retrieve teacher information
             $teacherInfoSql = "SELECT first_name, last_name FROM consultant WHERE ConsultantID = :teacher_id";
@@ -468,10 +467,9 @@ class Post
             $teacherLastName = $teacherInfo['last_name'];
             $title = "Meeting with " . $teacherFirstName . " " . $teacherLastName;
             $details = $data->details;
-            $status = 0;
 
-            $sql = "INSERT INTO appointment (user_id, ConsultantID, AppointmentDate, appointment_title, AppointmentInfo, status, mode, urgency)
-                    VALUES (:user_id, :consultant_id, :appointment_date, :appointment_title, :appointment_info, :status, :mode, :urgency)";
+            $sql = "INSERT INTO appointment (user_id, ConsultantID, AppointmentDate, appointment_title, AppointmentInfo, mode)
+                    VALUES (:user_id, :consultant_id, :appointment_date, :appointment_title, :appointment_info, :mode)";
 
             $stmt = $this->pdo->prepare($sql);
 
@@ -480,9 +478,7 @@ class Post
             $stmt->bindParam(':appointment_date', $mysqlDatetime);
             $stmt->bindParam(':appointment_title', $title);
             $stmt->bindParam(':appointment_info', $details);
-            $stmt->bindParam(':status', $status);
             $stmt->bindParam(':mode', $mode);
-            $stmt->bindParam(':urgency', $urgency);
 
             $stmt->execute();
 
@@ -684,6 +680,124 @@ class Post
             return "Error adding you to queue" . $e->getMessage();
         }
     }
+    public function add_queue_teacher($data)
+    {
+        try {
+            $jwt = $data->key;
+            error_log("JWT Token: " . $jwt);
+            $key = JWT::decode($jwt, new Key($this->secretKey, 'HS256'));
+            // Check authorization 
+            if ($key->type !== 'teacher') {
+                return "Unauthorized: Only teachers are allowed to requeue.";
+            }
+            $teacher_id = $data->teacher_id;
+            $student_id = $data->student_id;
+            $mode = $data->mode;
+            $urgency = $data->urgency;
+            $day = $data->day;
+            $time = $data->time;
+            $reason = $data->reason;
+            //Check if already has queue
+            $checkSql = "SELECT COUNT(*) FROM `queue` WHERE `teacher_id` = :teacher_id AND `student_id` = :student_id";
+            $checkStmt = $this->pdo->prepare($checkSql);
+            $checkStmt->bindParam(':teacher_id', $teacher_id, PDO::PARAM_INT);
+            $checkStmt->bindParam(':student_id', $student_id, PDO::PARAM_INT);
+            $checkStmt->execute();
+            $count = $checkStmt->fetchColumn();
+
+            if ($count > 0) {
+                return '1';
+            }
+
+            //Insert
+            $sql = "INSERT INTO `queue` (`teacher_id`, `student_id`, `mode`, `urgency`, `day`, `time`, `reason`)
+            VALUES (:teacher_id, :student_id, :mode, :urgency, :day, :time, :reason)";
+
+            $stmt = $this->pdo->prepare($sql);
+
+            // Bind the parameters to the query
+            $stmt->bindParam(':teacher_id', $teacher_id, PDO::PARAM_INT);
+            $stmt->bindParam(':student_id', $student_id, PDO::PARAM_INT);
+            $stmt->bindParam(':mode', $mode, PDO::PARAM_STR);
+            $stmt->bindParam(':urgency', $urgency, PDO::PARAM_STR);
+            $stmt->bindParam(':day', $day, PDO::PARAM_STR);
+            $stmt->bindParam(':time', $time, PDO::PARAM_STR);
+            $stmt->bindParam(':reason', $reason, PDO::PARAM_STR);
+
+            if ($stmt->execute()) {
+                return '0';
+            } else {
+                return '2';
+            }
+        } catch (\Firebase\JWT\ExpiredException $e) {
+            return "Unauthorized: Token has expired. Please login again.";
+        } catch (\Firebase\JWT\BeforeValidException $e) {
+            return "Unauthorized: Token is not yet valid.";
+        } catch (\Firebase\JWT\SignatureInvalidException $e) {
+            return "Unauthorized: Invalid token signature.";
+        } catch (PDOException $e) {
+            // Handle the exception, return an error response, or log the error
+            return "Error adding you to queue" . $e->getMessage();
+        }
+    }
+    public function update_queue($data)
+    {
+        try {
+            $jwt = $data->key;
+            error_log("JWT Token: " . $jwt);
+            $key = JWT::decode($jwt, new Key($this->secretKey, 'HS256'));
+            // Check authorization here (example: verify that the user is authorized to create an appointment)
+            if ($key->type !== 'student') {
+                return "Unauthorized: Only students are allowed to add a queue.";
+            }
+            // Initialize Variables
+            $queue_id = $data->queue_id;
+            $day = $data->day;
+            $time = $data->time;
+            $mode = $data->mode;
+            $urgency = $data->urgency;
+
+            // Find Queue
+            $sqlValidation = "SELECT * FROM queue WHERE queue_id = :queue_id";
+            $stmt = $this->pdo->prepare($sqlValidation);
+            $stmt->bindParam(':queue_id', $queue_id);
+            $stmt->execute();
+            $validationResult = $stmt->fetch(PDO::FETCH_ASSOC);
+
+            // Check if the queue with the provided queue_id exists
+            if (!$validationResult) {
+                return "Error: Queue with queue_id " . $queue_id . " not found.";
+            }
+
+            // Update Queue
+            $sqlUpdate = "UPDATE queue SET mode = :mode, urgency = :urgency, day = :day, time = :time WHERE queue_id = :queue_id";
+            $stmt = $this->pdo->prepare($sqlUpdate);
+            $stmt->bindParam(':mode', $mode);
+            $stmt->bindParam(':urgency', $urgency);
+            $stmt->bindParam(':day', $day);
+            $stmt->bindParam(':time', $time);
+            $stmt->bindParam(':queue_id', $queue_id);
+            $result = $stmt->execute();
+
+            // Check if the update was successful
+            if ($result) {
+                return "Queue updated successfully.";
+            } else {
+                $errorInfo = $stmt->errorInfo();
+                return "Error: Queue update failed. SQL Error: " . $errorInfo[2];
+            }
+        } catch (\Firebase\JWT\ExpiredException $e) {
+            return "Unauthorized: Token has expired. Please login again.";
+        } catch (\Firebase\JWT\BeforeValidException $e) {
+            return "Unauthorized: Token is not yet valid.";
+        } catch (\Firebase\JWT\SignatureInvalidException $e) {
+            return "Unauthorized: Invalid token signature.";
+        } catch (PDOException $e) {
+            // Handle the exception, return an error response, or log the error
+            return "Error updating the queue: " . $e->getMessage();
+        }
+    }
+
     public function delete_queue($data)
     {
         try {
@@ -691,8 +805,8 @@ class Post
             error_log("JWT Token: " . $jwt);
             $key = JWT::decode($jwt, new Key($this->secretKey, 'HS256'));
             // Check authorization here (example: verify that the user is authorized to create an appointment)
-            if ($key->type !== 'teacher') {
-                return "Unauthorized: Only teachers are allowed to delete a queue.";
+            if ($key->type !== 'teacher' && $key->type !== 'student') {
+                return "Unauthorized: Only teachers or students are allowed to perform this action.";
             }
             // The rest of the function
             $queueId = $data->queue_id;

@@ -23,7 +23,7 @@
     padding: 30px 50px;
     height: 80vh;
     display: grid;
-    grid-template-columns: 4.5fr 5.5fr;
+    grid-template-columns: 3.5fr 6.5fr;
     column-gap: 5vw;
 }
 
@@ -39,11 +39,42 @@
     padding: 20px;
 }
 
+.information{
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+}
+
+.details-box h3{
+    font-size: 15px;
+    font-weight: 500;
+}
+
+.text{
+    font-size: 19px;
+    font-weight: bold;
+    margin-bottom: 10px;
+}
+
 .schedule{
     width: 100%;
     display: flex;
     flex-direction: column;
     gap: 2vh;
+}
+
+.select-date{
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+}
+
+.mode select{
+    width: 90%;
+    border: #168021 solid 1.5px;
+    padding: 15px;
+    font-size: 17px;
+    background-color: #f5f5f5;
+    border-radius: 20px;
+    width: 90%;
 }
 
 .day{
@@ -96,10 +127,11 @@
 
 .date{
     display: flex;
+    flex-direction: row;
     align-items: center;
     border: #F78914 solid 3px;
     border-radius: 15px;
-    width: 60%;
+    width: 30%;
 }
 
 .date h3{
@@ -107,7 +139,9 @@
     border-bottom-left-radius: 12px;
     background-color: #F08000;
     color: white;
+    height: 100%;
     padding: 10px;
+    font-size: 20px;
 }
 
 .date p{
@@ -117,24 +151,37 @@
     border-top-right-radius: 10px;
     border-bottom-right-radius: 10px;
     background-color: white;
+    font-size: 20px;
+    text-align: center;
 }
 
 .time-box{
     border-top: 2px solid #F78914;
-    border-bottom: 2px solid #F78914;
-    border-left: 2px solid #168021;
-    border-right: 2px solid #168021;
     padding: 20px;
+    width: 100%;
+    overflow-y: auto;
+    height: 60vh;
 }
 
-.time-box ul{
-    display: flex;
-    list-style-type: none;
-    gap: 20px;
+.appointment-card{
+    margin: auto;
+    margin-bottom: 20px;
+    border-radius: 30px;
+    width: 80%;
+    border: 2px black solid;
 }
-
-.time-box ul li{
+.appointment-card .top{
     background-color: #168021;
+    border-top-left-radius: 28px;
+    border-top-right-radius: 28px;
+    color: white;
+    padding: 20px;
+    text-align: center;
     font-size: 20px;
-    padding: 10px 15px;
+}
+
+.appointment-card .bottom{
+    display: flex;
+    padding: 15px;
+    justify-content: space-evenly;
 }

@@ -42,7 +42,7 @@
                     </div>
                 </div>
             </div>
-            <div class="mode" *ngIf="inQueue === false">
+            <div class="mode" *ngIf="inQueue == false">
                 <h2>Appointment Options:</h2>
                 <div class="buttons">
                     <div>
@@ -99,28 +99,45 @@
             </div>
             <div class="mode" *ngIf="inQueue === true">
                 <div class="appointment-details">
-                    <div>
-                        <h2>Number in Queue: {{queueIndex}}</h2>
-                    </div>
-                    <div>
-                        <h4>Preferred Day: </h4>
-                        <p>{{studentQueue?.day}}</p>
-                    </div>
-                    <div>
-                        <h4>Preferred Time:</h4>
-                        <p>{{getFormattedTime(studentQueue?.time)}}</p>
-                    </div>
-                    <div>
-                        <h4>Preferred Mode:</h4>
-                        <p>{{studentQueue?.mode}}</p>
-                    </div>
-                    <div>
-                        <h4>Urgency:</h4>
-                        <p>{{studentQueue?.urgency}}</p>
+                    <div class="queue">
+                        <h2><i class='bx bx-group' style="color: #F78914;"></i> Place in Queue: {{queueIndex}}</h2>
+                    </div>  
+                    <div class="appointment-information">
+                        <div>
+                            <h4>Preferred Day: </h4>
+                            <p *ngIf="edit == false">{{studentQueue?.day}}</p>
+                            <select [(ngModel)]="preferredDay" *ngIf="edit == true">
+                                <option *ngFor="let day of daysOfWeek" [value]="day">{{day}}</option>
+                            </select>
+                        </div>
+                        <div>
+                            <h4>Preferred Time:</h4>
+                            <p *ngIf="edit == false">{{getFormattedTime(studentQueue?.time)}}</p>
+                            <input type="time" *ngIf="edit == true" [(ngModel)]="preferredTime">
+                        </div>
+                        <div>
+                            <h4>Preferred Mode:</h4>
+                            <p *ngIf="edit == false">{{studentQueue?.mode}}</p>
+                            <select [(ngModel)]="preferredMode" *ngIf="edit == true">
+                                <option [value]="'Face to Face'">Face to Face</option>
+                                <option [value]="'Online'">Online</option>                              
+                            </select>
+                        </div>
+                        <div>
+                            <h4>Urgency:</h4>
+                            <p *ngIf="edit == false">{{studentQueue?.urgency}}</p>
+                            <select [(ngModel)]="urgency" *ngIf="edit == true">
+                                <option [value]="'Urgent'">Urgent</option>
+                                <option [value]="'Not Urgent'">Not Urgent</option>                              
+                            </select>
+                        </div>
                     </div>
                 </div>
                 <div class="update-button">
-                    <button>Update Request</button>
+                    <button *ngIf="edit == false" (click)="deleteQueue()">Cancel Queue</button>
+                    <button *ngIf="edit == false" (click)="toggleEdit()">Edit Request</button>
+                    <button *ngIf="edit == true" (click)="toggleEdit()">Cancel Edit</button>
+                    <button *ngIf="edit == true" (click)="updateQueue()">Update Request</button>
                 </div>
             </div>
         </div>

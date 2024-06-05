@@ -63,6 +63,9 @@ switch ($_SERVER['REQUEST_METHOD']) {
             case 'get_appointment':
                 echo json_encode($get->get_appointment($request[1]));
                 break;
+            case 'get_queue_student':
+                echo json_encode($get->get_queue_student($request[1]));
+                break;
             case 'get_queue_teacher':
                 if (isset($request[2])) {
                     // When request has both teacher_id and queue_id
@@ -143,6 +146,12 @@ switch ($_SERVER['REQUEST_METHOD']) {
                 break;
             case 'add_queue':
                 echo json_encode($post->add_queue($data));
+                break;
+            case 'add_queue_teacher':
+                echo json_encode($post->add_queue_teacher($data));
+                break;
+            case 'update_queue':
+                echo json_encode($post->update_queue($data));
                 break;
             case 'delete_queue':
                 echo json_encode($post->delete_queue($data));
