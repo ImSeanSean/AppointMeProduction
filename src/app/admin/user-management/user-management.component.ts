@@ -8,12 +8,15 @@ import { NgFor } from '@angular/common';
 import { MatDialog } from '@angular/material/dialog';
 import { ConfirmationComponent } from '../../matdialogs/confirmation/confirmation.component';
 import { EditUserComponent } from '../../matdialogs/edit-user/edit-user.component';
+import { MatIcon } from '@angular/material/icon';
+import { MatButton } from '@angular/material/button';
+import { MatTooltipModule } from '@angular/material/tooltip';
 
 
 @Component({
   selector: 'app-user-management',
   standalone: true,
-  imports: [MatSlideToggleModule, NgFor],
+  imports: [MatSlideToggleModule, NgFor, MatIcon, MatButton, MatTooltipModule],
   templateUrl: './user-management.component.html',
   styleUrl: './user-management.component.css'
 })
@@ -48,7 +51,7 @@ export class UserManagementComponent implements OnInit{
   editTeacher(id: number) {
     const dialogRef = this.dialog.open(EditUserComponent, {
         height: '50vh',
-        width: '50vw',
+        width: '40vw',
         data: {
             teacherid: id
         }

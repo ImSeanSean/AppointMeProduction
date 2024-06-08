@@ -28,10 +28,12 @@ button{
     cursor: pointer;
 }
 .no{
-    background-color: #FFEFD1;
+    background-color: #ffb566;
+    color: white;
 }
 .yes{
-    background-color: #EAFAE5;
+    background-color: #7aae6c;
+    color: white;
 }
 .no:hover{
     background-color: #F78914;

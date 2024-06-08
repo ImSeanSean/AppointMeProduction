@@ -55,20 +55,22 @@ export class TeacherCardComponent implements OnInit {
     this.router.navigate(['student/dashboard/appointment-view', teacherId]);
   }
 
-  //Get Appointments
+  // Get Appointments Length
   getAppointmentsLength(teacherId: string): Observable<number> {
     const token = localStorage.getItem('token');
     const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
     return this.http.get<Appointment[]>(`${mainPort}/pdo/api/get_appointment_teacher/${teacherId}`, {headers}).pipe(
-      map(appointments => appointments.length)
+      map(appointments => this.filterAppointments(appointments).length)
     );
   }
-  //Get Queue
-  getQueue(teacherId:string): Observable<Queue[]> {
+
+  // Get Queue
+  getQueue(teacherId: string): Observable<Queue[]> {
     const token = localStorage.getItem('token');
     const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
     return this.http.get<Queue[]>(`${mainPort}/pdo/api/get_queue_teacher/${teacherId}`, {headers});
   }
+
   getQueueLength(teacherId: string): Observable<number> {
     const token = localStorage.getItem('token');
     const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
@@ -76,7 +78,8 @@ export class TeacherCardComponent implements OnInit {
       map(result => result.length)
     );
   }
-  //Check in Queue
+
+  // Check in Queue
   isInQueue(teacherId: string): Observable<boolean> {
     return this.getQueue(teacherId).pipe(
       map(queue => {
@@ -91,7 +94,11 @@ export class TeacherCardComponent implements OnInit {
     let hour = parseInt(hours);
     const ampm = hour >= 12 ? 'PM' : 'AM';
     hour = hour % 12;
-    hour = hour ? hour : 12; // Handle midnight (0 hours)
+    hour = hour ? hour : 12; 
     return `${hour}:${minutes} ${ampm}`;
+  }
+
+  filterAppointments(appointments: Appointment[]): Appointment[] {
+    return appointments.filter(appointment => appointment.Completed !== 1);
   }
 }

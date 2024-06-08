@@ -1,8 +1,8 @@
 <div class="whole">
     <div class="Upper">
-        <!-- <div class="top" (click)="switchMode('Students')">      
+        <div class="top" (click)="switchMode('Students')">      
             <p>User Management</p>
-        </div> -->
+        </div>
         <div class="bot" (click)="switchMode('Teachers')">
             <p>Teacher Management</p>
         </div>
@@ -32,15 +32,12 @@
                 </div>
                 <div class="action">
                    <button class="edit" (click)="editTeacher(teacher.ConsultantID)">Edit</button>
-                   <!-- <button class="add">Add</button> -->
                    <button class="delete" (click)="confirmDeleteTeacher(teacher.ConsultantID, teacher.first_name, teacher.last_name)">Delete</button>
                 </div>
-           
-               <!-- <label class="switch">
-                   <input type="checkbox" [(ngModel)]="isChecked" (ngModelChange)="onCheckboxChange()">
-                   <span class="slider round"></span>
-               </label> -->
            </div>
+           <button mat-fab matTooltip="Primary" color="primary" aria-label="Example fab with a heart icon">
+            <mat-icon>favorite</mat-icon>
+          </button>
         </div>
     </div>
 </div>

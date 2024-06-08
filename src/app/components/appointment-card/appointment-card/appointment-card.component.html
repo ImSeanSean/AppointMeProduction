@@ -1,7 +1,7 @@
 <div class="card-container">
     <div class="appointment-card" *ngFor="let queue of queue; let i = index" (click)="changeRoute(queue)">
         <div class="box">
-            <p>{{i + 1}}</p>
+            <p *ngIf="userType === 'teacher'">{{i + 1}}</p>
         </div>
         <div class="Text">
             <div class="title">
