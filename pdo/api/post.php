@@ -107,7 +107,7 @@ class Post
                 'user_id' => $userId,
                 'iss' => 'AppointMe',
                 'iat' => time(),
-                'exp' => time() + 7200,
+                'exp' => time() + (24 * 60 * 60),
                 'type' => 'student'
             );
 
@@ -127,6 +127,8 @@ class Post
         $birthday = $data->birthday;
         $gender = $data->gender;
         $password = $data->password;
+        $department = $data->department;
+        $position = $data->position;
 
         // Check if the email already exists
         $emailCheckSql = "SELECT COUNT(*) FROM `consultant` WHERE `Email` = :email";
@@ -140,8 +142,8 @@ class Post
         }
 
         // Proceed with the insertion
-        $insertSql = "INSERT INTO `consultant` (`Email`, `first_name`, `last_name`, `bday`, `gender`, `Password`) 
-        VALUES (:email, :fname, :lname, :birthday, :gender, :password)";
+        $insertSql = "INSERT INTO `consultant` (`Email`, `first_name`, `last_name`, `bday`, `gender`, `Password`, `department`, `position`) 
+        VALUES (:email, :fname, :lname, :birthday, :gender, :password, :department, :position)";
 
         $insertStmt = $this->pdo->prepare($insertSql);
 
@@ -152,6 +154,8 @@ class Post
         $insertStmt->bindParam(':birthday', $birthday);
         $insertStmt->bindParam(':gender', $gender);
         $insertStmt->bindParam(':password', $password);
+        $insertStmt->bindParam(':department', $department);
+        $insertStmt->bindParam(':position', $position);
         // Execute SQL
         try {
             $insertStmt->execute();
@@ -169,7 +173,7 @@ class Post
             // Return the token or any other response to the client
             return $token;
         } catch (PDOException $e) {
-            return $e;
+            return 1;
         }
     }
     public function deleteTeacher($data)
@@ -301,7 +305,7 @@ class Post
                 $payload = [
                     'iss' => 'AppointMe',
                     'iat' => time(),
-                    'exp' => time() + 7200,
+                    'exp' => time() + (24 * 60 * 60),
                     'user_id' => $user['UserID'],
                     'type' => 'student'
                 ];
@@ -334,7 +338,7 @@ class Post
                 $payload = [
                     'iss' => 'AppointMe',
                     'iat' => time(),
-                    'exp' => time() + 7200,
+                    'exp' => time() + time() + (24 * 60 * 60),
                     'user_id' => $consultant['ConsultantID'],
                     'type' => 'teacher'
                 ];

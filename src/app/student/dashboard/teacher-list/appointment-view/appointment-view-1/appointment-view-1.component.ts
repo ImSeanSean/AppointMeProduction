@@ -72,6 +72,16 @@ export class AppointmentView1Component implements OnInit{
   //Queue-Related Functions
   //Add Queue
   addQueue(){
+    if(this.selectedMode == null || this.selectedUrgency == null || this.selectedDay == null || this.selectedTime == null || this.selectedTime){
+      this.dialog.open(ErrorComponent, {
+        width: '300px',
+        data: {
+          title: 'Incomplete Form',
+          description: 'Please fil-up the entire form.'
+        }
+      })
+      return
+    }
     const data = {
       key: localStorage.getItem('token'),
       teacher_id: this.teachers[0].ConsultantID,

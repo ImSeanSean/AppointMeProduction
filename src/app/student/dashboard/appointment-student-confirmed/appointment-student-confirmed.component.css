@@ -77,7 +77,7 @@
 }
 
 .account-details {
-    border: 3px solid #BD997E;
+    border: 3px solid #168021;
     padding: 10px;
     border-radius: 5px;
     background-color: #D9D9D9;
@@ -105,15 +105,23 @@
     margin-left: 0%;
     margin-top: 0%;
     border-radius: 0px;
+    border: 2px solid #F78914;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    padding: 0px 10px;
   }
 
 .inputbox{
-    width: 480px; /* Set width to your desired size */
+    width: 100%; /* Set width to your desired size */
     height: 200px;
     background: #EEEEEE;
     margin-left: 0%;
     margin-top: 0%;
     border-radius: 0px;
+    padding: 10px;
+    border: 2px solid #F78914;
+    border-radius: 10px;
 }
 .submit-btn {
     width: 140px;
@@ -198,6 +206,7 @@
 .right .input-box{
     display: flex;
     align-content: center;
+    width: 100%;
 }
 
 .right label{

@@ -1,22 +1,23 @@
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Component, OnInit } from '@angular/core';
 import {MatSlideToggleModule} from '@angular/material/slide-toggle';
 import { mainPort } from '../../app.component';
 import { Teacher } from '../../interfaces/Teacher';
 import { User } from '../../interfaces/User';
-import { NgFor } from '@angular/common';
+import { NgFor, NgIf } from '@angular/common';
 import { MatDialog } from '@angular/material/dialog';
 import { ConfirmationComponent } from '../../matdialogs/confirmation/confirmation.component';
 import { EditUserComponent } from '../../matdialogs/edit-user/edit-user.component';
 import { MatIcon } from '@angular/material/icon';
 import { MatButton } from '@angular/material/button';
 import { MatTooltipModule } from '@angular/material/tooltip';
+import { AddTeacherComponent } from '../../matdialogs/add-teacher/add-teacher.component';
 
 
 @Component({
   selector: 'app-user-management',
   standalone: true,
-  imports: [MatSlideToggleModule, NgFor, MatIcon, MatButton, MatTooltipModule],
+  imports: [MatSlideToggleModule, NgFor, MatIcon, MatButton, MatTooltipModule, NgIf],
   templateUrl: './user-management.component.html',
   styleUrl: './user-management.component.css'
 })
@@ -42,7 +43,9 @@ export class UserManagementComponent implements OnInit{
       this.teachers = result;
     })
     //Fetch Users
-    this.http.get<User[]>(`${mainPort}/pdo/api/get_users`).subscribe(result=>{
+    const token = localStorage.getItem('token');
+    const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
+    this.http.get<User[]>(`${mainPort}/pdo/api/get_users`, { headers }).subscribe(result=>{
       this.students = result;
     })
   }
@@ -79,6 +82,7 @@ export class UserManagementComponent implements OnInit{
   }
   deleteTeacher(id:number){
     console.log(localStorage.getItem('token'));
+    console.log(id)
     const data = {
       id:id,
       key:localStorage.getItem('token')
@@ -109,6 +113,23 @@ export class UserManagementComponent implements OnInit{
         // Handle response if needed
       });
     }
+  }
+
+  //Add Teacher
+  addTeacher(){
+    const addTeacher = this.dialog.open(AddTeacherComponent, {
+      width: '70vw',
+      height: '75vh',
+      data: {
+        title: 'Add Teacher'
+      }
+    })
+
+    addTeacher.afterClosed().subscribe(result => {
+      this.http.get<Teacher[]>(`${mainPort}/pdo/api/get_consultants`).subscribe(result=>{
+        this.teachers = result;
+      })
+    })
   }
 
 }

@@ -14,11 +14,8 @@
             <div class="act">
                 <p>Actions</p>
             </div>
-            <!-- <div class="head">
-                <p>Head Teacher</p>
-            </div> -->
         </div>
-        <div class="group">
+        <div class="group" *ngIf="selectedMode == 'Teachers'">
             <div class="teacher-row" *ngFor="let teacher of teachers">
                 <div class="teachercard">
                    <div class="left"></div>
@@ -27,7 +24,7 @@
                        <p>Email: {{teacher.Email}}</p>
                    </div>
                    <div class="teacher">
-                       <p>TEACHER</p>
+                       <p>{{teacher.department}} {{teacher.position}}</p>
                    </div>
                 </div>
                 <div class="action">
@@ -35,9 +32,26 @@
                    <button class="delete" (click)="confirmDeleteTeacher(teacher.ConsultantID, teacher.first_name, teacher.last_name)">Delete</button>
                 </div>
            </div>
-           <button mat-fab matTooltip="Primary" color="primary" aria-label="Example fab with a heart icon">
-            <mat-icon>favorite</mat-icon>
-          </button>
+           <button class="add-button" (click)="addTeacher()"><i class='bx bxs-user-plus' ></i></button>
+        </div>
+        <div class="group" *ngIf="selectedMode == 'Students'">
+            <div class="teacher-row" *ngFor="let student of students">
+                <div class="teachercard">
+                   <div class="left-student"></div>
+                   <div class="info">
+                       <p>Full Name: {{student.FirstName}} {{student.LastName}}</p>
+                       <p>Email: {{student.Email}}</p>
+                   </div>
+                   <div class="student">
+                       <p>{{student.Course}} {{student.year}}{{student.block}}</p>
+                   </div>
+                </div>
+                <div class="action">
+                   <button class="edit" (click)="editTeacher(student.UserID)">Edit</button>
+                   <button class="delete" (click)="confirmDeleteTeacher(student.UserID, student.FirstName, student.LastName)">Delete</button>
+                </div>
+           </div>
+           <button class="add-button" (click)="addTeacher()"><i class='bx bxs-user-plus' ></i></button>
         </div>
     </div>
 </div>

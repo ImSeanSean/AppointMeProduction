@@ -6,6 +6,7 @@ import { AuthServiceService } from '../../services/auth-service.service';
 import { Router } from '@angular/router';
 import { NavbarComponent } from "../../layouts/navbar/navbar.component";
 import { NgIf } from '@angular/common';
+import { jwtDecode } from 'jwt-decode';
 
 @Component({
     selector: 'app-register-student',
@@ -50,12 +51,16 @@ export class RegisterStudentComponent {
             const description = "Redirected to Dashboard"
             this.openDialogtemplate(title, description);
             localStorage.setItem('token', token);
-            localStorage.setItem('user', 'user')
+            localStorage.setItem('user', 'user');
+            const decodedToken: any = jwtDecode(token);
+            const userId = decodedToken.user_id;
+            localStorage.setItem('id', userId)
             this.router.navigate(['/student/dashboard/main'])
           }
         },
           error => {
-            console.error('Login failed:', error);
+            this.openRegistrationErrorDialog();
+            return;
           });
       } else{
         //Pop-up
