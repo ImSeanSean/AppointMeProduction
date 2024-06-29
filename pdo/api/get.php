@@ -106,6 +106,18 @@ class Get
             echo json_encode(array('message' => 'Token is invalid or Authorization header is missing'));
         }
     }
+    public function get_specific_user($userId)
+    {
+        $tokenInfo = $this->middleware->validateToken();
+        if ($tokenInfo) {
+            // Token is valid, proceed to fetch user data based on user_id
+            return $this->get_records("user", "UserID = $userId");
+        } else {
+            // Token is invalid or Authorization header is missing, return an error response
+            http_response_code(401);
+            echo json_encode(array('message' => 'Token is invalid or Authorization header is missing'));
+        }
+    }
     public function get_teacher()
     {
         $tokenInfo = $this->middleware->validateToken();

@@ -1,19 +1,20 @@
-<h2>Edit Teacher</h2>
+<h2>Edit Student</h2>
 <mat-dialog-content class="content">
   <mat-form-field>
     <mat-label>Choose an option</mat-label>
     <mat-select [(ngModel)]="selectedValue" (selectionChange)="onSelectionChange()">
       <mat-option value="Email">Email</mat-option>
       <mat-option value="Password">Password</mat-option>
-      <mat-option value="first_name">First Name</mat-option>
-      <mat-option value="last_name">Last Name</mat-option>
-      <mat-option value="bday">Birthday</mat-option>
+      <mat-option value="FirstName">First Name</mat-option>
+      <mat-option value="LastName">Last Name</mat-option>
       <mat-option value="gender">Sex</mat-option>
-      <mat-option value="department">Department</mat-option>
-      <mat-option value="headteacher">Coordinator</mat-option>
+      <mat-option value="bday">Birthday</mat-option>
+      <mat-option value="course">Course</mat-option>
+      <mat-option value="block">Block</mat-option>
+      <mat-option value="year">Year</mat-option>
     </mat-select>
   </mat-form-field>
-  <textarea [(ngModel)]="textareaContent" *ngIf="selectedValue !== 'bday' && selectedValue !== 'gender' && selectedValue !== 'headteacher' && selectedValue !== 'department'"></textarea>
+  <textarea [(ngModel)]="textareaContent" *ngIf="selectedValue !== 'bday' && selectedValue !== 'gender' && selectedValue !== 'headteacher' && selectedValue !== 'course' && selectedValue !== 'block' && selectedValue !== 'year'"></textarea>
   <input class="date" type="date" [(ngModel)]="textareaContent" *ngIf="selectedValue === 'bday'">
   <mat-form-field *ngIf="selectedValue === 'gender'">
     <mat-label>Choose an option</mat-label>
@@ -22,7 +23,7 @@
       <mat-option value="Female">Female</mat-option>
     </mat-select>
   </mat-form-field>
-  <mat-form-field *ngIf="selectedValue === 'department'">
+  <mat-form-field *ngIf="selectedValue === 'course'">
     <mat-label>Choose an option</mat-label>
     <mat-select [(ngModel)]="textareaContent">
       <mat-option value="BSCS">BSCS</mat-option>
@@ -30,11 +31,23 @@
       <mat-option value="BSEMC">BSEMC</mat-option>
     </mat-select>
   </mat-form-field>
-  <mat-form-field *ngIf="selectedValue === 'headteacher'">
+  <mat-form-field *ngIf="selectedValue === 'block'">
     <mat-label>Choose an option</mat-label>
     <mat-select [(ngModel)]="textareaContent">
-      <mat-option value="1">Coordinator</mat-option>
-      <mat-option value="0">Not a Coordinator</mat-option>
+      <mat-option value="A">A</mat-option>
+      <mat-option value="B">B</mat-option>
+      <mat-option value="C">C</mat-option>
+      <mat-option value="D">D</mat-option>
+      <mat-option value="E">E</mat-option>
+    </mat-select>
+  </mat-form-field>
+  <mat-form-field *ngIf="selectedValue === 'year'">
+    <mat-label>Choose an option</mat-label>
+    <mat-select [(ngModel)]="textareaContent">
+      <mat-option value="1">1</mat-option>
+      <mat-option value="2">2</mat-option>
+      <mat-option value="3">3</mat-option>
+      <mat-option value="4">4</mat-option>
     </mat-select>
   </mat-form-field>
 </mat-dialog-content>

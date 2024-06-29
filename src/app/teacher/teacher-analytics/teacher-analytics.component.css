@@ -1,6 +1,8 @@
 .main{
     height: 90vh;
     width: 94vw;
+    overflow: auto;
+    scroll-snap-type: y mandatory;
 }
 
 .title{
@@ -10,6 +12,7 @@
     display: flex;
     align-items: center;
     font-weight: normal;
+    scroll-snap-align: start;
 }
 
 .main .title h2{
@@ -225,4 +228,128 @@
 }
 .pending .box{
     background-color: #F78914;
+}
+
+/*Charts*/
+.two-column{
+    display: grid;
+    grid-template-columns: 2.5fr 1fr;
+    column-gap: 40px;
+    height: 80vh;
+    align-items: center;
+}
+.vertical{
+
+}
+.column{
+    border-radius: 20px;
+    background-color: #EAFAE5;
+    border: 3px solid #168021;
+}
+.column h2{
+    background-color: #168021;
+    color: white;
+    padding: 20px;
+    border-top-left-radius: 17px;
+    border-top-right-radius: 17px;
+}
+.column-orange{
+    border-radius: 20px;
+    background-color: #FFEFD1;
+}
+.column-orange h2{
+    background-color: #F08A3F;
+    color: white;
+    padding: 20px;
+    border-top-left-radius: 20px;
+    border-top-right-radius: 20px;
+}
+canvas{
+    padding: 20px;
+}
+
+.info{
+    border-radius: 20px;
+    border: 3px solid #F78914;
+    height: 85%;
+    background-color: #FFEFD1;
+    padding: 10px;
+    width: 100%;
+}
+
+.info h2{
+    color: #168021;
+}
+
+.pie{
+    padding: 20px;
+}
+/*Rating*/
+.total-rating{
+    padding: 20px;
+}
+.ratings{
+    padding: 10px;
+}
+.indiv-rating{
+    margin-bottom: 10px;
+}
+.indiv-rating i{
+    font-size: 20px;
+    color: #168021;
+}
+.empty-bar{
+    background-color: #ebc37a;
+    width: 100%;
+    height: 3vh;
+    border-radius: 20px;
+}
+.bar{
+    background-color: #F78914;
+    width: 80%;
+    height: 3vh;
+    border-radius: 20px;
+}
+
+/*Radio*/
+.radio{
+    width: 100%;
+    display: inline-flex;
+    overflow: hidden;
+    border-radius: 15px;
+    box-shadow: 0 0 5px rgba(0,0,0,0.25);
+}
+
+.radio__input{
+    display: none;
+}
+
+.radio__label{
+    width: 100%;
+    padding: 8px 14px;
+    font-size: 18px;
+    color:gray;
+    background-color: #FFEFD1;
+    cursor: pointer;
+    transition: background 0.1s;
+    display: flex;
+    justify-content: center;
+    text-align: center;
+    flex-direction: column;
+}
+
+.radio__label:not(:last-of-type){
+    border-right: 1px solid #F78914;
+}
+
+.radio__input:checked + .radio__label{
+    background: #F78914;
+    color: white;
+}
+
+.radio .time{
+    width: 100%;
+    background-color: #FFEFD1;
+    font-size: 17px;
+    padding: 10px 20px;  
 }

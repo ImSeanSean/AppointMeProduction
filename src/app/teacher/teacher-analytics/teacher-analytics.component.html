@@ -1,6 +1,6 @@
 <div class="main">
     <div class="title">
-        <h2>Analytics</h2>
+        <h2>Analytics Overview</h2>
     </div>
     <div class="content">
         <div class="top">
@@ -25,7 +25,7 @@
                     <h1>{{getCompleted()}}</h1> 
                 </div>
                 <div class="details">
-                    <h2>TOTAL<br>APPOINMENTS</h2>
+                    <h2>COMPLETED<br>APPOINMENTS</h2>
                 </div>
             </div>
             <div class="large-box-green">
@@ -124,6 +124,120 @@
                             </div>
                         </div>
                     </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="title">
+        <h2>Performance Analytics</h2>
+    </div>
+    <div class="content">
+        <div class="two-column">
+            <div class="column">
+                <h2>Monthly Rating</h2>
+                <canvas baseChart type="line" [data]="lineChartData"></canvas>
+            </div>
+            <div class="info">
+                <div class="radio">
+                    <input class="radio__input" type="radio" value="Monthly" name="mode" id="monthly">
+                    <label class="radio__label" for="monthly">Monthly</label>
+                    <input class="radio__input" type="radio" value="Weekly" name="mode" id="weekly">
+                    <label class="radio__label" for="weekly">Weekly</label>
+                    <input class="radio__input" type="radio" value="Daily" name="mode" id="daily">
+                    <label class="radio__label" for="daily">Daily</label>
+                </div>
+                <div class="total-rating">
+                    <div class="heading">
+                        <h2>Total Rating</h2>
+                    </div>
+                    <div class="ratings">
+                        <div class="indiv-rating">
+                            <div class="stars">
+                                <i class='bx bxs-star'></i>
+                                <i class='bx bxs-star'></i>
+                                <i class='bx bxs-star'></i>
+                                <i class='bx bxs-star'></i>
+                                <i class='bx bxs-star'></i>
+                            </div>
+                            <div class="empty-bar">
+                                <div class="bar"></div>
+                            </div>
+                        </div>
+                        <div class="indiv-rating">
+                            <div class="stars">
+                                <i class='bx bxs-star'></i>
+                                <i class='bx bxs-star'></i>
+                                <i class='bx bxs-star'></i>
+                                <i class='bx bxs-star'></i>
+                            </div>
+                            <div class="empty-bar">
+                                <div class="bar"></div>
+                            </div>
+                        </div>
+                        <div class="indiv-rating">
+                            <div class="stars">
+                                <i class='bx bxs-star'></i>
+                                <i class='bx bxs-star'></i>
+                                <i class='bx bxs-star'></i>
+                            </div>
+                            <div class="empty-bar">
+                                <div class="bar"></div>
+                            </div>
+                        </div>
+                        <div class="indiv-rating">
+                            <div class="stars">
+                                <i class='bx bxs-star'></i>
+                                <i class='bx bxs-star'></i>
+                            </div>
+                            <div class="empty-bar">
+                                <div class="bar"></div>
+                            </div>
+                        </div>
+                        <div class="indiv-rating">
+                            <div class="stars">
+                                <i class='bx bxs-star'></i>
+                            </div>
+                            <div class="empty-bar">
+                                <div class="bar"></div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="heading">
+                        <h2>Rated Appointments</h2>
+                        <div class="ratings">
+                            <div class="indiv-rating">
+                                <div class="empty-bar">
+                                    <div class="bar"></div>
+                                </div>
+                            </div>
+                            <p>40/50 Appointments have been rated.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="title">
+        <h2>Appointment Analytics</h2>
+    </div>
+    <div class="content">
+        <div class="two-column">
+            <div class="column">
+                <h2>Monthly Appointments</h2>
+                <canvas baseChart type="bar" [data]="lineChartData"></canvas>
+            </div>
+            <div class="info">
+                <div class="radio">
+                    <input class="radio__input" type="radio" value="Monthly" name="mode" id="monthly-2">
+                    <label class="radio__label" for="monthly-2">Monthly</label>
+                    <input class="radio__input" type="radio" value="Weekly" name="mode" id="weekly-2">
+                    <label class="radio__label" for="weekly-2">Weekly</label>
+                    <input class="radio__input" type="radio" value="Daily" name="mode" id="daily-2">
+                    <label class="radio__label" for="daily-2">Daily</label>
+                </div>
+                <div class="pie">
+                    <h2>Appointment Overview</h2>
+                    <canvas baseChart type="pie" [data]="lineChartData" > </canvas>
                 </div>
             </div>
         </div>

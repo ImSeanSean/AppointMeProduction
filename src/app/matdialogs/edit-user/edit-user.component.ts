@@ -69,6 +69,9 @@ export class EditUserComponent {
         case 'gender':
           this.textareaContent = this.teacher[0].gender;
           break;
+        case 'department':
+          this.textareaContent = this.teacher[0].department;
+          break;
         case 'headteacher':
           this.textareaContent = this.teacher[0].headteacher ? '1' : '0';
           break;
@@ -87,7 +90,7 @@ export class EditUserComponent {
     console.log(data);
     this.http.post(`${mainPort}/pdo/api/update_teacher`, data).subscribe(result => {
       console.log(result);
+      this.dialogRef.close();
     });
-    this.dialogRef.close();
   }
 }

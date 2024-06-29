@@ -1,19 +1,21 @@
-import { Component } from '@angular/core';
+import { AfterViewInit, Component, OnInit, ViewChild } from '@angular/core';
 import { Appointment } from '../../interfaces/Appointment';
 import { DatePipe, NgClass, NgFor } from '@angular/common';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { Router } from '@angular/router';
 import { mainPort } from '../../app.component';
+import { Chart, Filler } from 'chart.js';
+import { BaseChartDirective } from 'ng2-charts';
 
 @Component({
-  selector: 'app-teacher-analytics',
-  standalone: true,
-  imports: [NgFor, NgClass],
-  templateUrl: './teacher-analytics.component.html',
-  styleUrl: './teacher-analytics.component.css'
+    selector: 'app-teacher-analytics',
+    standalone: true,
+    templateUrl: './teacher-analytics.component.html',
+    styleUrl: './teacher-analytics.component.css',
+    imports: [NgFor, NgClass, BaseChartDirective]
 })
-export class TeacherAnalyticsComponent {
+export class TeacherAnalyticsComponent implements OnInit{
   constructor(private http: HttpClient, private router: Router,private datePipe: DatePipe) {
 
   };
@@ -172,6 +174,22 @@ export class TeacherAnalyticsComponent {
 
     const formattedDate = this.datePipe.transform(targetDate, 'MMMM dd, yyyy');
     return formattedDate || '';
+}
+//Charts
+lineChartData = {
+  labels: ["Mon", "Tues", "Wed", "Thurs", "Fri", "Sat"],
+  datasets: [
+    {
+      data: [1, 2, 3, 4, 5, 6],
+      label: 'Ratings',
+      fill: true
+    },
+    {
+      data: [1, 2, 3, 4, 5, 6],
+      label: 'Ratings',
+      fill: true
+    }
+  ]
 }
 
   ngOnInit(): void {

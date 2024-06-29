@@ -118,6 +118,77 @@ class Post
             return 1;
         }
     }
+    public function updateStudent($data)
+    {
+        // Validate input data
+        if (!isset($data->studentId) || !isset($data->column) || !isset($data->value)) {
+            throw new InvalidArgumentException('Invalid input data');
+        }
+
+        // Extract data from input
+        $studentId = $data->studentId;
+        $column = $data->column;
+        $value = $data->value;
+
+        // Prepare SQL statement
+        $sqlUpdate = "UPDATE user SET $column = :value WHERE UserID = :studentId";
+
+        try {
+            // Prepare the statement
+            $stmt = $this->pdo->prepare($sqlUpdate);
+
+            // Bind parameters
+            $stmt->bindParam(':value', $value);
+            $stmt->bindParam(':studentId', $studentId);
+
+            // Execute the statement
+            $stmt->execute();
+
+            // Check if any rows were updated
+            if ($stmt->rowCount() > 0) {
+                return true;
+            } else {
+                return false;
+            }
+        } catch (PDOException $e) {
+            // Handle exception
+            return false;
+        }
+    }
+
+    public function deleteStudent($data)
+    {
+        // ID
+        $id = $data->id;
+        // Authenticate User
+        $jwt = $data->key;
+
+        try {
+            $key = JWT::decode($jwt, new Key($this->secretKey, 'HS256'));
+        } catch (Exception $e) {
+            return "Unauthorized: Invalid JWT token.";
+        }
+
+        // Check authorization here (example: verify that the user is authorized to create an appointment)
+        if ($key->type !== 'teacher') {
+            return "Unauthorized: Only the Head Teacher is allowed to approve registrations.";
+        }
+
+        // Update email to NULL in user table
+        $query = "UPDATE user SET email = NULL WHERE UserID = :id";
+
+        try {
+            $stmt = $this->pdo->prepare($query);
+            $stmt->bindParam(':id', $id, PDO::PARAM_INT);
+            if ($stmt->execute()) {
+                return true;
+            } else {
+                return false;
+            }
+        } catch (PDOException $e) {
+            return "Database error: " . $e->getMessage();
+        }
+    }
     public function registerTeacher($data)
     {
         // Variables
@@ -194,8 +265,8 @@ class Post
             return "Unauthorized: Only the Head Teacher is allowed to approve registrations.";
         }
 
-        // Delete from consultant table
-        $query = "DELETE FROM consultant WHERE ConsultantId = :id";
+        // Update email to NULL in consultant table
+        $query = "UPDATE consultant SET email = NULL WHERE ConsultantId = :id";
 
         try {
             $stmt = $this->pdo->prepare($query);
@@ -209,6 +280,7 @@ class Post
             return "Database error: " . $e->getMessage();
         }
     }
+
     public function updateTeacher($data)
     {
         // Validate input data
@@ -1063,5 +1135,37 @@ class Post
         $stmt->bindParam(':day', $day);
         $stmt->execute();
         return $stmt->fetch(PDO::FETCH_ASSOC);
+    }
+
+    //Analytics
+    public function getDailyRatings($data)
+    {
+        //Variables
+        $teacherId = $data->teacherId;
+
+        $sql = "
+            SELECT 
+                DATE(AppointmentDate) as date, 
+                AVG(rating) as averageRating 
+            FROM appointment 
+            WHERE 
+                AppointmentDate >= DATE_SUB(NOW(), INTERVAL 7 DAY) AND 
+                ConsultantID = :teacherId 
+            GROUP BY DATE(AppointmentDate)
+            ORDER BY date ASC
+        ";
+
+        // Prepare and execute the statement
+        $stmt = $this->pdo->prepare($sql);
+        $stmt->execute([':teacherId' => $teacherId]);
+
+        // Check if the query was successful
+        if ($stmt->rowCount() > 0) {
+            // Notification created successfully
+            return true;
+        } else {
+            // Failed to create notification
+            return false;
+        }
     }
 }

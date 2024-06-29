@@ -8,9 +8,9 @@ export interface User {
     CreatedAt: string;
     UpdatedAt: string;
     AlternateEmail: string;
-    ContactNumber: string | null;
-    block: string | null;
-    year: number | null;
-    bday: string | null;
-    gender: string | null;
+    ContactNumber: string;
+    block: string;
+    year: number;
+    bday: string;
+    gender: string;
   }

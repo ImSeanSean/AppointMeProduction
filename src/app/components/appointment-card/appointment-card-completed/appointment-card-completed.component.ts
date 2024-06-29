@@ -34,7 +34,6 @@ export class AppointmentCardCompletedComponent {
   getAppointmentTeacher(): Observable<Appointment[]> {
     const token = localStorage.getItem('token');
     const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
-    console.log(token);
     return this.http.get<Appointment[]>(`${mainPort}/pdo/api/get_appointments_teacher`, { headers });
   }
 

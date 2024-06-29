@@ -46,7 +46,11 @@ switch ($_SERVER['REQUEST_METHOD']) {
                 echo json_encode($get->get_users());
                 break;
             case 'get_user':
-                echo json_encode($get->get_user());
+                if (count($request) > 1) {
+                    echo json_encode($get->get_specific_user($request[1]));
+                } else {
+                    echo json_encode($get->get_user());
+                }
                 break;
             case 'get_teacher':
                 echo json_encode($get->get_teacher());
@@ -110,6 +114,12 @@ switch ($_SERVER['REQUEST_METHOD']) {
                 break;
             case 'register':
                 echo json_encode($post->register($data));
+                break;
+            case 'update_student':
+                echo json_encode($post->updateStudent($data));
+                break;
+            case 'delete_student':
+                echo json_encode($post->deleteStudent($data));
                 break;
             case 'register_teacher':
                 echo json_encode($post->registerTeacher($data));
@@ -176,6 +186,9 @@ switch ($_SERVER['REQUEST_METHOD']) {
                 break;
             case 'check_ftf_appointments':
                 echo json_encode($post->checkFTFSchedule($data));
+                break;
+            case 'get_ratings_daily':
+                echo json_encode($post->getDailyRatings($data));
                 break;
             default:
                 http_response_code(403);

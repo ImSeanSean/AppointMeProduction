@@ -1,14 +1,14 @@
 .whole{
     overflow: hidden;
     height: 90vh;
+    border-bottom: 3px solid black;
 }
 
 .Upper {
     display: flex;
-    gap: 10px;
-    margin-top: 15px;
-    margin-bottom: 20px;
-    margin-left: 20px;
+    gap: 20px;
+    padding: 20px;
+    align-items: center;
 }
 
 .top, .bot {
@@ -91,6 +91,7 @@ hr{
     align-items: center;
     background-color: #F78914;
     width: 30%;
+    padding: 5px;
 }
 .teacher p{
     color: #fff;
@@ -173,4 +174,8 @@ button.add-button{
     bottom: 5%;
     right: 5%;
     cursor: pointer;
+}
+
+.example-margin{
+    color: white    ;
 }

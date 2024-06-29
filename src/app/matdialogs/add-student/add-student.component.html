@@ -1,0 +1,151 @@
+<h2>Add Student</h2>
+<mat-dialog-content class="content">
+  <form [formGroup]="teacherForm">
+    <div class="row">
+      <div class="tab">
+        <h3>Email</h3>
+        <mat-form-field>
+          <mat-label>Email</mat-label>
+          <input type="email" matInput formControlName="email" [errorStateMatcher]="matcher" placeholder="Ex. pat@example.com">
+          <mat-error *ngIf="teacherForm.get('email')!.hasError('required')">
+            Email is <strong>required</strong>
+          </mat-error>
+          <mat-error *ngIf="teacherForm.get('email')!.hasError('gordonCollegeEmail')">
+            Email must end with &#64;gordoncollege.edu.ph
+          </mat-error>
+        </mat-form-field>
+      </div>
+      <div class="two-tab">
+        <div class="inside-tab">
+          <h3>Course</h3>
+          <mat-form-field>
+            <mat-label>Choose Course</mat-label>
+            <mat-select formControlName="course">
+              <mat-option value="BSCS">BSCS</mat-option>
+              <mat-option value="BSIT">BSIT</mat-option>
+              <mat-option value="BSEMC">BSEMC</mat-option>
+            </mat-select>
+            <mat-error *ngIf="teacherForm.get('course')!.hasError('required')">
+              Course is <strong>required</strong>
+            </mat-error>
+          </mat-form-field>
+        </div>
+        <div class="inside-tab">
+          <h3>Year</h3>
+          <mat-form-field>
+            <mat-label>Choose Year</mat-label>
+            <mat-select formControlName="year">
+              <mat-option value="1">1</mat-option>
+              <mat-option value="2">2</mat-option>
+              <mat-option value="3">3</mat-option>
+              <mat-option value="4">4</mat-option>
+            </mat-select>
+            <mat-error *ngIf="teacherForm.get('year')!.hasError('required')">
+              Year is <strong>required</strong>
+            </mat-error>
+          </mat-form-field>
+        </div>
+        <div class="inside-tab">
+            <h3>Block</h3>
+            <mat-form-field>
+              <mat-label>Choose Block</mat-label>
+              <mat-select formControlName="block">
+                <mat-option value="A">A</mat-option>
+                <mat-option value="B">B</mat-option>
+                <mat-option value="C">C</mat-option>
+                <mat-option value="D">D</mat-option>
+                <mat-option value="E">E</mat-option>
+              </mat-select>
+              <mat-error *ngIf="teacherForm.get('block')!.hasError('required')">
+                Block is <strong>required</strong>
+              </mat-error>
+            </mat-form-field>
+          </div>
+      </div>
+    </div>
+    <div class="row">
+      <div class="tab">
+        <h3>Password</h3>
+        <mat-form-field>
+            <mat-label>Password</mat-label>
+            <input type="password" matInput formControlName="password" [errorStateMatcher]="matcher" placeholder="Password">
+            <mat-error *ngIf="teacherForm.get('password')!.hasError('minlength')">
+              Password must be at least 8 characters long
+            </mat-error>
+            <mat-error *ngIf="teacherForm.get('password')!.hasError('required')">
+              Password is <strong>required</strong>
+            </mat-error>
+          </mat-form-field>
+      </div>
+      <div class="tab">
+        <h3>Confirm Password</h3>
+        <mat-form-field>
+            <mat-label>Confirm Password</mat-label>
+            <input type="password" matInput formControlName="confirmPassword" [errorStateMatcher]="matcher" placeholder="Confirm Password">
+            <mat-error *ngIf="teacherForm.get('confirmPassword')!.hasError('minlength')">
+              Password must be at least 8 characters long
+            </mat-error>
+            <mat-error *ngIf="teacherForm.get('confirmPassword')!.hasError('required')">
+              Password confirmation is <strong>required</strong>
+            </mat-error>
+            <mat-error *ngIf="teacherForm.hasError('passwordMismatch')">
+              Passwords do not match
+            </mat-error>
+          </mat-form-field>
+      </div>
+    </div>
+    <div class="row">
+      <div class="tab">
+        <h3>First Name</h3>
+        <mat-form-field>
+          <mat-label>First Name</mat-label>
+          <input type="text" matInput formControlName="fname" [errorStateMatcher]="matcher" placeholder="First Name">
+          <mat-error *ngIf="teacherForm.get('fname')!.hasError('required')">
+            First Name is <strong>required</strong>
+          </mat-error>
+        </mat-form-field>
+      </div>
+      <div class="tab">
+        <h3>Surname</h3>
+        <mat-form-field>
+          <mat-label>Surname</mat-label>
+          <input type="text" matInput formControlName="lname" [errorStateMatcher]="matcher" placeholder="Surname">
+          <mat-error *ngIf="teacherForm.get('lname')!.hasError('required')">
+            Surname is <strong>required</strong>
+          </mat-error>
+        </mat-form-field>
+      </div>
+    </div>
+    <div class="row">
+      <div class="tab">
+        <h3>Birthday</h3>
+        <mat-form-field>
+          <mat-label>Choose a date</mat-label>
+          <input matInput [matDatepicker]="picker" formControlName="birthday">
+          <mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
+          <mat-datepicker #picker></mat-datepicker>
+          <mat-error *ngIf="teacherForm.get('birthday')!.hasError('required')">
+            Birthday is <strong>required</strong>
+          </mat-error>
+        </mat-form-field>
+      </div>
+      <div class="tab">
+        <h3>Sex</h3>
+        <mat-form-field>
+          <mat-label>Sex</mat-label>
+          <mat-select formControlName="gender">
+            <mat-option value="Male">Male</mat-option>
+            <mat-option value="Female">Female</mat-option>
+          </mat-select>
+          <mat-error *ngIf="teacherForm.get('gender')!.hasError('required')">
+            Sex is <strong>required</strong>
+          </mat-error>
+        </mat-form-field>
+      </div>
+    </div>
+  </form>
+</mat-dialog-content>
+<mat-dialog-actions align="end" class="action">
+  <button mat-button (click)="closeDialog()" class="no">Cancel</button>
+  <button mat-button [disabled]="teacherForm.invalid" (click)="addTeacher()" class="yes">Add Teacher</button>
+</mat-dialog-actions>
