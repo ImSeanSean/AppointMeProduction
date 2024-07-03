@@ -1136,36 +1136,4 @@ class Post
         $stmt->execute();
         return $stmt->fetch(PDO::FETCH_ASSOC);
     }
-
-    //Analytics
-    public function getDailyRatings($data)
-    {
-        //Variables
-        $teacherId = $data->teacherId;
-
-        $sql = "
-            SELECT 
-                DATE(AppointmentDate) as date, 
-                AVG(rating) as averageRating 
-            FROM appointment 
-            WHERE 
-                AppointmentDate >= DATE_SUB(NOW(), INTERVAL 7 DAY) AND 
-                ConsultantID = :teacherId 
-            GROUP BY DATE(AppointmentDate)
-            ORDER BY date ASC
-        ";
-
-        // Prepare and execute the statement
-        $stmt = $this->pdo->prepare($sql);
-        $stmt->execute([':teacherId' => $teacherId]);
-
-        // Check if the query was successful
-        if ($stmt->rowCount() > 0) {
-            // Notification created successfully
-            return true;
-        } else {
-            // Failed to create notification
-            return false;
-        }
-    }
 }

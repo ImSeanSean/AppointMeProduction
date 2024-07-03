@@ -134,16 +134,16 @@
     <div class="content">
         <div class="two-column">
             <div class="column">
-                <h2>Monthly Rating</h2>
-                <canvas baseChart type="line" [data]="lineChartData"></canvas>
+                <h2>{{ratingMode}} Rating</h2>
+                <canvas baseChart type="line" [data]="ratingData" [options]="ratingOptions" ></canvas>
             </div>
             <div class="info">
                 <div class="radio">
-                    <input class="radio__input" type="radio" value="Monthly" name="mode" id="monthly">
+                    <input class="radio__input" type="radio" value="Monthly" name="mode" id="monthly" [(ngModel)]="ratingMode" (click)="mapRatingsMonthly()">
                     <label class="radio__label" for="monthly">Monthly</label>
-                    <input class="radio__input" type="radio" value="Weekly" name="mode" id="weekly">
+                    <input class="radio__input" type="radio" value="Weekly" name="mode" id="weekly" [(ngModel)]="ratingMode" (click)="mapRatingsWeekly()">
                     <label class="radio__label" for="weekly">Weekly</label>
-                    <input class="radio__input" type="radio" value="Daily" name="mode" id="daily">
+                    <input class="radio__input" type="radio" value="Daily" name="mode" id="daily" [(ngModel)]="ratingMode" (click)="mapRatingsDaily()">
                     <label class="radio__label" for="daily">Daily</label>
                 </div>
                 <div class="total-rating">
@@ -160,7 +160,9 @@
                                 <i class='bx bxs-star'></i>
                             </div>
                             <div class="empty-bar">
-                                <div class="bar"></div>
+                                <div class="bar" [style.width.%]="rating5Percentage">
+                                </div>
+                                <p>{{rating5Percentage}}% ({{rating5}})</p>
                             </div>
                         </div>
                         <div class="indiv-rating">
@@ -171,7 +173,9 @@
                                 <i class='bx bxs-star'></i>
                             </div>
                             <div class="empty-bar">
-                                <div class="bar"></div>
+                                <div class="bar" [style.width.%]="rating4Percentage">
+                                </div>
+                                <p>{{rating4Percentage}}% ({{rating4}})</p>
                             </div>
                         </div>
                         <div class="indiv-rating">
@@ -181,7 +185,8 @@
                                 <i class='bx bxs-star'></i>
                             </div>
                             <div class="empty-bar">
-                                <div class="bar"></div>
+                                <div class="bar" [style.width.%]="rating3Percentage"></div>
+                                <p>{{rating3Percentage}}% ({{rating3}})</p>
                             </div>
                         </div>
                         <div class="indiv-rating">
@@ -190,7 +195,8 @@
                                 <i class='bx bxs-star'></i>
                             </div>
                             <div class="empty-bar">
-                                <div class="bar"></div>
+                                <div class="bar" [style.width.%]="rating2Percentage"></div>
+                                <p>{{rating2Percentage}}% ({{rating2}})</p>
                             </div>
                         </div>
                         <div class="indiv-rating">
@@ -198,7 +204,9 @@
                                 <i class='bx bxs-star'></i>
                             </div>
                             <div class="empty-bar">
-                                <div class="bar"></div>
+                                <div class="bar" [style.width.%]="rating1Percentage">
+                                </div>
+                                <p>{{rating1Percentage}}% ({{rating1}})</p>
                             </div>
                         </div>
                     </div>
@@ -207,10 +215,10 @@
                         <div class="ratings">
                             <div class="indiv-rating">
                                 <div class="empty-bar">
-                                    <div class="bar"></div>
+                                    <div class="bar" [style.width.%]="ratedTotal/appointmentTotal * 100"></div>
                                 </div>
                             </div>
-                            <p>40/50 Appointments have been rated.</p>
+                            <p>{{ratedTotal}}/{{appointmentTotal}} Appointments have been rated.</p>
                         </div>
                     </div>
                 </div>

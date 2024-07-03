@@ -5,6 +5,7 @@
     overflow: hidden; 
     box-shadow: 7px 9px 8px rgba(0, 0, 0, 0.1);
     cursor: pointer;
+    border: 2px solid #519e51;
 }
 
 .top h4 {

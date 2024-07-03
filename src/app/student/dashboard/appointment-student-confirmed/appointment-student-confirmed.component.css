@@ -122,6 +122,10 @@
     padding: 10px;
     border: 2px solid #F78914;
     border-radius: 10px;
+    word-wrap: break-word; /* Ensures long words break and wrap to the next line */
+    white-space: pre-wrap; /* Preserves whitespace and wraps text as necessary */
+    overflow-wrap: break-word; /* Breaks long words and wraps text */
+    overflow: auto; /* Adds scrollbars if necessary */
 }
 .submit-btn {
     width: 140px;

@@ -64,15 +64,17 @@
           <div class="purpose-text">
             <p>Teacher's Message:</p>
           </div>
-          <textarea placeholder="No Appointment Purpose Stated" readonly></textarea>
+          <textarea placeholder="Provide your remarks." [(ngModel)]="remarks" [readonly]="appointments[0]?.remarks !== null">
+            {{ appointments[0]?.remarks}}
+          </textarea>
         </div>
         <div class="buttons">
           <div class="close">
             <p (click)="closeWindow()">CLOSE</p>
           </div>
-          </div>
-          <div (click)="openRating()" *ngIf="usertype == 'user'" class="confirmation">
+          <div (click)="openRating()" *ngIf="usertype == 'user' && this.appointments[0]?.rating == null" class="confirmation" >
             <p>PROVIDE FEEDBACK</p>
+          </div>
           </div>
         </div>
       </div>

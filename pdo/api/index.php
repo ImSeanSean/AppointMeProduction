@@ -97,6 +97,15 @@ switch ($_SERVER['REQUEST_METHOD']) {
             case 'has_existing_appointment':
                 echo json_encode($get->has_existing_appointment($request[1]));
                 break;
+            case 'get_ratings':
+                echo json_encode($get->get_ratings());
+                break;
+            case 'get_ratings_weekly':
+                echo json_encode($get->get_ratings_weekly());
+                break;
+            case 'get_ratings_monthly':
+                echo json_encode($get->get_ratings_monthly());
+                break;
             default:
                 http_response_code(403);
                 break;
@@ -186,9 +195,6 @@ switch ($_SERVER['REQUEST_METHOD']) {
                 break;
             case 'check_ftf_appointments':
                 echo json_encode($post->checkFTFSchedule($data));
-                break;
-            case 'get_ratings_daily':
-                echo json_encode($post->getDailyRatings($data));
                 break;
             default:
                 http_response_code(403);

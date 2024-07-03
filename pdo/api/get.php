@@ -517,4 +517,90 @@ class Get
             echo json_encode(array('message' => 'Token is invalid or Authorization header is missing'));
         }
     }
+    //Analytics
+    public function get_ratings()
+    {
+        $tokenInfo = $this->middleware->validateToken();
+        if ($tokenInfo) {
+            $sqlStr = "SELECT ConsultantID, AppointmentDate, AVG(rating) as rating
+                   FROM appointment
+                   WHERE ConsultantID = $tokenInfo->user_id AND rating IS NOT NULL
+                   GROUP BY ConsultantID, DATE(AppointmentDate)
+                   ORDER BY DATE(AppointmentDate) ASC";
+
+            $result = $this->executeQuery($sqlStr);
+
+            if ($result['code'] == 200) {
+                if (count($result['data']) > 0) {
+                    return $this->sendPayLoad($result['data'], "success", "Successfully retrieved notifications.", $result['code']);
+                } else {
+                    return null;
+                }
+            }
+
+            return $this->sendPayLoad(null, "failed", "Failed to pull data.", $result['code']);
+        } else {
+            http_response_code(401);
+            echo json_encode(array('message' => 'Token is invalid or Authorization header is missing'));
+        }
+    }
+    public function get_ratings_weekly()
+    {
+        $tokenInfo = $this->middleware->validateToken();
+        if ($tokenInfo) {
+            $sqlStr = "SELECT ConsultantID, 
+                              YEAR(AppointmentDate) as year, 
+                              WEEK(AppointmentDate) as week, 
+                              STR_TO_DATE(CONCAT(YEAR(AppointmentDate), WEEK(AppointmentDate), '1'), '%X%V%w') as AppointmentDate,
+                              DATE_ADD(STR_TO_DATE(CONCAT(YEAR(AppointmentDate), WEEK(AppointmentDate), '1'), '%X%V%w'), INTERVAL 6 DAY) as week_end,
+                              AVG(rating) as rating
+                       FROM appointment
+                       WHERE ConsultantID = $tokenInfo->user_id AND rating IS NOT NULL
+                       GROUP BY ConsultantID, YEAR(AppointmentDate), WEEK(AppointmentDate)
+                       ORDER BY YEAR(AppointmentDate) ASC, WEEK(AppointmentDate) ASC";
+
+            $result = $this->executeQuery($sqlStr);
+
+            if ($result['code'] == 200) {
+                if (count($result['data']) > 0) {
+                    return $this->sendPayLoad($result['data'], "success", "Successfully retrieved notifications.", $result['code']);
+                } else {
+                    return null;
+                }
+            }
+
+            return $this->sendPayLoad(null, "failed", "Failed to pull data.", $result['code']);
+        } else {
+            http_response_code(401);
+            echo json_encode(array('message' => 'Token is invalid or Authorization header is missing'));
+        }
+    }
+    public function get_ratings_monthly()
+    {
+        $tokenInfo = $this->middleware->validateToken();
+        if ($tokenInfo) {
+            $sqlStr = "SELECT ConsultantID, 
+                          DATE_FORMAT(AppointmentDate, '%M %Y') as AppointmentDate, 
+                          AVG(rating) as rating
+                   FROM appointment
+                   WHERE ConsultantID = $tokenInfo->user_id AND rating IS NOT NULL
+                   GROUP BY ConsultantID, DATE_FORMAT(AppointmentDate, '%M %Y')
+                   ORDER BY DATE_FORMAT(AppointmentDate, '%Y-%m') ASC";
+
+            $result = $this->executeQuery($sqlStr);
+
+            if ($result['code'] == 200) {
+                if (count($result['data']) > 0) {
+                    return $this->sendPayLoad($result['data'], "success", "Successfully retrieved notifications.", $result['code']);
+                } else {
+                    return null;
+                }
+            }
+
+            return $this->sendPayLoad(null, "failed", "Failed to pull data.", $result['code']);
+        } else {
+            http_response_code(401);
+            echo json_encode(array('message' => 'Token is invalid or Authorization header is missing'));
+        }
+    }
 }

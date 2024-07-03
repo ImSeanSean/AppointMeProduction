@@ -31,7 +31,7 @@ export class AppointmentViewFinishedComponent {
       (data: Appointment[]) => {
         // Handle successful response
         this.appointments = data; 
-        console.log(this.appointments)
+        this.remarks = this.appointments[0].remarks
       },
       (error) => {
         // Handle errors
