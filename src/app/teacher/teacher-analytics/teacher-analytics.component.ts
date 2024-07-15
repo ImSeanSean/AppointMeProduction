@@ -1,13 +1,13 @@
-import { AfterViewInit, Component, OnInit, ViewChild } from '@angular/core';
+import { AfterViewInit, Component, OnInit, QueryList, ViewChild, ViewChildren } from '@angular/core';
 import { Appointment } from '../../interfaces/Appointment';
 import { DatePipe, NgClass, NgFor, formatDate } from '@angular/common';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { Router } from '@angular/router';
 import { mainPort } from '../../app.component';
-import { Chart, ChartOptions, Filler } from 'chart.js';
 import { BaseChartDirective } from 'ng2-charts';
 import { FormsModule } from '@angular/forms';
+import { Queue } from '../../interfaces/Queue';
 
 @Component({
     selector: 'app-teacher-analytics',
@@ -21,21 +21,30 @@ export class TeacherAnalyticsComponent implements OnInit{
 
   };
   //Variables
-  @ViewChild(BaseChartDirective) chart: BaseChartDirective | undefined;
+  @ViewChildren(BaseChartDirective) charts: QueryList<BaseChartDirective> | undefined;
   appointments: Appointment[] = [];
   usertype = localStorage.getItem('user');
   selectedDay = this.datePipe.transform(new Date(), 'EEEE');
   selectedDate = this.datePipe.transform(new Date(), 'MMMM dd, yyyy');
+  queue: Queue[] = [];
+  pending = 0;
+  confirmed = 0;
+  completed = 0;
 
   //Analytics Data
   getPending(): number {
-    return this.appointments.filter(appointment => appointment.Status === 0).length;
+    return this.queue.length;
   }
   getConfirmed(): number {
-    return this.appointments.filter(appointment => appointment.Status === 1 && appointment.Completed === 0).length;
+    return this.appointments.filter(appointment => appointment.Completed === 0).length;
   }
   getCompleted(): number{
-    return this.appointments.length;
+    return this.appointments.filter(appointment => appointment.Completed === 1).length;
+  }
+  getAppointmentTypes(){
+    this.pending = this.queue.length
+    this.confirmed = this.appointments.filter(appointment => appointment.Completed === 0).length;
+    this.completed = this.appointments.filter(appointment => appointment.Completed === 1).length;
   }
   getAppointmentsThisWeek(): number {
     const now = new Date();
@@ -126,16 +135,22 @@ export class TeacherAnalyticsComponent implements OnInit{
   getAppointment(): Observable<Appointment[]> {
     const token = localStorage.getItem('token');
     const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
-    console.log(token);
     return this.http.get<Appointment[]>(`${mainPort}/pdo/api/get_appointments`, { headers });
   }
 
   getAppointmentTeacher(): Observable<Appointment[]> {
     const token = localStorage.getItem('token');
     const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
-    console.log(token);
     return this.http.get<Appointment[]>(`${mainPort}/pdo/api/get_appointments_teacher`, { headers });
   }
+
+  getQueue(): Observable<Queue[]> {
+    const token = localStorage.getItem('token');
+    const teacherId = localStorage.getItem('id');
+    const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);  
+    return this.http.get<Queue[]>(`${mainPort}/pdo/api/get_queue_teacher/${teacherId}`, { headers });
+  }
+
 
   filterAppointments(appointments: any[]): any[] {
     return appointments.filter(appointment => this.datePipe.transform(appointment.AppointmentDate, 'MMMM dd, yyyy') == this.selectedDate);
@@ -221,11 +236,12 @@ mapRatingsWeekly(){
   this.getRatingsWeekly().subscribe((result: Appointment[]) => {
     this.ratingsWeekly = result.map(appointment => ({
       consultantId: appointment.ConsultantID,
-      date: this.convertToZeroHourDate(appointment.AppointmentDate),
+      date: appointment.AppointmentDate,
       rating: appointment.rating
     }))
   })
-  this.updateRating(this.ratingsWeekly)
+
+  this.updateRatingMonthly(this.ratingsWeekly)
 }
 mapRatingsMonthly(){
   this.getRatingsMonthly().subscribe((result: Appointment[]) => {
@@ -252,8 +268,10 @@ updateRating(rating: any[]){
   this.ratingData.labels = dates;
   this.ratingData.datasets[0].data = ratings;
 
-  if (this.chart) {
-    this.chart.update();
+  if (this.charts) {
+    this.charts.forEach((child) => {
+      child.chart?.update()
+  });
   }
 }
 updateRatingMonthly(rating: any[]){
@@ -264,8 +282,10 @@ updateRatingMonthly(rating: any[]){
   this.ratingData.labels = dates;
   this.ratingData.datasets[0].data = ratings;
 
-  if (this.chart) {
-    this.chart.update();
+  if (this.charts) {
+    this.charts.forEach((child) => {
+      child.chart?.update()
+  });
   }
 }
 //Chart Variables
@@ -338,13 +358,27 @@ countRatings(){
   this.rating1Percentage = parseFloat((this.rating1 / this.ratedTotal * 100).toFixed(2));
 }
 //Appointment Analytics
-lineChartData = {
-  labels: ["Mon", "Tues", "Wed", "Thurs", "Fri", "Sat"],
+appointmentMode = "Daily"
+barChartData = {
+  labels: ["Pending", "Confirmed", "Completed"],
   datasets: [
     {
-      data: [1, 2, 3, 4, 5, 6],
-      label: 'Ratings',
-      fill: true
+      data: [2, 4, 6],
+      label: 'Pending',
+      fill: true,
+      backgroundColor: '#ABABAB'
+    },
+    {
+      data: [2, 4, 6],
+      label: 'Confirmed',
+      fill: true,
+      backgroundColor: '#FAA44E'
+    },
+    {
+      data: [2, 4, 6],
+      label: 'Completed',
+      fill: true,
+      backgroundColor: '#519E50'
     }
   ],
   options: {
@@ -366,6 +400,93 @@ lineChartData = {
   }
 }
 
+appointmentPieChartData = {
+  labels: ["Pending", "Confirmed", "Completed"],
+  datasets: [
+    {
+      data: [1, 1, 1], // Initialize with zeroes
+      label: 'Appointments',
+      backgroundColor: ['#ABABAB', '#FAA44E', '#519E50'],
+    }
+  ]
+};
+//Appointment Analytics Functions
+mapAppointmentPieChart(){
+  let appointments = [this.getPending(), this.getConfirmed(), this.getCompleted()]
+  this.appointmentPieChartData.datasets[0].data = appointments;
+   
+  if (this.charts) {
+    this.charts.forEach((child) => {
+      child.chart?.update()
+  });
+  }
+}
+//Get and Map Daily Appointments
+getAppointmentDaily(): Observable<any> {
+  const token = localStorage.getItem('token');
+  const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
+  return this.http.get(`${mainPort}/pdo/api/get_appointments_daily`, { headers });
+}
+
+getAppoinmentWeekly(): Observable<any> {
+  const token = localStorage.getItem('token');
+  const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
+  return this.http.get(`${mainPort}/pdo/api/get_appointments_weekly`, { headers });
+}
+
+getAppoinmentMonthly(): Observable<any> {
+  const token = localStorage.getItem('token');
+  const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
+  return this.http.get(`${mainPort}/pdo/api/get_appointments_monthly`, { headers });
+}
+
+mapAppointmentBarChartDaily() {
+  this.getAppointmentDaily().subscribe(result => {
+    const appointments = result;
+    this.updateAppointmentBarChart(appointments)
+  }, error => {
+    console.error('Error fetching daily appointments:', error);
+  });
+}
+
+mapAppointmentBarChartWeekly() {
+  this.getAppoinmentWeekly().subscribe(result => {
+    const appointments = result;
+    this.updateAppointmentBarChart(appointments)
+  }, error => {
+    console.error('Error fetching daily appointments:', error);
+  });
+}
+
+mapAppointmentBarChartMonthly() {
+  this.getAppoinmentMonthly().subscribe(result => {
+    const appointments = result;
+    this.updateAppointmentBarChart(appointments)
+  }, error => {
+    console.error('Error fetching daily appointments:', error);
+  });
+}
+
+updateAppointmentBarChart(appointments: any[]){
+  // Process the appointments to map them to the chart datasets
+  const labels = appointments.map((appointment: any) => appointment.AppointmentDay);
+  const completedCounts = appointments.map((appointment: any) => appointment.CompletedCount);
+  const confirmedCounts = appointments.map((appointment: any) => appointment.ConfirmedCount);
+  const pendingCounts = appointments.map((appointment: any) => appointment.PendingCount);
+
+  // Update the ratingDataDaily object
+  this.barChartData.labels = labels;
+  this.barChartData.datasets[0].data = pendingCounts;
+  this.barChartData.datasets[1].data = confirmedCounts;
+  this.barChartData.datasets[2].data = completedCounts;
+
+  if (this.charts) {
+    this.charts.forEach((child) => {
+      child.chart?.update()
+  });
+  }
+}
+
   ngOnInit(): void {
     if(this.usertype == "user"){
       this.getAppointment().subscribe(
@@ -382,6 +503,19 @@ lineChartData = {
         (data: Appointment[]) => {
           this.appointments = data;
           this.countRatings();
+
+          this.getQueue().subscribe((data: Queue[]) => {
+            this.queue = data;
+            this.getAppointmentTypes(); 
+            this.pending = this.getPending();
+            this.completed = this.getCompleted();
+            this.confirmed = this.getConfirmed();
+            this.mapAppointmentPieChart();
+          }
+          ,
+          (error) => {
+            console.error('Error fetching queue:', error);
+          })
         },
         (error) => {
           console.error('Error fetching appointments:', error);
@@ -391,5 +525,8 @@ lineChartData = {
     this.mapRatingsDaily()
     this.mapRatingsWeekly()
     this.mapRatingsMonthly()
+    this.mapAppointmentBarChartMonthly()
+    this.mapAppointmentBarChartWeekly()
+    this.mapAppointmentBarChartDaily()
   }
 }

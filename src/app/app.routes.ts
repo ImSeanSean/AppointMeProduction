@@ -25,6 +25,8 @@ import { NotificationTabComponent } from './layouts/notification/notification-ta
 import { NotificationTeacherComponent } from './layouts/notification/notification-teacher/notification-teacher.component';
 import { TeacherReportComponent } from './teacher/teacher-report/teacher-report.component';
 import { TeacherAppointmentCreateComponent } from './teacher/teacher-appointment-create/teacher-appointment-create.component';
+import { DashboardAdminComponent } from './layouts/dashboard-admin/dashboard-admin.component';
+import { AdminLoginComponent } from './admin/admin-login/admin-login.component';
 
 export const routes: Routes = [
     {path: '', component: HomepageComponent},
@@ -71,6 +73,17 @@ export const routes: Routes = [
                     },
                     {path: 'notification', component: NotificationTeacherComponent},
                     {path: 'admin', component: UserManagementComponent},
+                ]
+            }
+        ]
+    },
+    {
+        path: 'admin',
+        children: [
+            {path: 'login', component: AdminLoginComponent},
+            {path: 'dashboard', component: DashboardAdminComponent,
+                children: [
+                    {path: 'user-management', component: UserManagementComponent}
                 ]
             }
         ]

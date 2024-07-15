@@ -6,8 +6,8 @@
     <div class="top">
       <div class="textName">
         <p>Appointment</p>
-        <h1 *ngIf="">Meeting with {{appointments[0]?.UserName}}</h1>
-        <h1>Meeting with {{appointments[0]?.ConsultantFirstName}}</h1>
+        <h1 *ngIf="usertype === 'teacher'">Meeting with {{appointments[0]?.UserName}}</h1>
+        <h1 *ngIf="usertype === 'user'">Meeting with {{appointments[0]?.ConsultantFirstName}} {{appointments[0].ConsultantLastName}}</h1>
       </div>
     </div>
     <div class="body">
@@ -62,12 +62,21 @@
       <div class="textarea-container">
         <div class="textarea">
           <div class="purpose-text">
-            <p>Teacher's Message:</p>
+            <p>Student's Remarks:</p>
           </div>
           <textarea placeholder="Provide your remarks." [(ngModel)]="remarks" [readonly]="appointments[0]?.remarks !== null">
             {{ appointments[0]?.remarks}}
           </textarea>
         </div>
+        <div class="textarea-container">
+          <div class="textarea">
+            <div class="purpose-text">
+              <p>Purpose of the Appointment:</p>
+            </div>
+            <textarea placeholder="Provide your remarks." [(ngModel)]="remarks" [readonly]="appointments[0]?.remarks !== null">
+              {{ appointments[0]?.remarks}}
+            </textarea>
+          </div>
         <div class="buttons">
           <div class="close">
             <p (click)="closeWindow()">CLOSE</p>

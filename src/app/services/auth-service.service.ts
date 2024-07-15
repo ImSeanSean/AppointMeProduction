@@ -24,6 +24,9 @@ export class AuthServiceService {
   loginTeacher(data:any): Observable<any>{
     return this.http.post(`${mainPort}/pdo/api/login_teacher`, data);
   }
+  loginAdmin(data:any): Observable<any>{
+    return this.http.post(`${mainPort}/pdo/api/login_admin`, data);
+  }
   logout(): void {
     localStorage.clear();
     console.log('logout')

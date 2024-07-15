@@ -1,5 +1,6 @@
 <?php
 require __DIR__ . '\vendor\autoload.php';
+require __DIR__ . '\vendor\fpdf186\fpdf.php';
 
 use Firebase\JWT\JWT;
 use Firebase\JWT\Key;
@@ -7,7 +8,7 @@ use Firebase\JWT\Key;
 use PHPMailer\PHPMailer\PHPMailer;
 use PHPMailer\PHPMailer\Exception;
 
-class Post
+class Post extends FPDF
 {
 
     private $pdo;
@@ -512,6 +513,39 @@ class Post
         } catch (\PDOException $e) {
             // Handle the exception, return an error response, or log the error
             return "Error rejecting teacher: " . $e->getMessage();
+        }
+    }
+    public function login_admin($data)
+    {
+        // Variables
+        $email = $data->email;
+        $password = $data->password;
+        // SQL
+        $sql = "SELECT * FROM admin WHERE Username = :email";
+        $stmt = $this->pdo->prepare($sql);
+        $stmt->bindParam(':email', $email, PDO::PARAM_STR);
+        $stmt->execute();
+        // If User Found
+        $consultant = $stmt->fetch(PDO::FETCH_ASSOC);
+
+        if ($consultant) {
+            if ($password == $consultant['Password']) {
+                // Use the correct column name for user ID
+                $payload = [
+                    'iss' => 'AppointMe',
+                    'iat' => time(),
+                    'exp' => time() + time() + (24 * 60 * 60),
+                    'user_id' => $consultant['AdminID'],
+                    'type' => 'admin'
+                ];
+
+                $jwt = JWT::encode($payload, $this->secretKey, 'HS256');
+                return $jwt;
+            } else {
+                return false;
+            }
+        } else {
+            return false;
         }
     }
     //Appointment Related Functions
@@ -1135,5 +1169,56 @@ class Post
         $stmt->bindParam(':day', $day);
         $stmt->execute();
         return $stmt->fetch(PDO::FETCH_ASSOC);
+    }
+
+    //PHP FPDF
+    function generatePDF()
+    {
+        // Create PDF object
+        $pdf = new FPDF();
+        $pdf->AddPage();
+
+        // Set font
+        $pdf->SetFont('Arial', 'B', 16);
+
+        // Title
+        $pdf->Cell(0, 10, 'Appointment Summary Report', 0, 1, 'C');
+
+        // Content
+        $pdf->SetFont('Arial', 'B', 12);
+        $pdf->Cell(45, 10, 'Appointment Title:', 1);
+        $pdf->SetFont('Arial', '', 12);
+        $pdf->Cell(0, 10, 'Meeting with Sean Rad P. Alberto', 1, 1);
+
+        $pdf->SetFont('Arial', 'B', 12);
+        $pdf->Cell(45, 10, 'Faculty Member:', 1);
+        $pdf->SetFont('Arial', '', 12);
+        $pdf->Cell(0, 10, 'Mr. Rey Bautista', 1, 1);
+
+        $pdf->SetFont('Arial', 'B', 12);
+        $pdf->Cell(45, 10, 'Student:', 1);
+        $pdf->SetFont('Arial', '', 12);
+        $pdf->Cell(0, 10, 'Sean Rad P. Alberto', 1, 1);
+
+        $pdf->SetFont('Arial', 'B', 12);
+        $pdf->Cell(45, 10, 'Start Date:', 1);
+        $pdf->SetFont('Arial', '', 12);
+        $pdf->Cell(45, 10, '05/25/2024', 1);
+        $pdf->SetFont('Arial', 'B', 12);
+        $pdf->Cell(45, 10, 'End Date:', 1);
+        $pdf->SetFont('Arial', '', 12);
+        $pdf->Cell(0, 10, '06/10/2024', 1, 1);
+        $pdf->Cell(0, 10, '', 0, 1);
+        // Additional content
+        $pdf->SetFont('Arial', 'B', 12);
+        $pdf->Cell(0, 10, '1. Appointment Purpose', 1, 1);
+
+        $pdf->SetFont('Arial', '', 12);
+        $pdf->MultiCell(0, 10, 'This is the appointment objective content. Replace with your actual content.', 0, 'L');
+
+        $pdf->Ln(10);
+
+        // Output the PDF
+        $pdf->Output('D', 'Appointment_Summary_Report.pdf');
     }
 }

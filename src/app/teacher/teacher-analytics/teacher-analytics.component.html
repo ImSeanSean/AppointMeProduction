@@ -231,21 +231,21 @@
     <div class="content">
         <div class="two-column">
             <div class="column">
-                <h2>Monthly Appointments</h2>
-                <canvas baseChart type="bar" [data]="lineChartData"></canvas>
+                <h2>{{appointmentMode}} Appointments</h2>
+                <canvas baseChart type="bar" [data]="barChartData"></canvas>
             </div>
             <div class="info">
                 <div class="radio">
-                    <input class="radio__input" type="radio" value="Monthly" name="mode" id="monthly-2">
+                    <input class="radio__input" type="radio" value="Monthly" [(ngModel)]="appointmentMode" (click)="mapAppointmentBarChartMonthly()" name="modeBar" id="monthly-2">
                     <label class="radio__label" for="monthly-2">Monthly</label>
-                    <input class="radio__input" type="radio" value="Weekly" name="mode" id="weekly-2">
+                    <input class="radio__input" type="radio" value="Weekly" [(ngModel)]="appointmentMode" (click)="mapAppointmentBarChartWeekly()" name="modeBar" id="weekly-2">
                     <label class="radio__label" for="weekly-2">Weekly</label>
-                    <input class="radio__input" type="radio" value="Daily" name="mode" id="daily-2">
+                    <input class="radio__input" type="radio" value="Daily" [(ngModel)]="appointmentMode" (click)="mapAppointmentBarChartDaily()" name="modeBar" id="daily-2">
                     <label class="radio__label" for="daily-2">Daily</label>
                 </div>
                 <div class="pie">
                     <h2>Appointment Overview</h2>
-                    <canvas baseChart type="pie" [data]="lineChartData" > </canvas>
+                    <canvas #AppointmentPieChart baseChart type="pie" [data]="appointmentPieChartData" > </canvas>
                 </div>
             </div>
         </div>

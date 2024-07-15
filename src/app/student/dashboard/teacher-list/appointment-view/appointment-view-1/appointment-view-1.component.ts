@@ -72,7 +72,7 @@ export class AppointmentView1Component implements OnInit{
   //Queue-Related Functions
   //Add Queue
   addQueue(){
-    if(this.selectedMode == null || this.selectedUrgency == null || this.selectedDay == null || this.selectedTime == null || this.selectedTime){
+    if(this.selectedMode == null || this.selectedUrgency == null || this.selectedDay == null || this.selectedTime == null){
       this.dialog.open(ErrorComponent, {
         width: '300px',
         data: {
@@ -204,9 +204,11 @@ export class AppointmentView1Component implements OnInit{
       this.preferredDay = matchingQueue.day;
       this.urgency = matchingQueue.urgency;
       // Parse the time string and extract only the hour and minute part
-      const [hour, minute] = matchingQueue.time.split(':');
+      if(matchingQueue.time){
+        const [hour, minute] = matchingQueue.time.split(':');
+        this.preferredTime = `${hour}:${minute}`;
+      }
       // Format the hour and minute part to match the "HH:MM" format
-      this.preferredTime = `${hour}:${minute}`;
       this.preferredMode = matchingQueue.mode;
     }
     else{

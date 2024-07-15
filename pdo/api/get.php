@@ -1,7 +1,6 @@
 <?php
 require './Middleware.php';
 
-
 class Get
 {
     private $pdo;
@@ -549,15 +548,16 @@ class Get
         $tokenInfo = $this->middleware->validateToken();
         if ($tokenInfo) {
             $sqlStr = "SELECT ConsultantID, 
-                              YEAR(AppointmentDate) as year, 
-                              WEEK(AppointmentDate) as week, 
-                              STR_TO_DATE(CONCAT(YEAR(AppointmentDate), WEEK(AppointmentDate), '1'), '%X%V%w') as AppointmentDate,
-                              DATE_ADD(STR_TO_DATE(CONCAT(YEAR(AppointmentDate), WEEK(AppointmentDate), '1'), '%X%V%w'), INTERVAL 6 DAY) as week_end,
-                              AVG(rating) as rating
-                       FROM appointment
-                       WHERE ConsultantID = $tokenInfo->user_id AND rating IS NOT NULL
-                       GROUP BY ConsultantID, YEAR(AppointmentDate), WEEK(AppointmentDate)
-                       ORDER BY YEAR(AppointmentDate) ASC, WEEK(AppointmentDate) ASC";
+                          CONCAT(
+                              DATE_FORMAT(STR_TO_DATE(CONCAT(YEAR(AppointmentDate), WEEK(AppointmentDate), '1'), '%X%V%w'), '%m/%d'),
+                              ' - ',
+                              DATE_FORMAT(DATE_ADD(STR_TO_DATE(CONCAT(YEAR(AppointmentDate), WEEK(AppointmentDate), '1'), '%X%V%w'), INTERVAL 6 DAY), '%m/%d')
+                          ) AS AppointmentDate,
+                          AVG(rating) as rating
+                        FROM appointment
+                        WHERE ConsultantID = $tokenInfo->user_id AND rating IS NOT NULL
+                        GROUP BY ConsultantID, YEAR(AppointmentDate), WEEK(AppointmentDate)
+                        ORDER BY YEAR(AppointmentDate) ASC, WEEK(AppointmentDate) ASC";
 
             $result = $this->executeQuery($sqlStr);
 
@@ -586,6 +586,192 @@ class Get
                    WHERE ConsultantID = $tokenInfo->user_id AND rating IS NOT NULL
                    GROUP BY ConsultantID, DATE_FORMAT(AppointmentDate, '%M %Y')
                    ORDER BY DATE_FORMAT(AppointmentDate, '%Y-%m') ASC";
+
+            $result = $this->executeQuery($sqlStr);
+
+            if ($result['code'] == 200) {
+                if (count($result['data']) > 0) {
+                    return $this->sendPayLoad($result['data'], "success", "Successfully retrieved notifications.", $result['code']);
+                } else {
+                    return null;
+                }
+            }
+
+            return $this->sendPayLoad(null, "failed", "Failed to pull data.", $result['code']);
+        } else {
+            http_response_code(401);
+            echo json_encode(array('message' => 'Token is invalid or Authorization header is missing'));
+        }
+    }
+    public function get_appointments_daily()
+    {
+        $tokenInfo = $this->middleware->validateToken();
+        if ($tokenInfo) {
+            $sqlStr = "SELECT
+                            DATE_FORMAT(dates.AppointmentDay, '%m/%d/%y') AS AppointmentDay,
+                            COALESCE(appt.CompletedCount, 0) AS CompletedCount,
+                            COALESCE(appt.ConfirmedCount, 0) AS ConfirmedCount,
+                            COALESCE(q.PendingCount, 0) AS PendingCount
+                        FROM (
+                            SELECT DISTINCT DATE(AppointmentDate) AS AppointmentDay
+                            FROM appointment
+                            WHERE ConsultantID = $tokenInfo->user_id
+                            UNION
+                            SELECT DISTINCT DATE(time_created) AS AppointmentDay
+                            FROM queue
+                            WHERE teacher_id = $tokenInfo->user_id
+                        ) dates
+                        LEFT JOIN (
+                            SELECT
+                                DATE(AppointmentDate) AS AppointmentDay,
+                                SUM(CASE WHEN Completed = 1 THEN 1 ELSE 0 END) AS CompletedCount,
+                                SUM(CASE WHEN Completed = 0 THEN 1 ELSE 0 END) AS ConfirmedCount
+                            FROM
+                                appointment
+                            WHERE ConsultantID = $tokenInfo->user_id
+                            GROUP BY
+                                DATE(AppointmentDate)
+                        ) appt ON dates.AppointmentDay = appt.AppointmentDay
+                        LEFT JOIN (
+                            SELECT
+                                DATE(time_created) AS AppointmentDay,
+                                COUNT(*) AS PendingCount
+                            FROM
+                                queue
+                            WHERE teacher_id = $tokenInfo->user_id
+                            GROUP BY
+                                DATE(time_created)
+                        ) q ON dates.AppointmentDay = q.AppointmentDay
+                        ORDER BY
+                            dates.AppointmentDay;
+                                                ";
+
+            $result = $this->executeQuery($sqlStr);
+
+            if ($result['code'] == 200) {
+                if (count($result['data']) > 0) {
+                    return $this->sendPayLoad($result['data'], "success", "Successfully retrieved notifications.", $result['code']);
+                } else {
+                    return null;
+                }
+            }
+
+            return $this->sendPayLoad(null, "failed", "Failed to pull data.", $result['code']);
+        } else {
+            http_response_code(401);
+            echo json_encode(array('message' => 'Token is invalid or Authorization header is missing'));
+        }
+    }
+    public function get_appointments_weekly()
+    {
+        $tokenInfo = $this->middleware->validateToken();
+        if ($tokenInfo) {
+            $sqlStr = "SELECT
+                            CONCAT(
+                                DATE_FORMAT(STR_TO_DATE(CONCAT(YEAR(dates.AppointmentDay), WEEK(dates.AppointmentDay), '1'), '%X%V%w'), '%m/%d'),
+                                ' - ',
+                                DATE_FORMAT(DATE_ADD(STR_TO_DATE(CONCAT(YEAR(dates.AppointmentDay), WEEK(dates.AppointmentDay), '1'), '%X%V%w'), INTERVAL 6 DAY), '%m/%d')
+                            ) AS AppointmentDay,
+                            COALESCE(SUM(appt.CompletedCount), 0) AS CompletedCount,
+                            COALESCE(SUM(appt.ConfirmedCount), 0) AS ConfirmedCount,
+                            COALESCE(SUM(q.PendingCount), 0) AS PendingCount
+                        FROM (
+                            SELECT DISTINCT DATE(AppointmentDate) AS AppointmentDay
+                            FROM appointment
+                            WHERE ConsultantID = $tokenInfo->user_id
+                            UNION
+                            SELECT DISTINCT DATE(time_created) AS AppointmentDay
+                            FROM queue
+                            WHERE teacher_id = $tokenInfo->user_id
+                        ) dates
+                        LEFT JOIN (
+                            SELECT
+                                DATE(AppointmentDate) AS AppointmentDay,
+                                SUM(CASE WHEN Completed = 1 THEN 1 ELSE 0 END) AS CompletedCount,
+                                SUM(CASE WHEN Completed = 0 THEN 1 ELSE 0 END) AS ConfirmedCount
+                            FROM
+                                appointment
+                            WHERE ConsultantID = $tokenInfo->user_id
+                            GROUP BY
+                                DATE(AppointmentDate)
+                        ) appt ON dates.AppointmentDay = appt.AppointmentDay
+                        LEFT JOIN (
+                            SELECT
+                                DATE(time_created) AS AppointmentDay,
+                                COUNT(*) AS PendingCount
+                            FROM
+                                queue
+                            WHERE teacher_id = $tokenInfo->user_id
+                            GROUP BY
+                                DATE(time_created)
+                        ) q ON dates.AppointmentDay = q.AppointmentDay
+                        GROUP BY
+                            WEEK(dates.AppointmentDay), YEAR(dates.AppointmentDay)
+                        ORDER BY
+                            dates.AppointmentDay;
+                        ";
+
+            $result = $this->executeQuery($sqlStr);
+
+            if ($result['code'] == 200) {
+                if (count($result['data']) > 0) {
+                    return $this->sendPayLoad($result['data'], "success", "Successfully retrieved notifications.", $result['code']);
+                } else {
+                    return null;
+                }
+            }
+
+            return $this->sendPayLoad(null, "failed", "Failed to pull data.", $result['code']);
+        } else {
+            http_response_code(401);
+            echo json_encode(array('message' => 'Token is invalid or Authorization header is missing'));
+        }
+    }
+
+    public function get_appointments_monthly()
+    {
+        $tokenInfo = $this->middleware->validateToken();
+        if ($tokenInfo) {
+            $sqlStr = "SELECT
+                        DATE_FORMAT(dates.AppointmentDay, '%M %Y') AS AppointmentDay,
+                        COALESCE(SUM(appt.CompletedCount), 0) AS CompletedCount,
+                        COALESCE(SUM(appt.ConfirmedCount), 0) AS ConfirmedCount,
+                        COALESCE(SUM(q.PendingCount), 0) AS PendingCount
+                    FROM (
+                        SELECT DISTINCT DATE(AppointmentDate) AS AppointmentDay
+                        FROM appointment
+                        WHERE ConsultantID = $tokenInfo->user_id
+                        UNION
+                        SELECT DISTINCT DATE(time_created) AS AppointmentDay
+                        FROM queue
+                        WHERE teacher_id = $tokenInfo->user_id
+                    ) dates
+                    LEFT JOIN (
+                        SELECT
+                            DATE(AppointmentDate) AS AppointmentDay,
+                            SUM(CASE WHEN Completed = 1 THEN 1 ELSE 0 END) AS CompletedCount,
+                            SUM(CASE WHEN Completed = 0 THEN 1 ELSE 0 END) AS ConfirmedCount
+                        FROM
+                            appointment
+                        WHERE ConsultantID = $tokenInfo->user_id
+                        GROUP BY
+                            DATE(AppointmentDate)
+                    ) appt ON dates.AppointmentDay = appt.AppointmentDay
+                    LEFT JOIN (
+                        SELECT
+                            DATE(time_created) AS AppointmentDay,
+                            COUNT(*) AS PendingCount
+                        FROM
+                            queue
+                        WHERE teacher_id = $tokenInfo->user_id
+                        GROUP BY
+                            DATE(time_created)
+                    ) q ON dates.AppointmentDay = q.AppointmentDay
+                    GROUP BY
+                        YEAR(dates.AppointmentDay), MONTH(dates.AppointmentDay)
+                    ORDER BY
+                        YEAR(dates.AppointmentDay), MONTH(dates.AppointmentDay);
+                    ";
 
             $result = $this->executeQuery($sqlStr);
 

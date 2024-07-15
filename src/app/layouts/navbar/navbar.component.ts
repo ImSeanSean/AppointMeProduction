@@ -29,7 +29,12 @@ export class NavbarComponent {
     });
 
     dialogRef.componentInstance.userType.subscribe((selectedUserType: string) => {
-     this.router.navigate(['./'+ selectedUserType + '/register'])
+      selectedUserType = selectedUserType.trim().toLowerCase();
+      if (selectedUserType === 'admin') {
+        this.router.navigate(['./' + selectedUserType + '/login']);
+      } else {
+        this.router.navigate(['./' + selectedUserType + '/register']);
+      }
     });
   }
 

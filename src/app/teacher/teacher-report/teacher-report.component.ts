@@ -1,6 +1,9 @@
+import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import { Component } from '@angular/core';
 import html2canvas from 'html2canvas';
 import { jsPDF } from "jspdf";
+import { mainPort } from '../../app.component';
+import { Observable } from 'rxjs';
 
 @Component({
   selector: 'app-teacher-report',
@@ -8,6 +11,8 @@ import { jsPDF } from "jspdf";
   styleUrls: ['./teacher-report.component.css']
 })
 export class TeacherReportComponent {
+  constructor(private http: HttpClient){}
+
   generatePDF() {
     const elementToPrint = document.getElementById('appointmentRecords');
     if (elementToPrint) {
@@ -56,5 +61,30 @@ export class TeacherReportComponent {
         elementToPrint.style.display = 'none';
       });
     }
+  }
+
+  generateFPDF(): Observable<any> {
+    const token = localStorage.getItem('token');
+    const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
+    const options = { headers, responseType: 'blob' as 'json' };
+
+    return this.http.post(`${mainPort}/pdo/api/generate_report`, null, options);
+  }
+
+  downloadPDF() {
+    this.generateFPDF().subscribe(
+      (blob: Blob) => {
+        const url = window.URL.createObjectURL(blob);
+        const link = document.createElement('a');
+        link.href = url;
+        link.download = 'Appointment_Summary_Report.pdf';
+        link.click();
+        window.URL.revokeObjectURL(url);
+      },
+      error => {
+        console.error('Error generating PDF:', error);
+        // Handle error as needed
+      }
+    );
   }
 }

@@ -106,6 +106,15 @@ switch ($_SERVER['REQUEST_METHOD']) {
             case 'get_ratings_monthly':
                 echo json_encode($get->get_ratings_monthly());
                 break;
+            case 'get_appointments_daily':
+                echo json_encode($get->get_appointments_daily());
+                break;
+            case 'get_appointments_weekly':
+                echo json_encode($get->get_appointments_weekly());
+                break;
+            case 'get_appointments_monthly':
+                echo json_encode($get->get_appointments_monthly());
+                break;
             default:
                 http_response_code(403);
                 break;
@@ -120,6 +129,9 @@ switch ($_SERVER['REQUEST_METHOD']) {
                 break;
             case 'login_teacher':
                 echo json_encode($post->login_teacher($data));
+                break;
+            case 'login_admin':
+                echo json_encode($post->login_admin($data));
                 break;
             case 'register':
                 echo json_encode($post->register($data));
@@ -195,6 +207,9 @@ switch ($_SERVER['REQUEST_METHOD']) {
                 break;
             case 'check_ftf_appointments':
                 echo json_encode($post->checkFTFSchedule($data));
+                break;
+            case 'generate_report':
+                echo json_encode($post->generatePDF($data));
                 break;
             default:
                 http_response_code(403);

@@ -1,0 +1,165 @@
+header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    /* Align items vertically */
+    background-color: white;
+    border-bottom: #D0D3D4 3px solid;
+    height: 10vh;
+    padding-left: 20px;
+    padding-right: 20px;
+}
+
+header .title {
+    font-size: 10px; 
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    cursor: pointer;
+}
+
+header .title h1 {
+    padding: 0;
+    margin: 0;
+    font-weight: bold;
+}
+
+header .title img {
+    height: 60px;
+}
+
+header .navbar {
+    display: flex;
+    align-items: center;
+    gap: 50px;
+    height: 100%;
+}
+
+header .navbar .notifications,
+header .navbar .profile {
+    display: flex;
+    align-items: center;
+    height: 100%;
+    padding: 10px;
+}
+
+header .navbar .notifications:hover,
+header .navbar .profile:hover {
+    background-color: #D9D9D9;
+    cursor: pointer;
+}
+
+header i {
+    font-size: 30px;
+    margin-right: 8px;
+}
+
+.body {
+    display: flex;
+}
+
+.sidebar {
+    display: flex;
+    flex-direction: column;
+    height: 90vh;
+    border-right: #D0D3D4 3px solid;
+    width: 6vw;
+    justify-content: space-between;
+}
+
+.sidebar ul {
+    width: 100%;
+    padding: 0;
+}
+
+.sidebar li {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 10px;
+    width: 100%;
+    height: 10vh;
+}
+
+.sidebar li:hover {
+    background-color: #D9D9D9;
+    cursor: pointer;
+}
+
+.active-link{
+    background-color: #D9D9D9;
+    cursor: pointer;
+}
+
+.active-link li{
+    background-color: #D9D9D9;
+    cursor: pointer;
+}
+
+.sidebar a {
+    text-decoration: none;
+    color: black;
+}
+
+.sidebar i {
+    font-size: 40px;
+    margin: auto;
+}
+
+.sidebar .settings {
+    position: relative;
+}
+
+app-setting {
+    position: absolute;
+    display: none;
+    left: 100%;
+    bottom: 50%;
+    transition: display 0.3s ease-in-out;
+    z-index: 1;
+}
+
+.sidebar .settings:hover>app-setting {
+    display: block;
+}
+@media (max-width: 830px) {
+    .sidebar {
+        width: 8vw;
+    }
+
+    .sidebar i {
+        font-size: 30px;
+    }
+    
+    .sidebar li {
+        height: 8vh;
+    }
+}
+
+@media (max-width: 430px) {
+    .sidebar {
+        width: 8vw;
+    }
+
+    .sidebar i {
+        font-size: 15px;
+    }
+    
+    .sidebar li {
+        height: 8vh;
+    }
+}
+
+@media (max-width: 490px) {
+    header .title {
+        font-size: 7px; 
+    }
+
+    header .title img {
+        height: 18px;
+    }
+
+    header i {
+        font-size: 18px;
+    }
+}
