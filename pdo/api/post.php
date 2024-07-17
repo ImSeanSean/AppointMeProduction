@@ -1171,54 +1171,119 @@ class Post extends FPDF
         return $stmt->fetch(PDO::FETCH_ASSOC);
     }
 
-    //PHP FPDF
     function generatePDF()
-    {
-        // Create PDF object
-        $pdf = new FPDF();
-        $pdf->AddPage();
+{
+    // Create PDF object
+    $pdf = new FPDF();
+    $pdf->AddPage();
 
-        // Set font
-        $pdf->SetFont('Arial', 'B', 16);
+    // Move cursor to the right place for the title
+    $pdf->SetY(40);
 
-        // Title
-        $pdf->Cell(0, 10, 'Appointment Summary Report', 0, 1, 'C');
+    // Add logo
+    $pdf->Image('assets/Logo/logo1.png', 10, 10, 30, 30);
+    $pdf->Image('assets/Logo/logo2.png', 170, 10, 30, 30);
 
-        // Content
-        $pdf->SetFont('Arial', 'B', 12);
-        $pdf->Cell(45, 10, 'Appointment Title:', 1);
-        $pdf->SetFont('Arial', '', 12);
-        $pdf->Cell(0, 10, 'Meeting with Sean Rad P. Alberto', 1, 1);
+    // Set font for header text
+    $pdf->SetFont('Arial', 'B', 10);
 
-        $pdf->SetFont('Arial', 'B', 12);
-        $pdf->Cell(45, 10, 'Faculty Member:', 1);
-        $pdf->SetFont('Arial', '', 12);
-        $pdf->Cell(0, 10, 'Mr. Rey Bautista', 1, 1);
+    // Set position for the header text in the center
+    $pdf->SetXY(60, 15); 
+    $pdf->Cell(90, 5, 'GORDON COLLEGE', 0, 1, 'C');
+    $pdf->SetXY(60, 20);
+    $pdf->Cell(90, 5, 'COLLEGE OF COMPUTER STUDIES', 0, 1, 'C');
+    $pdf->SetXY(60, 25); 
+    $pdf->Cell(90, 5, 'APPOINTMENT TEAM', 0, 1, 'C');
 
-        $pdf->SetFont('Arial', 'B', 12);
-        $pdf->Cell(45, 10, 'Student:', 1);
-        $pdf->SetFont('Arial', '', 12);
-        $pdf->Cell(0, 10, 'Sean Rad P. Alberto', 1, 1);
+    // Add two empty rows for spacing
+    $pdf->Cell(0, 10, '', 0, 1);
+    
 
-        $pdf->SetFont('Arial', 'B', 12);
-        $pdf->Cell(45, 10, 'Start Date:', 1);
-        $pdf->SetFont('Arial', '', 12);
-        $pdf->Cell(45, 10, '05/25/2024', 1);
-        $pdf->SetFont('Arial', 'B', 12);
-        $pdf->Cell(45, 10, 'End Date:', 1);
-        $pdf->SetFont('Arial', '', 12);
-        $pdf->Cell(0, 10, '06/10/2024', 1, 1);
-        $pdf->Cell(0, 10, '', 0, 1);
-        // Additional content
-        $pdf->SetFont('Arial', 'B', 12);
-        $pdf->Cell(0, 10, '1. Appointment Purpose', 1, 1);
+    // Title
+    $pdf->SetFont('Arial', 'B', 12);
+    $pdf->Cell(0, 10, 'Appointment Summary Report', 0, 1, 'C');
+    
+    // Appointment details
+    $pdf->SetFont('Arial', 'B', 10);
+    $pdf->Cell(45, 10, 'Appointment Title:', 1);
+    $pdf->SetFont('Arial', '', 10);
+    $pdf->Cell(0, 10, 'Meeting with Sean Rad P. Alberto', 1, 1);
 
-        $pdf->SetFont('Arial', '', 12);
-        $pdf->MultiCell(0, 10, 'This is the appointment objective content. Replace with your actual content.', 0, 'L');
+    $pdf->SetFont('Arial', 'B', 10);
+    $pdf->Cell(45, 10, 'Faculty Member:', 1);
+    $pdf->SetFont('Arial', '', 10);
+    $pdf->Cell(0, 10, 'Mr. Rey Bautista', 1, 1);
 
-        $pdf->Ln(10);
+    $pdf->SetFont('Arial', 'B', 10);
+    $pdf->Cell(45, 10, 'Student:', 1);
+    $pdf->SetFont('Arial', '', 10);
+    $pdf->Cell(45, 10, 'Sean Rad P. Alberto', 1);
+    $pdf->SetFont('Arial', 'B', 10);
+    $pdf->Cell(45, 10, 'Student Id:', 1);
+    $pdf->SetFont('Arial', '', 10);
+    $pdf->Cell(0, 10, '202210012', 1, 1);
 
-        // Output the PDF
-        $pdf->Output('D', 'Appointment_Summary_Report.pdf');
-    }
+    $pdf->SetFont('Arial', 'B', 10);
+    $pdf->Cell(45, 10, 'Start Date:', 1);
+    $pdf->SetFont('Arial', '', 10);
+    $pdf->Cell(45, 10, '05/25/2024', 1);
+    $pdf->SetFont('Arial', 'B', 10);
+    $pdf->Cell(45, 10, 'End Date:', 1);
+    $pdf->SetFont('Arial', '', 10);
+    $pdf->Cell(0, 10, '06/10/2024', 1, 1);
+    
+
+    // Appointment Objective
+    $pdf->SetFont('Arial', 'B', 10);
+    $pdf->Cell(0, 10, '1. Appointment Objective', 0, 1);
+    // Draw a rectangle around the Appointment Objective
+    $pdf->Rect(10, $pdf->GetY(), 190, 30); // Adjust height accordingly
+    $pdf->SetFont('Arial', '', 10);
+    $pdf->MultiCell(0, 10, 'This is the appointment objective content. Replace with your actual content.', 0, 'L');
+
+    // Move Y position after the box
+    $pdf->SetY($pdf->GetY() + 10);
+
+    // Meeting Summaries
+    $pdf->Ln(10); // Line break
+    $pdf->SetFont('Arial', 'B', 10);
+    $pdf->Cell(0, 10, '2. Meeting Summaries', 0, 1);
+    $pdf->SetFont('Arial', 'B', 10);
+    $pdf->Cell(30, 10, 'Date', 1);
+    $pdf->Cell(30, 10, 'Time', 1);
+    $pdf->Cell(60, 10, 'Remarks', 1);
+    $pdf->Cell(70, 10, 'Summary', 1, 1);
+
+    $pdf->SetFont('Arial', '', 10);
+    $pdf->Cell(30, 10, '05/26/2024', 1);
+    $pdf->Cell(30, 10, '10:00 AM', 1);
+    $pdf->Cell(60, 10, 'Initial Meeting', 1);
+    $pdf->SetFont('Arial', '', 8);
+    $pdf->Cell(70, 10, 'Discussed project overview and initial requirements.', 1, 1);
+
+    $pdf->SetFont('Arial', '', 10);
+    $pdf->Cell(30, 10, '06/01/2024', 1);
+    $pdf->Cell(30, 10, '2:00 PM', 1);
+    $pdf->Cell(60, 10, 'Follow-up', 1);
+    $pdf->SetFont('Arial', '', 8);
+    $pdf->Cell(70, 10, 'Reviewed progress and addressed challenges faced.', 1, 1);
+
+    $pdf->SetFont('Arial', '', 10);
+    $pdf->Cell(30, 10, '06/08/2024', 1);
+    $pdf->Cell(30, 10, '11:00 AM', 1);
+    $pdf->Cell(60, 10, 'Final Review', 1);
+    $pdf->SetFont('Arial', '', 8);
+    $pdf->Cell(70, 10, 'Finalized details and prepared for submission.', 1, 1);
+
+    // Conclusion
+    $pdf->SetFont('Arial', 'B', 10);
+    $pdf->Cell(0, 10, '3. Conclusion', 0, 1);
+
+    $pdf->Rect(10, $pdf->GetY(), 190, 30); // Adjust height accordingly
+    $pdf->SetFont('Arial', '', 10);
+    $pdf->MultiCell(0, 10, 'This is the conclusion content. Replace with your actual content.', 0, 'L');
+
+    // Output the PDF
+    $pdf->Output('D', 'Appointment_Summary_Report.pdf');
+}
 }
