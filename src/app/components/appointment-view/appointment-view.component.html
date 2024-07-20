@@ -6,7 +6,7 @@
       <div class="top">
           <div class="textName">
               <p>Appointment</p>
-              <h1>Meeting with {{queue[0]?.student_name || 'N/A'}}</h1>
+              <h1>{{queue[0].appointment_title}}</h1>
           </div>
       </div>
       <div class="body">
@@ -48,21 +48,21 @@
                   </div>
               </div>
       
-              <div class="date">
+              <!-- <div class="date">
                   <div class="box">
                       <h4>Urgency</h4>
                   </div>
                   <div class="textDate">
                       <p>{{queue[0]?.urgency || 'N/A'}}</p>
                   </div>
-              </div>
+              </div> -->
           </div>
           <div class="textarea-container">
               <div class="textarea">
                   <div class="purpose-text">
                       <p>Appointment Purpose/Concerns:</p>
                   </div>
-                  <textarea placeholder="No Appointment Purpose Stated" readonly>{{queue[0]?.reason || 'N/A'}}</textarea>
+                  <textarea placeholder="No Appointment Purpose Stated" readonly>{{queue[0]?.reason || 'No Appointment Purpose provided.'}}</textarea>
               </div>
               <div class="buttons">
                   <div class="close">

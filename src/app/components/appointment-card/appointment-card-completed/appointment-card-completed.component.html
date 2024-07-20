@@ -6,12 +6,12 @@
                 <p>{{appointment.appointment_title}}</p>
             </div>
             <div class="mid">
-                <p>Date: {{getFormattedDate(appointment.AppointmentDate)}}</p>
-                <p>Time: {{getFormattedTime(appointment.AppointmentDate)}}</p>
-            </div>
-            <div class="bottom">
                 <p>Teacher: {{appointment.ConsultantFirstName}} {{appointment.ConsultantLastName}}</p>
                 <p>Student: {{appointment.UserName}} {{appointment.UserLastName}}</p>
+            </div>
+            <div class="bottom">
+                <p>Date: {{getFormattedDate(appointment.AppointmentDate)}}</p>
+                <p>Time: {{getFormattedTime(appointment.AppointmentDate)}}</p>
             </div>
             <div class="extra">
                 <p>Mode: {{appointment.mode}}</p>

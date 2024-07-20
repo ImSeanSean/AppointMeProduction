@@ -175,11 +175,17 @@ switch ($_SERVER['REQUEST_METHOD']) {
             case 'rate_appointment':
                 echo json_encode($post->rate_appointment($data));
                 break;
+            case 'provide_summary':
+                echo json_encode($post->provide_summary($data));
+                break;
             case 'add_queue':
                 echo json_encode($post->add_queue($data));
                 break;
             case 'add_queue_teacher':
                 echo json_encode($post->add_queue_teacher($data));
+                break;
+            case 'add_followup_queue_teacher':
+                echo json_encode($post->add_followup_queue_teacher($data));
                 break;
             case 'update_queue':
                 echo json_encode($post->update_queue($data));

@@ -176,6 +176,8 @@ export class AppointmentViewConfirmedComponent {
       key: localStorage.getItem('token'),
       student_id: this.appointments[0].user_id,
       teacher_id: this.appointments[0].ConsultantID,
+      title: 'Follow-Up: ' + this.appointments[0].appointment_title,
+      appointment_id: this.appointmentId,
       mode: null,
       urgency: null,
       day: null,
@@ -183,7 +185,7 @@ export class AppointmentViewConfirmedComponent {
       reason: note
     }
     console.log(data)
-    this.http.post(`${mainPort}/pdo/api/add_queue_teacher`, data).subscribe(
+    this.http.post(`${mainPort}/pdo/api/add_followup_queue_teacher`, data).subscribe(
       (response: any) => { 
         console.log(response)
         if(response == 0){

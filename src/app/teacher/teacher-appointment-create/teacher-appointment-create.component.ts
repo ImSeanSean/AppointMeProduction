@@ -66,10 +66,13 @@ export class TeacherAppointmentCreateComponent implements OnInit {
         const data = {
           key: localStorage.getItem('token'),
           user_id: this.queue[0].student_id,
+          previous_appointment_id: this.queue[0].previous_appointment_id,
           teacher: this.teacherId,
           date: this.selectedDate,
           time: this.selectedTime + ":00",
           mode: this.selectedMode,
+          title: this.queue[0].appointment_title,
+          appointmentInfo: this.queue[0].reason,
           details: result[1]
         }
         this.http.post(`${mainPort}/pdo/api/create_appointment`, data).subscribe(result => {

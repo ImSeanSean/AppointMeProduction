@@ -138,7 +138,7 @@ class Get
 
             // Modified SQL query to join user and consultant tables
             $sqlStr = "SELECT appointment.*, 
-                   user.FirstName AS UserName, user.LastName AS UserLastName,
+                   user.FirstName AS UserName, user.LastName AS UserLastName, user.StudentID,
                    consultant.first_name AS ConsultantFirstName, consultant.last_name AS ConsultantLastName
               FROM appointment
               LEFT JOIN user ON appointment.user_id = user.UserID
@@ -165,7 +165,7 @@ class Get
 
             // Modified SQL query to join user and consultant tables
             $sqlStr = "SELECT appointment.*, 
-                   user.FirstName AS UserName, user.LastName AS UserLastName,
+                   user.FirstName AS UserName, user.LastName AS UserLastName, user.StudentID,
                    consultant.first_name AS ConsultantFirstName, consultant.last_name AS ConsultantLastName
               FROM appointment
               LEFT JOIN user ON appointment.user_id = user.UserID
@@ -190,7 +190,7 @@ class Get
         if ($tokenInfo) {
             // Modified SQL query to join user and consultant tables
             $sqlStr = "SELECT appointment.*, 
-               user.FirstName AS UserName, user.LastName AS UserLastName,
+               user.FirstName AS UserName, user.LastName AS UserLastName, user.StudentID,
                consultant.first_name AS ConsultantFirstName, consultant.last_name AS ConsultantLastName
           FROM appointment
           LEFT JOIN user ON appointment.user_id = user.UserID
@@ -215,7 +215,7 @@ class Get
         if ($tokenInfo) {
             // Modified SQL query to join user and consultant tables
             $sqlStr = "SELECT appointment.*, 
-                   user.FirstName AS UserName, user.LastName AS UserLastName,
+                   user.FirstName AS UserName, user.LastName AS UserLastName, user.StudentID,
                    consultant.first_name AS ConsultantFirstName, consultant.last_name AS ConsultantLastName
               FROM appointment
               LEFT JOIN user ON appointment.user_id = user.UserID

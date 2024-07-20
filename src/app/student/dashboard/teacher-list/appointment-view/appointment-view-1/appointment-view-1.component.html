@@ -46,6 +46,10 @@
                 <h2>Appointment Options:</h2>
                 <div class="buttons">
                     <div>
+                        <h3>Appointment Title:</h3>
+                        <input type="text" class="appointment-title" [(ngModel)]="title">
+                    </div>
+                    <div>
                         <h3>Appointment Mode:</h3>
                         <div class="radio">
                             <input class="radio__input" type="radio" value="Online" name="mode" id="online" [(ngModel)]="selectedMode">
@@ -54,7 +58,7 @@
                             <label class="radio__label" for="ftf">Face to Face</label>
                         </div>
                     </div>
-                    <div>
+                    <!-- <div>
                         <h3>Appointment Urgency:</h3>
                         <div class="radio">
                             <input class="radio__input" type="radio" value="Urgent" name="urgent" id="urgent" [(ngModel)]="selectedUrgency">
@@ -62,7 +66,7 @@
                             <input class="radio__input" type="radio" value="Not Urgent" name="urgent" id="not_urgent" [(ngModel)]="selectedUrgency">
                             <label class="radio__label" for="not_urgent">Not Urgent</label>
                         </div>
-                    </div>
+                    </div> -->
                     <div>
                         <h3>Preferred Day:</h3>
                         <div class="radio">
@@ -104,6 +108,11 @@
                     </div>  
                     <div class="appointment-information">
                         <div>
+                            <h4>Appointment Title:</h4>
+                            <p *ngIf="edit == false">{{studentQueue?.appointment_title}}</p>
+                            <input type="text" [(ngModel)]="title" *ngIf="edit == true">
+                        </div>
+                        <div>
                             <h4>Preferred Day: </h4>
                             <p *ngIf="edit == false">{{studentQueue?.day}}</p>
                             <select [(ngModel)]="preferredDay" *ngIf="edit == true">
@@ -123,14 +132,14 @@
                                 <option [value]="'Online'">Online</option>                              
                             </select>
                         </div>
-                        <div>
+                        <!-- <div>
                             <h4>Urgency:</h4>
                             <p *ngIf="edit == false">{{studentQueue?.urgency}}</p>
                             <select [(ngModel)]="urgency" *ngIf="edit == true">
                                 <option [value]="'Urgent'">Urgent</option>
                                 <option [value]="'Not Urgent'">Not Urgent</option>                              
                             </select>
-                        </div>
+                        </div> -->
                     </div>
                 </div>
                 <div class="update-button">

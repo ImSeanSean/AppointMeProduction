@@ -34,6 +34,7 @@ export class AppointmentView1Component implements OnInit{
   selectedUrgency: string | null = null;
   appointments: Appointment[] = [];
   queue: Queue[] = [];
+  title: String | null = null;
   reason: String | null = null;
   token = localStorage.getItem('token');
   isDataLoaded = false;
@@ -72,7 +73,7 @@ export class AppointmentView1Component implements OnInit{
   //Queue-Related Functions
   //Add Queue
   addQueue(){
-    if(this.selectedMode == null || this.selectedUrgency == null || this.selectedDay == null || this.selectedTime == null){
+    if(this.selectedMode == null || this.selectedDay == null || this.selectedTime == null){
       this.dialog.open(ErrorComponent, {
         width: '300px',
         data: {
@@ -85,13 +86,13 @@ export class AppointmentView1Component implements OnInit{
     const data = {
       key: localStorage.getItem('token'),
       teacher_id: this.teachers[0].ConsultantID,
+      title: this.title,
       mode: this.selectedMode,
       urgency: this.selectedUrgency,
       day: this.selectedDay,
       time: this.selectedTime,
       reason: this.reason
     }
-    console.log(data)
     this.http.post(`${mainPort}/pdo/api/add_queue`, data).subscribe(
       (response: any) => { 
         console.log(response)
@@ -150,6 +151,7 @@ export class AppointmentView1Component implements OnInit{
         const data = {
           key: localStorage.getItem('token'),
           queue_id: this.queueId,
+          title: this.title,
           day: this.preferredDay,
           time: this.preferredTime + ":00",
           mode: this.preferredMode,
@@ -201,6 +203,7 @@ export class AppointmentView1Component implements OnInit{
       this.queueId = matchingQueue.queue_id
       this.queueIndex = this.queue.findIndex(queue => queue.student_id.toString() === studentId) + 1; 
       this.studentQueue = matchingQueue;
+      this.title = matchingQueue.appointment_title;
       this.preferredDay = matchingQueue.day;
       this.urgency = matchingQueue.urgency;
       // Parse the time string and extract only the hour and minute part
@@ -230,7 +233,8 @@ export class AppointmentView1Component implements OnInit{
     this.getAppointments().subscribe(
       (data: Appointment[]) => {
         this.appointments = data;
-        this.appointmentLength = this.appointments.length
+        this.appointmentLength = this.appointments.filter(appoinment => !appoinment.Completed).length
+        console.log(this.appointmentLength)
       }
     );
     this.getQueue().subscribe(
@@ -273,7 +277,7 @@ export class AppointmentView1Component implements OnInit{
         this.getAppointments().subscribe(
           (data: Appointment[]) => {
             this.appointments = data;
-            this.appointmentLength = this.appointments.length
+            this.appointmentLength = this.appointments.filter(appointment => !appointment.Completed).length
 
             this.getQueue().subscribe(
               (data: Queue[]) => {

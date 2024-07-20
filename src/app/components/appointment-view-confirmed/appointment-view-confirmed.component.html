@@ -6,13 +6,21 @@
     <div class="top">
       <div class="textName">
         <p>Appointment</p>
-        <h1 *ngIf="usertype === 'teacher'">Meeting with {{appointments[0]?.UserName}} {{appointments[0]?.UserLastName}}</h1>
-        <h1 *ngIf="usertype === 'user'">Meeting with {{appointments[0]?.ConsultantFirstName}} {{appointments[0].ConsultantLastName}}</h1>
+        <h1>{{this.appointments[0]?.appointment_title}}</h1>
       </div>
     </div>
     <div class="body">
       <div class="group"> 
         <h3>Request Information</h3>
+        <div class="date">
+          <div class="box">
+            <h4>Student ID</h4>
+          </div>
+          <div class="textDate">
+            <p>{{this.appointments[0].StudentID}}</p>
+          </div>
+        </div>
+
         <div class="date">
           <div class="box">
             <h4>Student</h4>
@@ -27,7 +35,7 @@
             <h4>Date</h4>
           </div>
           <div class="textDate">
-            <p>{{this.appointments[0]?.AppointmentDate}}</p>
+            <p>{{getFormattedDate(this.appointments[0].AppointmentDate)}}</p>
           </div>
         </div>
   
@@ -51,9 +59,15 @@
 
       </div>
       <div class="textarea-container">
-        <div class="textarea">
+        <div class="textarea" *ngIf="usertype == 'user'">
           <div class="purpose-text">
             <p>Teacher's Message:</p>
+          </div>
+          <textarea placeholder="No Appointment Purpose Stated" readonly>{{this.appointments[0].TeacherMessage}}</textarea>
+        </div>
+        <div class="textarea" *ngIf="usertype == 'teacher'">
+          <div class="purpose-text">
+            <p>Appointment Purpose:</p>
           </div>
           <textarea placeholder="No Appointment Purpose Stated" readonly>{{this.appointments[0].AppointmentInfo}}</textarea>
         </div>

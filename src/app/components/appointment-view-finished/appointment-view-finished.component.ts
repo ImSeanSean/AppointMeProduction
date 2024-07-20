@@ -1,4 +1,4 @@
-import { DatePipe, NgIf } from '@angular/common';
+import { DatePipe, NgClass, NgIf } from '@angular/common';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Component } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
@@ -14,7 +14,7 @@ import { mainPort } from '../../app.component';
 @Component({
   selector: 'app-appointment-view-finished',
   standalone: true,
-  imports: [FormsModule, NgIf],
+  imports: [FormsModule, NgIf, NgClass],
   templateUrl: './appointment-view-finished.component.html',
   styleUrl: './appointment-view-finished.component.css'
 })
@@ -23,6 +23,7 @@ export class AppointmentViewFinishedComponent {
   appointmentId: string | null = null;
   appointments: Appointment[] = [];
   remarks: string | null = null;
+  summary: string | null = null;
 
   constructor(private http: HttpClient, private router: Router, private activatedRoute: ActivatedRoute, public dialog: MatDialog) {}
 
@@ -32,6 +33,7 @@ export class AppointmentViewFinishedComponent {
         // Handle successful response
         this.appointments = data; 
         this.remarks = this.appointments[0].remarks
+        this.summary = this.appointments[0].AppointmentSummary
       },
       (error) => {
         // Handle errors
@@ -50,6 +52,17 @@ export class AppointmentViewFinishedComponent {
     this.router.navigate([`${user}/dashboard/confirmed-appointments`]);
   }
 
+  openSummary():void {
+    const $data ={
+      key: localStorage.getItem('token'),
+      appointment_id: this.appointmentId,
+      appointment_summary: this.summary
+    }
+    this.http.post(`${mainPort}/pdo/api/provide_summary`, $data).subscribe(result =>{
+      window.location.reload();
+    });
+  }
+
   openRating(): void {
     const dialogRef = this.dialog.open(RatingComponent, {
       height: '250px',
@@ -62,7 +75,7 @@ export class AppointmentViewFinishedComponent {
     dialogRef.afterClosed().subscribe(result => {
       if (result != null) {
         if (this.remarks == null){
-          this.remarks = "No remarks have been provided."
+          this.remarks = "No Remarks have been provided."
         }
         const $data = {
           key: localStorage.getItem('token'),
@@ -118,5 +131,36 @@ export class AppointmentViewFinishedComponent {
     } else {
       return null;
     }
+  }
+  //Change Information View
+  selectedInfo: string = "Appointment";
+
+  changeSelectedInfo(info:string){
+    this.selectedInfo = info;
+  }
+  //Documentation
+  generateFPDF(): Observable<any> {
+    const token = localStorage.getItem('token');
+    const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
+    const options = { headers, responseType: 'blob' as 'json' };
+
+    return this.http.post(`${mainPort}/pdo/api/generate_report`, this.appointmentId, options);
+  }
+
+  downloadPDF() {
+    this.generateFPDF().subscribe(
+      (blob: Blob) => {
+        const url = window.URL.createObjectURL(blob);
+        const link = document.createElement('a');
+        link.href = url;
+        link.download = 'Appointment_Summary_Report.pdf';
+        link.click();
+        window.URL.revokeObjectURL(url);
+      },
+      error => {
+        console.error('Error generating PDF:', error);
+        // Handle error as needed
+      }
+    );
   }
 }

@@ -561,33 +561,27 @@ class Post extends FPDF
             }
             $user_id = $data->user_id;
             $teacher_id = $data->teacher;
+            $previous_appointment_id = $data->previous_appointment_id;
+            $title = $data->title;
             $date = $data->date;
             $time = $data->time;
             $mode = $data->mode;
             $mysqlDatetime = date("Y-m-d H:i:s", strtotime("$date $time"));
-            // Retrieve teacher information
-            $teacherInfoSql = "SELECT first_name, last_name FROM consultant WHERE ConsultantID = :teacher_id";
-            $teacherInfoStmt = $this->pdo->prepare($teacherInfoSql);
-            $teacherInfoStmt->bindParam(':teacher_id', $teacher_id);
-            $teacherInfoStmt->execute();
-            $teacherInfo = $teacherInfoStmt->fetch(PDO::FETCH_ASSOC);
-
-            // Continue
-            $teacherFirstName = $teacherInfo['first_name'];
-            $teacherLastName = $teacherInfo['last_name'];
-            $title = "Meeting with " . $teacherFirstName . " " . $teacherLastName;
+            $appointmentInfo = $data->appointmentInfo;
             $details = $data->details;
 
-            $sql = "INSERT INTO appointment (user_id, ConsultantID, AppointmentDate, appointment_title, AppointmentInfo, mode)
-                    VALUES (:user_id, :consultant_id, :appointment_date, :appointment_title, :appointment_info, :mode)";
+            $sql = "INSERT INTO appointment (user_id, ConsultantID, PreviousAppointmentID, AppointmentDate, appointment_title, AppointmentInfo, TeacherMessage, mode)
+                    VALUES (:user_id, :consultant_id, :previous_appointment_id, :appointment_date, :appointment_title, :appointmentInfo, :TeacherMessage, :mode)";
 
             $stmt = $this->pdo->prepare($sql);
 
             $stmt->bindParam(':user_id', $user_id);
             $stmt->bindParam(':consultant_id', $teacher_id);
+            $stmt->bindParam(':previous_appointment_id', $previous_appointment_id);
             $stmt->bindParam(':appointment_date', $mysqlDatetime);
             $stmt->bindParam(':appointment_title', $title);
-            $stmt->bindParam(':appointment_info', $details);
+            $stmt->bindParam(':appointmentInfo', $appointmentInfo);
+            $stmt->bindParam(':TeacherMessage', $details);
             $stmt->bindParam(':mode', $mode);
 
             $stmt->execute();
@@ -685,6 +679,45 @@ class Post extends FPDF
             return $this->sendPayLoad(null, "failed", "User is not authorized to confirm this appointment.", 403);
         }
     }
+    public function provide_summary($data)
+    {
+        try {
+            $jwt = $data->key;
+            error_log("JWT Token: " . $jwt);
+            $key = JWT::decode($jwt, new Key($this->secretKey, 'HS256'));
+            // Check authorization here (example: verify that the user is authorized to create an appointment)
+            if ($key->type !== 'teacher') {
+                return "Unauthorized: Only teachers are allowed to provide summary.";
+            }
+            $appointmentId = $data->appointment_id;
+            $appointmentSummary = $data->appointment_summary;
+            //Find Appointment
+            $sqlValidation = "SELECT * FROM appointment WHERE AppointmentID = :appointmentId";
+            $stmt = $this->pdo->prepare($sqlValidation);
+            $stmt->bindParam(':appointmentId', $appointmentId);
+            $stmt->execute();
+            $validationResult = $stmt->fetch(PDO::FETCH_ASSOC);
+            // Check if appointment exists
+
+            // Update Appointment
+            $sqlUpdate = "UPDATE appointment SET AppointmentSummary = :appointmentSummary WHERE AppointmentID = :id";
+            $stmt = $this->pdo->prepare($sqlUpdate);
+            $stmt->bindParam(':appointmentSummary', $appointmentSummary);
+            $stmt->bindParam(':id', $appointmentId);
+            $stmt->execute();
+            // Optionally, return success response or handle accordingly
+            return "Summary provided successfully.";
+        } catch (\Firebase\JWT\ExpiredException $e) {
+            return "Unauthorized: Token has expired. Please login again.";
+        } catch (\Firebase\JWT\BeforeValidException $e) {
+            return "Unauthorized: Token is not yet valid.";
+        } catch (\Firebase\JWT\SignatureInvalidException $e) {
+            return "Unauthorized: Invalid token signature.";
+        } catch (PDOException $e) {
+            // Handle the exception, return an error response, or log the error
+            return "Error rating appointment" . $e->getMessage();
+        }
+    }
     public function rate_appointment($data)
     {
         try {
@@ -742,6 +775,7 @@ class Post extends FPDF
             $decodedArray = (array) $key;
             $teacher_id = $data->teacher_id;
             $student_id = $decodedArray['user_id'];
+            $title = $data->title;
             $mode = $data->mode;
             $urgency = $data->urgency;
             $day = $data->day;
@@ -760,14 +794,15 @@ class Post extends FPDF
             }
 
             //Insert
-            $sql = "INSERT INTO `queue` (`teacher_id`, `student_id`, `mode`, `urgency`, `day`, `time`, `reason`)
-            VALUES (:teacher_id, :student_id, :mode, :urgency, :day, :time, :reason)";
+            $sql = "INSERT INTO `queue` (`teacher_id`, `student_id`, `appointment_title`, `mode`, `urgency`, `day`, `time`, `reason`)
+            VALUES (:teacher_id, :student_id, :appointment_title, :mode, :urgency, :day, :time, :reason)";
 
             $stmt = $this->pdo->prepare($sql);
 
             // Bind the parameters to the query
             $stmt->bindParam(':teacher_id', $teacher_id, PDO::PARAM_INT);
             $stmt->bindParam(':student_id', $student_id, PDO::PARAM_INT);
+            $stmt->bindParam(':appointment_title', $title, PDO::PARAM_INT);
             $stmt->bindParam(':mode', $mode, PDO::PARAM_STR);
             $stmt->bindParam(':urgency', $urgency, PDO::PARAM_STR);
             $stmt->bindParam(':day', $day, PDO::PARAM_STR);
@@ -850,6 +885,70 @@ class Post extends FPDF
             return "Error adding you to queue" . $e->getMessage();
         }
     }
+    public function add_followup_queue_teacher($data)
+    {
+        try {
+            $jwt = $data->key;
+            error_log("JWT Token: " . $jwt);
+            $key = JWT::decode($jwt, new Key($this->secretKey, 'HS256'));
+            // Check authorization 
+            if ($key->type !== 'teacher') {
+                return "Unauthorized: Only teachers are allowed to requeue.";
+            }
+            $teacher_id = $data->teacher_id;
+            $student_id = $data->student_id;
+            $appointment_id = $data->appointment_id;
+            $title = $data->title;
+            $mode = $data->mode;
+            $urgency = $data->urgency;
+            $day = $data->day;
+            $time = $data->time;
+            $reason = $data->reason;
+            //Check if already has queue
+            $checkSql = "SELECT COUNT(*) FROM `queue` WHERE `teacher_id` = :teacher_id AND `student_id` = :student_id";
+            $checkStmt = $this->pdo->prepare($checkSql);
+            $checkStmt->bindParam(':teacher_id', $teacher_id, PDO::PARAM_INT);
+            $checkStmt->bindParam(':student_id', $student_id, PDO::PARAM_INT);
+            $checkStmt->execute();
+            $count = $checkStmt->fetchColumn();
+
+            if ($count > 0) {
+                return '1';
+            }
+
+            //Insert
+            $sql = "INSERT INTO `queue` (`teacher_id`, `student_id`, `previous_appointment_id`, `appointment_title`, `mode`, `urgency`, `day`, `time`, `reason`)
+            VALUES (:teacher_id, :student_id, :appointment_id, :title, :mode, :urgency, :day, :time, :reason)";
+
+            $stmt = $this->pdo->prepare($sql);
+
+            // Bind the parameters to the query
+            $stmt->bindParam(':teacher_id', $teacher_id, PDO::PARAM_INT);
+            $stmt->bindParam(':student_id', $student_id, PDO::PARAM_INT);
+            $stmt->bindParam(':appointment_id', $appointment_id, PDO::PARAM_INT);
+            $stmt->bindParam(':title', $title, PDO::PARAM_INT);
+            $stmt->bindParam(':mode', $mode, PDO::PARAM_STR);
+            $stmt->bindParam(':urgency', $urgency, PDO::PARAM_STR);
+            $stmt->bindParam(':day', $day, PDO::PARAM_STR);
+            $stmt->bindParam(':time', $time, PDO::PARAM_STR);
+            $stmt->bindParam(':reason', $reason, PDO::PARAM_STR);
+
+            if ($stmt->execute()) {
+                return '0';
+            } else {
+                return '2';
+            }
+        } catch (\Firebase\JWT\ExpiredException $e) {
+            return "Unauthorized: Token has expired. Please login again.";
+        } catch (\Firebase\JWT\BeforeValidException $e) {
+            return "Unauthorized: Token is not yet valid.";
+        } catch (\Firebase\JWT\SignatureInvalidException $e) {
+            return "Unauthorized: Invalid token signature.";
+        } catch (PDOException $e) {
+            // Handle the exception, return an error response, or log the error
+            return "Error adding you to queue" . $e->getMessage();
+        }
+    }
     public function update_queue($data)
     {
         try {
@@ -862,6 +961,7 @@ class Post extends FPDF
             }
             // Initialize Variables
             $queue_id = $data->queue_id;
+            $title = $data->title;
             $day = $data->day;
             $time = $data->time;
             $mode = $data->mode;
@@ -880,8 +980,9 @@ class Post extends FPDF
             }
 
             // Update Queue
-            $sqlUpdate = "UPDATE queue SET mode = :mode, urgency = :urgency, day = :day, time = :time WHERE queue_id = :queue_id";
+            $sqlUpdate = "UPDATE queue SET appointment_title = :title, mode = :mode, urgency = :urgency, day = :day, time = :time WHERE queue_id = :queue_id";
             $stmt = $this->pdo->prepare($sqlUpdate);
+            $stmt->bindParam(':title', $title);
             $stmt->bindParam(':mode', $mode);
             $stmt->bindParam(':urgency', $urgency);
             $stmt->bindParam(':day', $day);
@@ -1171,119 +1272,189 @@ class Post extends FPDF
         return $stmt->fetch(PDO::FETCH_ASSOC);
     }
 
-    function generatePDF()
-{
-    // Create PDF object
-    $pdf = new FPDF();
-    $pdf->AddPage();
+    function generatePDF($appointmentId)
+    {
+        // Fetch appointment data
+        $appointmentData = $this->fetchAppointmentData($appointmentId);
+        $appointmentCount = count($appointmentData);
+        $firstRow = $appointmentData[0];
+        $lastRow = $appointmentData[$appointmentCount - 1];
 
-    // Move cursor to the right place for the title
-    $pdf->SetY(40);
+        if (!$appointmentData) {
+            echo "No appointment found with the given ID.";
+            return;
+        }
 
-    // Add logo
-    $pdf->Image('assets/Logo/logo1.png', 10, 10, 30, 30);
-    $pdf->Image('assets/Logo/logo2.png', 170, 10, 30, 30);
+        // Create PDF object
+        $pdf = new FPDF();
+        $pdf->AddPage();
 
-    // Set font for header text
-    $pdf->SetFont('Arial', 'B', 10);
+        // Move cursor to the right place for the title
+        $pdf->SetY(40);
 
-    // Set position for the header text in the center
-    $pdf->SetXY(60, 15); 
-    $pdf->Cell(90, 5, 'GORDON COLLEGE', 0, 1, 'C');
-    $pdf->SetXY(60, 20);
-    $pdf->Cell(90, 5, 'COLLEGE OF COMPUTER STUDIES', 0, 1, 'C');
-    $pdf->SetXY(60, 25); 
-    $pdf->Cell(90, 5, 'APPOINTMENT TEAM', 0, 1, 'C');
+        // Add logo
+        $pdf->Image('assets/Logo/logo1.png', 10, 10, 30, 30);
+        $pdf->Image('assets/Logo/logo2.png', 170, 10, 30, 30);
 
-    // Add two empty rows for spacing
-    $pdf->Cell(0, 10, '', 0, 1);
-    
+        // Set font for header text
+        $pdf->SetFont('Arial', 'B', 10);
 
-    // Title
-    $pdf->SetFont('Arial', 'B', 12);
-    $pdf->Cell(0, 10, 'Appointment Summary Report', 0, 1, 'C');
-    
-    // Appointment details
-    $pdf->SetFont('Arial', 'B', 10);
-    $pdf->Cell(45, 10, 'Appointment Title:', 1);
-    $pdf->SetFont('Arial', '', 10);
-    $pdf->Cell(0, 10, 'Meeting with Sean Rad P. Alberto', 1, 1);
+        // Set position for the header text in the center
+        $pdf->SetXY(60, 15);
+        $pdf->Cell(90, 5, 'GORDON COLLEGE', 0, 1, 'C');
+        $pdf->SetXY(60, 20);
+        $pdf->Cell(90, 5, 'COLLEGE OF COMPUTER STUDIES', 0, 1, 'C');
+        $pdf->SetXY(60, 25);
+        $pdf->Cell(90, 5, 'APPOINTMENT TEAM', 0, 1, 'C');
 
-    $pdf->SetFont('Arial', 'B', 10);
-    $pdf->Cell(45, 10, 'Faculty Member:', 1);
-    $pdf->SetFont('Arial', '', 10);
-    $pdf->Cell(0, 10, 'Mr. Rey Bautista', 1, 1);
+        // Add two empty rows for spacing
+        $pdf->Cell(0, 10, '', 0, 1);
 
-    $pdf->SetFont('Arial', 'B', 10);
-    $pdf->Cell(45, 10, 'Student:', 1);
-    $pdf->SetFont('Arial', '', 10);
-    $pdf->Cell(45, 10, 'Sean Rad P. Alberto', 1);
-    $pdf->SetFont('Arial', 'B', 10);
-    $pdf->Cell(45, 10, 'Student Id:', 1);
-    $pdf->SetFont('Arial', '', 10);
-    $pdf->Cell(0, 10, '202210012', 1, 1);
+        // Title
+        $pdf->SetFont('Arial', 'B', 12);
+        $pdf->Cell(0, 10, 'Appointment Summary Report', 0, 1, 'C');
 
-    $pdf->SetFont('Arial', 'B', 10);
-    $pdf->Cell(45, 10, 'Start Date:', 1);
-    $pdf->SetFont('Arial', '', 10);
-    $pdf->Cell(45, 10, '05/25/2024', 1);
-    $pdf->SetFont('Arial', 'B', 10);
-    $pdf->Cell(45, 10, 'End Date:', 1);
-    $pdf->SetFont('Arial', '', 10);
-    $pdf->Cell(0, 10, '06/10/2024', 1, 1);
-    
+        // Appointment details
+        $pdf->SetFont('Arial', 'B', 10);
+        $pdf->Cell(45, 10, 'Appointment Title:', 1);
+        $pdf->SetFont('Arial', '', 10);
+        $pdf->Cell(0, 10, $firstRow['appointment_title'], 1, 1);
 
-    // Appointment Objective
-    $pdf->SetFont('Arial', 'B', 10);
-    $pdf->Cell(0, 10, '1. Appointment Objective', 0, 1);
-    // Draw a rectangle around the Appointment Objective
-    $pdf->Rect(10, $pdf->GetY(), 190, 30); // Adjust height accordingly
-    $pdf->SetFont('Arial', '', 10);
-    $pdf->MultiCell(0, 10, 'This is the appointment objective content. Replace with your actual content.', 0, 'L');
+        $pdf->SetFont('Arial', 'B', 10);
+        $pdf->Cell(45, 10, 'Faculty Member:', 1);
+        $pdf->SetFont('Arial', '', 10);
+        $pdf->Cell(0, 10, $firstRow['ConsultantFirstName'] . ' ' . $firstRow['ConsultantLastName'], 1, 1);
 
-    // Move Y position after the box
-    $pdf->SetY($pdf->GetY() + 10);
+        $pdf->SetFont('Arial', 'B', 10);
+        $pdf->Cell(45, 10, 'Student:', 1);
+        $pdf->SetFont('Arial', '', 10);
+        $pdf->Cell(45, 10, $firstRow['UserName'] . ' ' . $firstRow['UserLastName'], 1);
+        $pdf->SetFont('Arial', 'B', 10);
+        $pdf->Cell(45, 10, 'Student Id:', 1);
+        $pdf->SetFont('Arial', '', 10);
+        $pdf->Cell(0, 10, $firstRow['StudentID'], 1, 1);
 
-    // Meeting Summaries
-    $pdf->Ln(10); // Line break
-    $pdf->SetFont('Arial', 'B', 10);
-    $pdf->Cell(0, 10, '2. Meeting Summaries', 0, 1);
-    $pdf->SetFont('Arial', 'B', 10);
-    $pdf->Cell(30, 10, 'Date', 1);
-    $pdf->Cell(30, 10, 'Time', 1);
-    $pdf->Cell(60, 10, 'Remarks', 1);
-    $pdf->Cell(70, 10, 'Summary', 1, 1);
+        $pdf->SetFont('Arial', 'B', 10);
+        $pdf->Cell(45, 10, 'Start Date:', 1);
+        $pdf->SetFont('Arial', '', 10);
+        $pdf->Cell(45, 10, date('m/d/Y', strtotime($firstRow['AppointmentDate'])), 1);
+        $pdf->SetFont('Arial', 'B', 10);
+        $pdf->Cell(45, 10, 'End Date:', 1);
+        $pdf->SetFont('Arial', '', 10);
+        $pdf->Cell(0, 10, date('m/d/Y', strtotime($lastRow['AppointmentDate'])), 1, 1); // Adjust if you have an end date field
 
-    $pdf->SetFont('Arial', '', 10);
-    $pdf->Cell(30, 10, '05/26/2024', 1);
-    $pdf->Cell(30, 10, '10:00 AM', 1);
-    $pdf->Cell(60, 10, 'Initial Meeting', 1);
-    $pdf->SetFont('Arial', '', 8);
-    $pdf->Cell(70, 10, 'Discussed project overview and initial requirements.', 1, 1);
+        // Appointment Objective
+        $pdf->SetFont('Arial', 'B', 10);
+        $pdf->Cell(0, 10, '1. Appointment Objective', 0, 1);
+        // Draw a rectangle around the Appointment Objective
+        $pdf->Rect(10, $pdf->GetY(), 190, 30); // Adjust height accordingly
+        $pdf->SetFont('Arial', '', 10);
+        $pdf->MultiCell(0, 10, $firstRow['AppointmentInfo'], 0, 'L');
 
-    $pdf->SetFont('Arial', '', 10);
-    $pdf->Cell(30, 10, '06/01/2024', 1);
-    $pdf->Cell(30, 10, '2:00 PM', 1);
-    $pdf->Cell(60, 10, 'Follow-up', 1);
-    $pdf->SetFont('Arial', '', 8);
-    $pdf->Cell(70, 10, 'Reviewed progress and addressed challenges faced.', 1, 1);
+        // Move Y position after the box
+        $pdf->SetY($pdf->GetY() + 10);
 
-    $pdf->SetFont('Arial', '', 10);
-    $pdf->Cell(30, 10, '06/08/2024', 1);
-    $pdf->Cell(30, 10, '11:00 AM', 1);
-    $pdf->Cell(60, 10, 'Final Review', 1);
-    $pdf->SetFont('Arial', '', 8);
-    $pdf->Cell(70, 10, 'Finalized details and prepared for submission.', 1, 1);
+        // Meeting Summaries
+        $pdf->Ln(10); // Line break
+        $pdf->SetFont('Arial', 'B', 10);
+        $pdf->Cell(0, 10, '2. Meeting Summaries', 0, 1);
+        $pdf->SetFont('Arial', 'B', 10);
+        $pdf->Cell(30, 10, 'Date', 1);
+        $pdf->Cell(30, 10, 'Time', 1);
+        $pdf->Cell(60, 10, 'Remarks', 1);
+        $pdf->Cell(70, 10, 'Summary', 1, 1);
 
-    // Conclusion
-    $pdf->SetFont('Arial', 'B', 10);
-    $pdf->Cell(0, 10, '3. Conclusion', 0, 1);
+        // Add meeting summaries here. For demonstration, static data is used.
+        for ($i = 0; $i < $appointmentCount; $i++) {
+            $pdf->SetFont('Arial', '', 10);
+            $pdf->Cell(30, 10, date('m/d/Y', strtotime($appointmentData[$i]['AppointmentDate'])), 1);
+            $pdf->Cell(30, 10, date('H:i A', strtotime($appointmentData[$i]['AppointmentDate'])), 1);
+            if ($i == 0) {
+                $pdf->Cell(60, 10, 'Initial Meeting', 1);
+            } else if ($i == $appointmentCount - 1) {
+                $pdf->Cell(60, 10, 'Final Meeting', 1);
+            } else {
+                $pdf->Cell(60, 10, 'Follow-up Meeting', 1);
+            }
+            $pdf->SetFont('Arial', '', 10);
+            $pdf->Cell(70, 10, $appointmentData[$i]['AppointmentSummary'], 1, 1);
+        }
 
-    $pdf->Rect(10, $pdf->GetY(), 190, 30); // Adjust height accordingly
-    $pdf->SetFont('Arial', '', 10);
-    $pdf->MultiCell(0, 10, 'This is the conclusion content. Replace with your actual content.', 0, 'L');
+        // Meeting Ratings
+        $pdf->SetFont('Arial', 'B', 10);
+        $pdf->Cell(0, 10, '3. Student Remarks', 0, 1);
+        $pdf->SetFont('Arial', 'B', 10);
+        $pdf->Cell(30, 10, 'Date', 1);
+        $pdf->Cell(30, 10, 'Time', 1);
+        $pdf->Cell(60, 10, 'Student Rating', 1);
+        $pdf->Cell(70, 10, 'Student Remarks', 1, 1);
+        foreach ($appointmentData as $appointment) {
+            $pdf->SetFont('Arial', '', 10);
+            $pdf->Cell(30, 10, date('m/d/Y', strtotime($appointment['AppointmentDate'])), 1);
+            $pdf->Cell(30, 10, date('H:i A', strtotime($appointment['AppointmentDate'])), 1);
+            $pdf->Cell(60, 10, $appointment['rating'], 1);
+            $pdf->SetFont('Arial', '', 10);
+            $pdf->Cell(70, 10, $appointment['remarks'], 1, 1);
+        }
+        // Conclusion
+        // $pdf->SetFont('Arial', 'B', 10);
+        // $pdf->Cell(0, 10, '3. Conclusion', 0, 1);
 
-    // Output the PDF
-    $pdf->Output('D', 'Appointment_Summary_Report.pdf');
-}
+        // $pdf->Rect(10, $pdf->GetY(), 190, 30); // Adjust height accordingly
+        // $pdf->SetFont('Arial', '', 10);
+        // $pdf->MultiCell(0, 10, 'This is the conclusion content. Replace with your actual content.', 0, 'L');
+
+        // Output the PDF
+        $pdf->Output('D', 'Appointment_Summary_Report.pdf');
+    }
+    private function fetchAppointmentData($appointmentId)
+    {
+        // Ensure that $appointmentId is an integer to prevent SQL injection
+        $appointmentId = (int)$appointmentId;
+
+        $sql = "
+        WITH RECURSIVE previous_appointments AS (
+            SELECT a.*
+            FROM appointment a
+            WHERE a.AppointmentID = $appointmentId
+            UNION ALL
+            SELECT a.*
+            FROM appointment a
+            INNER JOIN previous_appointments pa ON a.AppointmentID = pa.PreviousAppointmentID
+        ),
+        next_appointments AS (
+            SELECT a.*
+            FROM appointment a
+            WHERE a.AppointmentID = $appointmentId
+            UNION ALL
+            SELECT a.*
+            FROM appointment a
+            INNER JOIN next_appointments na ON a.PreviousAppointmentID = na.AppointmentID
+        )
+        SELECT * FROM (
+            SELECT pa.*, 
+                   user.FirstName AS UserName, user.LastName AS UserLastName, user.StudentID,
+                   consultant.first_name AS ConsultantFirstName, consultant.last_name AS ConsultantLastName
+            FROM previous_appointments pa
+            LEFT JOIN user ON pa.user_id = user.UserID
+            LEFT JOIN consultant ON pa.ConsultantID = consultant.ConsultantID
+            UNION
+            SELECT na.*, 
+                   user.FirstName AS UserName, user.LastName AS UserLastName, user.StudentID,
+                   consultant.first_name AS ConsultantFirstName, consultant.last_name AS ConsultantLastName
+            FROM next_appointments na
+            LEFT JOIN user ON na.user_id = user.UserID
+            LEFT JOIN consultant ON na.ConsultantID = consultant.ConsultantID
+        ) AS combined
+        ORDER BY AppointmentID;
+        ";
+
+        try {
+            $stmt = $this->pdo->prepare($sql);
+            $stmt->execute();
+            return $stmt->fetchAll(PDO::FETCH_ASSOC);
+        } catch (PDOException $e) {
+            throw new Exception("Database error: " . $e->getMessage());
+        }
+    }
 }

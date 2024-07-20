@@ -4,6 +4,7 @@ export interface User {
     FirstName: string;
     LastName: string;
     Email: string;
+    StudentID: number;
     Course: string;
     CreatedAt: string;
     UpdatedAt: string;

@@ -8,19 +8,25 @@
           <h2>Request Details:</h2>
           <div class="details-box">
             <div class="text">
-              <h3>Name</h3>
-              <p>{{ queue[0].student_name }}</p>
+              <h3>Appointment Title</h3>
+              <p>{{ queue[0].appointment_title }}</p>
             </div>
             <div class="information">
               <div class="text">
-                <h3>Urgency</h3>
-                <p>{{ queue[0].urgency }}</p>
+                <h3>Name</h3>
+                <p>{{ queue[0].student_name }}</p>
+              </div>
+              <div class="text">
                 <h3>Mode</h3>
                 <p>{{ queue[0].mode }}</p>
               </div>
+            </div>
+            <div class="information">
               <div class="text">
                 <h3>Preferred Day</h3>
                 <p>{{ queue[0].day }}</p>
+              </div>
+              <div class="text">
                 <h3>Preferred Time</h3>
                 <p>{{ queue[0].time }}</p>
               </div>

@@ -113,8 +113,63 @@
 }
 
 .purpose-text{
-  font-size: 23px;
-  width: 65%;
+  font-size: 20px;
+  width: 100%;
+  display: flex;
+}
+
+.button{
+  border: #F78914 3px solid;
+  border-bottom: none;
+  background-color: #ffb566;
+  padding: 10px;
+  color: whitesmoke;
+  cursor: pointer;
+}
+
+.button:hover{
+  background-color: #F78914;
+  color: white;
+}
+
+.button:first-of-type{
+  border-top-left-radius: 20px;
+  border-right: none;
+}
+
+.button:last-of-type{
+  border-top-right-radius: 20px;
+  border-left: none;
+}
+
+.download{
+  border: #168021 3px solid;
+  border-top-right-radius: 20px;
+  border-bottom: none;
+  background-color: #7aae6c;
+  padding: 10px;
+  color: whitesmoke;
+  cursor: pointer; 
+}
+
+.download{
+  border: #168021 3px solid;
+  border-top-right-radius: 20px;
+  border-bottom: none;
+  background-color: #7aae6c;
+  padding: 10px;
+  color: whitesmoke;
+  cursor: pointer; 
+}
+
+.download:hover{
+  color: white;
+  background-color: #168021;
+}
+
+.active-button{
+  background-color: #F78914;
+  color: white;
 }
 
 textarea {
@@ -127,7 +182,6 @@ textarea {
   justify-content: center;
   resize: none;
   margin-bottom: 20px;
-  margin-top: 20px;
 }
 
 .close{

@@ -5,7 +5,7 @@
         </div>
         <div class="Text">
             <div class="title">
-                <p>Meeting with {{ userType === 'user' ? queue.teacher_name : queue.student_name }}</p>
+                <p>{{queue.appointment_title}}</p>
             </div>
             <div class="mid">
                 <p *ngIf="userType == 'teacher'">Student: {{queue.student_name}}</p>
@@ -18,7 +18,7 @@
             </div> -->
             <div class="extra">
                 <p>Preferred Mode: {{queue.mode}}</p>
-                <p >Urgency: <label [ngClass]="{'urgent-appointment': queue.urgency == 'Urgent'}">{{queue.urgency}}</label></p>
+                <!-- <p >Urgency: <label [ngClass]="{'urgent-appointment': queue.urgency == 'Urgent'}">{{queue.urgency}}</label></p> -->
             </div>
         </div>
     </div>

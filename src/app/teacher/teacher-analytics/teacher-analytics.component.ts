@@ -124,10 +124,10 @@ export class TeacherAnalyticsComponent implements OnInit{
     if(status == false){
       this.router.navigate([`/teacher/dashboard/appointments/pending`, id]);
     }
-    else if(status == true && completed == false){
+    else if(completed == false){
       this.router.navigate([`/teacher/dashboard/appointments/confirmed`, id]);
     }
-    else if(status == true && completed == true){
+    else if(completed == true){
       this.router.navigate([`/teacher/dashboard/appointments/completed`, id]);
     }     
   }
@@ -360,14 +360,8 @@ countRatings(){
 //Appointment Analytics
 appointmentMode = "Daily"
 barChartData = {
-  labels: ["Pending", "Confirmed", "Completed"],
+  labels: ["Confirmed", "Completed"],
   datasets: [
-    {
-      data: [2, 4, 6],
-      label: 'Pending',
-      fill: true,
-      backgroundColor: '#ABABAB'
-    },
     {
       data: [2, 4, 6],
       label: 'Confirmed',
@@ -476,9 +470,8 @@ updateAppointmentBarChart(appointments: any[]){
 
   // Update the ratingDataDaily object
   this.barChartData.labels = labels;
-  this.barChartData.datasets[0].data = pendingCounts;
-  this.barChartData.datasets[1].data = confirmedCounts;
-  this.barChartData.datasets[2].data = completedCounts;
+  this.barChartData.datasets[0].data = confirmedCounts;
+  this.barChartData.datasets[1].data = completedCounts;
 
   if (this.charts) {
     this.charts.forEach((child) => {
