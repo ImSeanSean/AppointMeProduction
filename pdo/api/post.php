@@ -1318,7 +1318,7 @@ class Post extends FPDF
         $pdf->Image('assets/Logo/logo2.png', 170, 10, 30, 30);
 
         // Set font for header text
-        $pdf->SetFont('Arial', 'B', 10);
+        $pdf->SetFont('Arial', 'B', 12);
 
         // Set position for the header text in the center
         $pdf->SetXY(60, 15);
@@ -1332,44 +1332,44 @@ class Post extends FPDF
         $pdf->Cell(0, 10, '', 0, 1);
 
         // Title
-        $pdf->SetFont('Arial', 'B', 12);
+        $pdf->SetFont('Arial', 'B', 14);
         $pdf->Cell(0, 10, 'Appointment Summary Report', 0, 1, 'C');
 
         // Appointment details
-        $pdf->SetFont('Arial', 'B', 10);
+        $pdf->SetFont('Arial', 'B', 12);
         $pdf->Cell(45, 10, 'Appointment Title:', 1);
-        $pdf->SetFont('Arial', '', 10);
+        $pdf->SetFont('Arial', '', 12);
         $pdf->Cell(0, 10, $firstRow['appointment_title'], 1, 1);
 
-        $pdf->SetFont('Arial', 'B', 10);
+        $pdf->SetFont('Arial', 'B', 12);
         $pdf->Cell(45, 10, 'Faculty Member:', 1);
-        $pdf->SetFont('Arial', '', 10);
+        $pdf->SetFont('Arial', '', 12);
         $pdf->Cell(0, 10, $firstRow['ConsultantFirstName'] . ' ' . $firstRow['ConsultantLastName'], 1, 1);
 
-        $pdf->SetFont('Arial', 'B', 10);
+        $pdf->SetFont('Arial', 'B', 12);
         $pdf->Cell(45, 10, 'Student:', 1);
-        $pdf->SetFont('Arial', '', 10);
+        $pdf->SetFont('Arial', '', 12);
         $pdf->Cell(45, 10, $firstRow['UserName'] . ' ' . $firstRow['UserLastName'], 1);
-        $pdf->SetFont('Arial', 'B', 10);
+        $pdf->SetFont('Arial', 'B', 12);
         $pdf->Cell(45, 10, 'Student Id:', 1);
-        $pdf->SetFont('Arial', '', 10);
+        $pdf->SetFont('Arial', '', 12);
         $pdf->Cell(0, 10, $firstRow['StudentID'], 1, 1);
 
-        $pdf->SetFont('Arial', 'B', 10);
+        $pdf->SetFont('Arial', 'B', 12);
         $pdf->Cell(45, 10, 'Start Date:', 1);
-        $pdf->SetFont('Arial', '', 10);
+        $pdf->SetFont('Arial', '', 12);
         $pdf->Cell(45, 10, date('m/d/Y', strtotime($firstRow['AppointmentDate'])), 1);
-        $pdf->SetFont('Arial', 'B', 10);
+        $pdf->SetFont('Arial', 'B', 12);
         $pdf->Cell(45, 10, 'End Date:', 1);
-        $pdf->SetFont('Arial', '', 10);
+        $pdf->SetFont('Arial', '', 12);
         $pdf->Cell(0, 10, date('m/d/Y', strtotime($lastRow['AppointmentDate'])), 1, 1); // Adjust if you have an end date field
 
         // Appointment Objective
-        $pdf->SetFont('Arial', 'B', 10);
+        $pdf->SetFont('Arial', 'B', 12);
         $pdf->Cell(0, 10, '1. Appointment Objective', 0, 1);
         // Draw a rectangle around the Appointment Objective
         $pdf->Rect(10, $pdf->GetY(), 190, 30); // Adjust height accordingly
-        $pdf->SetFont('Arial', '', 10);
+        $pdf->SetFont('Arial', '', 12);
         $pdf->MultiCell(0, 10, $firstRow['AppointmentInfo'], 0, 'L');
 
         // Move Y position after the box
@@ -1377,9 +1377,9 @@ class Post extends FPDF
 
         // Meeting Summaries
         $pdf->Ln(10); // Line break
-        $pdf->SetFont('Arial', 'B', 10);
+        $pdf->SetFont('Arial', 'B', 12);
         $pdf->Cell(0, 10, '2. Meeting Summaries', 0, 1);
-        $pdf->SetFont('Arial', 'B', 10);
+        $pdf->SetFont('Arial', 'B', 12);
         $pdf->Cell(30, 10, 'Date', 1);
         $pdf->Cell(30, 10, 'Time', 1);
         $pdf->Cell(60, 10, 'Remarks', 1);
@@ -1387,34 +1387,39 @@ class Post extends FPDF
 
         // Add meeting summaries here. For demonstration, static data is used.
         for ($i = 0; $i < $appointmentCount; $i++) {
-            $pdf->SetFont('Arial', '', 10);
-            $pdf->Cell(30, 10, date('m/d/Y', strtotime($appointmentData[$i]['AppointmentDate'])), 1);
-            $pdf->Cell(30, 10, date('H:i A', strtotime($appointmentData[$i]['AppointmentDate'])), 1);
+            $pdf->SetFont('Arial', '', 12);
+            $pdf->Cell(30, 20, date('m/d/Y', strtotime($appointmentData[$i]['AppointmentDate'])), 1);
+            $pdf->Cell(30, 20, date('H:i A', strtotime($appointmentData[$i]['AppointmentDate'])), 1);
             if ($i == 0) {
-                $pdf->Cell(60, 10, 'Initial Meeting', 1);
+                $pdf->Cell(60, 20, 'Initial Meeting', 1);
             } else if ($i == $appointmentCount - 1) {
-                $pdf->Cell(60, 10, 'Final Meeting', 1);
+                $pdf->Cell(60, 20, 'Final Meeting', 1);
             } else {
-                $pdf->Cell(60, 10, 'Follow-up Meeting', 1);
+                $pdf->Cell(60, 20, 'Follow-up Meeting', 1);
             }
             $pdf->SetFont('Arial', '', 10);
-            $pdf->Cell(70, 10, $appointmentData[$i]['AppointmentSummary'], 1, 1);
+            // Ensure the content fits within two lines
+            $content = explode("\n", wordwrap($appointmentData[$i]['AppointmentSummary'], 40, "\n"));
+            $content = implode("\n", array_slice($content, 0, 2)); // Keep only the first two lines
+
+            // Create a cell with fixed height to accommodate two lines
+            $pdf->MultiCell(70, 10, $content, 1);
         }
 
         // Meeting Ratings
-        $pdf->SetFont('Arial', 'B', 10);
+        $pdf->SetFont('Arial', 'B', 12);
         $pdf->Cell(0, 10, '3. Student Remarks', 0, 1);
-        $pdf->SetFont('Arial', 'B', 10);
+        $pdf->SetFont('Arial', 'B', 12);
         $pdf->Cell(30, 10, 'Date', 1);
         $pdf->Cell(30, 10, 'Time', 1);
         $pdf->Cell(60, 10, 'Student Rating', 1);
         $pdf->Cell(70, 10, 'Student Remarks', 1, 1);
         foreach ($appointmentData as $appointment) {
-            $pdf->SetFont('Arial', '', 10);
+            $pdf->SetFont('Arial', '', 12);
             $pdf->Cell(30, 10, date('m/d/Y', strtotime($appointment['AppointmentDate'])), 1);
             $pdf->Cell(30, 10, date('H:i A', strtotime($appointment['AppointmentDate'])), 1);
             $pdf->Cell(60, 10, $appointment['rating'], 1);
-            $pdf->SetFont('Arial', '', 10);
+            $pdf->SetFont('Arial', '', 12);
             $pdf->Cell(70, 10, $appointment['remarks'], 1, 1);
         }
         // Conclusion
