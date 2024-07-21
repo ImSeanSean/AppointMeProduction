@@ -17,7 +17,7 @@ define('EMAIL_HOST', 'smtp.hostinger.com');
 define('EMAIL_USERNAME', 'cs@appointme.site');
 define('EMAIL_PASSWORD', 'KWHA9p=$:S{8ckU]+;(t^u');
 define('EMAIL_PORT', 587);
-define('EMAIL_FROM', 'cs@appointme.site');
+define('EMAIL_FROM', 'AppointMe CS');
 
 //DOT IS CONCATENATION IN PHP
 class Connection

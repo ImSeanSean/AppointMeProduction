@@ -58,6 +58,27 @@ class Post extends FPDF
         }
         return array("code" => $code, "errmsg" => $errmsg);
     }
+    //Email Related Functions
+    public function sendMail()
+    {
+        $mail = new PHPMailer;
+        $mail->isSMTP();
+        $mail->Host = EMAIL_HOST;
+        $mail->Port = EMAIL_PORT;
+        $mail->SMTPAuth = true;
+        $mail->Username = EMAIL_USERNAME;
+        $mail->Password = EMAIL_PASSWORD;
+        $mail->setFrom(EMAIL_USERNAME, EMAIL_FROM);
+        $mail->addReplyTo(EMAIL_USERNAME, EMAIL_FROM);
+        $mail->addAddress('seanradalberto@gmail.com');
+        $mail->Subject = 'AppointMe E-Mail Verification';
+        $mail->Body = 'Your code is 12348';
+        if (!$mail->send()) {
+            echo 'Mailer Error:' . $mail->ErrorInfo;
+        } else {
+            echo 'Successfully sernt the email';
+        }
+    }
     //User Related Functions
     public function register($data)
     {
