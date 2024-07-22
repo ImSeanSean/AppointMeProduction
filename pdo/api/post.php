@@ -59,8 +59,27 @@ class Post extends FPDF
         return array("code" => $code, "errmsg" => $errmsg);
     }
     //Email Related Functions
-    public function sendMail()
+    public function sendMail($data)
     {
+        $email = $data->email;
+        //Create Random 6 Digit Code
+        $code = rand(100000, 999999);
+        //Store Email and Code
+        $expiresAt = date('Y-m-d H:i:s', strtotime('+1 hour'));
+
+        $sql = "INSERT INTO email_verifications (email, verification_code, created_at, expires_at)
+                VALUES (:email, :code, NOW(), :expires_at)
+                ON DUPLICATE KEY UPDATE
+                verification_code = :code1, created_at = NOW(), expires_at = :expires_at1";
+
+        $stmt = $this->pdo->prepare($sql);
+        $stmt->bindParam(':email', $email);
+        $stmt->bindParam(':code', $code);
+        $stmt->bindParam(':expires_at', $expiresAt);
+        $stmt->bindParam(':code1', $code);
+        $stmt->bindParam(':expires_at1', $expiresAt);
+        $stmt->execute();
+        //Send EMAIL
         $mail = new PHPMailer;
         $mail->isSMTP();
         $mail->Host = EMAIL_HOST;
@@ -70,13 +89,14 @@ class Post extends FPDF
         $mail->Password = EMAIL_PASSWORD;
         $mail->setFrom(EMAIL_USERNAME, EMAIL_FROM);
         $mail->addReplyTo(EMAIL_USERNAME, EMAIL_FROM);
-        $mail->addAddress('seanradalberto@gmail.com');
+        $mail->addAddress($email);
         $mail->Subject = 'AppointMe E-Mail Verification';
-        $mail->Body = 'Your code is 12348';
+        $mail->Body = 'Your code is ' . $code;
+
         if (!$mail->send()) {
-            echo 'Mailer Error:' . $mail->ErrorInfo;
+            return false;
         } else {
-            echo 'Successfully sernt the email';
+            return true;
         }
     }
     //User Related Functions
@@ -1398,12 +1418,8 @@ class Post extends FPDF
                 $pdf->Cell(60, 20, 'Follow-up Meeting', 1);
             }
             $pdf->SetFont('Arial', '', 10);
-            // Ensure the content fits within two lines
-            $content = explode("\n", wordwrap($appointmentData[$i]['AppointmentSummary'], 40, "\n"));
-            $content = implode("\n", array_slice($content, 0, 2)); // Keep only the first two lines
-
             // Create a cell with fixed height to accommodate two lines
-            $pdf->MultiCell(70, 10, $content, 1);
+            $pdf->MultiCell(70, 5, $appointmentData[$i]['AppointmentSummary'], 1);
         }
 
         // Meeting Ratings

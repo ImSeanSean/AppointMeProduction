@@ -140,7 +140,7 @@ section .contentBx .formBx {
     display: flex;
     align-items: center;
 }
-.email-container {
+.email-container .coll {
     display: flex;
     align-items: center;
     gap: 10px;
@@ -241,20 +241,74 @@ small{
     color: red;
 }
 
-.email-container {
+/* Container for both email and email code inputs */
+.email-row {
     display: flex;
     align-items: center;
-    flex-grow: 1;
+    gap: 20px; /* Space between the email and email code containers */
+    width: 100%;
 }
 
-.email-container .coll {
-    width: 100%; 
+.email-container {
+    flex: 1;
+}
 
+.email-code-container {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    gap: 0; /* Adjust the gap between the input and button */
 }
-.email-container .coll input {
-    width: 100%; 
-    
+
+/* Style for email input */
+.email-container .input-field {
+    width: 100%;
+    height: 50px;
+    background: #f0f0f0;
+    border: 2px solid #06572A;
+    border-radius: 50px;
+    padding: 12px 30px;
+    font-size: 20px;
 }
+
+/* Style for email code input */
+.email-code-container .input-field {
+    width: calc(100% - 120px); /* Adjust width to leave space for the button */
+    border-radius: 50px 0 0 50px;
+    height: 50px;
+    background: #f0f0f0;
+    border: 2px solid #06572A;
+    padding: 12px 30px;
+    font-size: 20px;
+}
+
+/* Style for the send code button */
+.email-code-container .btn-send-code {
+    border-radius: 0 50px 50px 0;
+    background-color: #06572A;
+    color: white;
+    border: 1px solid #06572A;
+    cursor: pointer;
+    height: 50px;
+    padding: 0 20px; /* Adjust padding to fit the text */
+    font-size: 16px; /* Adjust font size as needed */
+    text-align: center; /* Center text inside the button */
+    white-space: nowrap; /* Prevent text from wrapping */
+}
+
+.btn-send-code:disabled {
+    background-color: #b0bec5; /* Gray background when disabled */
+    color: #fff; /* Maintain text color */
+    cursor: not-allowed; /* Change cursor to indicate disabled state */
+    opacity: 0.7; /* Slightly transparent */
+}
+
+.email-code-container .btn-send-code:hover {
+    background-color: #06572A;
+    border-color: #06572A;
+}
+
+
 
 @media (max-width: 919px) {
     .fs-3 {

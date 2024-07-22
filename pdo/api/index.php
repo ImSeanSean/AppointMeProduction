@@ -125,7 +125,7 @@ switch ($_SERVER['REQUEST_METHOD']) {
         $data = json_decode(file_get_contents("php://input"));
         switch ($request[0]) {
             case 'verification':
-                echo json_encode($post->sendMail());
+                echo json_encode($post->sendMail($data));
                 break;
             case 'login':
                 echo json_encode($post->login($data));
