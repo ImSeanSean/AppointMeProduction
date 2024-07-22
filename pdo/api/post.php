@@ -1329,8 +1329,6 @@ class Post extends FPDF
         // Create PDF object
         $pdf = new FPDF();
         $pdf->AddPage();
-
-        // Move cursor to the right place for the title
         $pdf->SetY(40);
 
         // Add logo
@@ -1387,16 +1385,21 @@ class Post extends FPDF
         // Appointment Objective
         $pdf->SetFont('Arial', 'B', 12);
         $pdf->Cell(0, 10, '1. Appointment Objective', 0, 1);
-        // Draw a rectangle around the Appointment Objective
-        $pdf->Rect(10, $pdf->GetY(), 190, 30); // Adjust height accordingly
+        $currentY = $pdf->GetY();
         $pdf->SetFont('Arial', '', 12);
-        $pdf->MultiCell(0, 10, $firstRow['AppointmentInfo'], 0, 'L');
 
-        // Move Y position after the box
-        $pdf->SetY($pdf->GetY() + 10);
+        // Draw the MultiCell within the rectangle
+        $pdf->SetX(10);
+        $pdf->MultiCell(190, 10, $firstRow['AppointmentInfo'], 0, 'L');
+        $contentHeight = $pdf->GetY() - $currentY;
+
+        // Adjust the rectangle height if the content height exceeds 30
+        $rectHeight = max(30, $contentHeight);
+        $pdf->Rect(10, $currentY, 190, $rectHeight);
+        $pdf->SetY($currentY + $rectHeight + 10);
+
 
         // Meeting Summaries
-        $pdf->Ln(10); // Line break
         $pdf->SetFont('Arial', 'B', 12);
         $pdf->Cell(0, 10, '2. Meeting Summaries', 0, 1);
         $pdf->SetFont('Arial', 'B', 12);
@@ -1408,21 +1411,43 @@ class Post extends FPDF
         // Add meeting summaries here. For demonstration, static data is used.
         for ($i = 0; $i < $appointmentCount; $i++) {
             $pdf->SetFont('Arial', '', 12);
-            $pdf->Cell(30, 20, date('m/d/Y', strtotime($appointmentData[$i]['AppointmentDate'])), 1);
-            $pdf->Cell(30, 20, date('H:i A', strtotime($appointmentData[$i]['AppointmentDate'])), 1);
-            if ($i == 0) {
-                $pdf->Cell(60, 20, 'Initial Meeting', 1);
-            } else if ($i == $appointmentCount - 1) {
-                $pdf->Cell(60, 20, 'Final Meeting', 1);
-            } else {
-                $pdf->Cell(60, 20, 'Follow-up Meeting', 1);
+
+            $summaryText = $appointmentData[$i]['AppointmentSummary'];
+            $maxHeight = 20;
+
+            $nb = $pdf->GetStringWidth($summaryText) / 70;
+            $cellHeight = 10 * ceil($nb);
+
+            if ($cellHeight > $maxHeight) {
+                $maxHeight = $cellHeight;
             }
-            $pdf->SetFont('Arial', '', 10);
-            // Create a cell with fixed height to accommodate two lines
-            $pdf->MultiCell(70, 5, $appointmentData[$i]['AppointmentSummary'], 1);
+
+            // Create the cells with the adjusted height
+            $pdf->Cell(30, $maxHeight, date('m/d/Y', strtotime($appointmentData[$i]['AppointmentDate'])), 1);
+            $pdf->Cell(30, $maxHeight, date('H:i A', strtotime($appointmentData[$i]['AppointmentDate'])), 1);
+
+            if ($i == 0) {
+                $pdf->Cell(60, $maxHeight, 'Initial Meeting', 1);
+            } else if ($i == $appointmentCount - 1) {
+                $pdf->Cell(60, $maxHeight, 'Final Meeting', 1);
+            } else {
+                $pdf->Cell(60, $maxHeight, 'Follow-up Meeting', 1);
+            }
+
+            $pdf->SetFont('Arial', '', 12);
+            $x = $pdf->GetX();
+            $y = $pdf->GetY();
+
+            $pdf->MultiCell(70, 10, $summaryText, 1);
+
+            $pdf->SetXY($x + 70, $y);
+            $pdf->Ln($maxHeight);
         }
 
+
+
         // Meeting Ratings
+        $pdf->SetY($pdf->GetY() + 10);
         $pdf->SetFont('Arial', 'B', 12);
         $pdf->Cell(0, 10, '3. Student Remarks', 0, 1);
         $pdf->SetFont('Arial', 'B', 12);
@@ -1430,14 +1455,31 @@ class Post extends FPDF
         $pdf->Cell(30, 10, 'Time', 1);
         $pdf->Cell(60, 10, 'Student Rating', 1);
         $pdf->Cell(70, 10, 'Student Remarks', 1, 1);
+
         foreach ($appointmentData as $appointment) {
             $pdf->SetFont('Arial', '', 12);
-            $pdf->Cell(30, 10, date('m/d/Y', strtotime($appointment['AppointmentDate'])), 1);
-            $pdf->Cell(30, 10, date('H:i A', strtotime($appointment['AppointmentDate'])), 1);
-            $pdf->Cell(60, 10, $appointment['rating'], 1);
-            $pdf->SetFont('Arial', '', 12);
-            $pdf->Cell(70, 10, $appointment['remarks'], 1, 1);
+
+            $remarks = $appointment['remarks'];
+            $nb = ceil($pdf->GetStringWidth($remarks) / 70);
+            $cellHeight = 10 * $nb;
+
+            $rowHeight = max($cellHeight, 10);
+
+            // Create the cells with the adjusted height
+            $pdf->Cell(30, $rowHeight, date('m/d/Y', strtotime($appointment['AppointmentDate'])), 1);
+            $pdf->Cell(30, $rowHeight, date('H:i A', strtotime($appointment['AppointmentDate'])), 1);
+            $pdf->Cell(60, $rowHeight, $appointment['rating'], 1);
+
+            $x = $pdf->GetX();
+            $y = $pdf->GetY();
+
+            // Create a MultiCell for the Student Remarks
+            $pdf->MultiCell(70, 10, $remarks, 1);
+
+            $pdf->SetXY($x + 70, $y);
+            $pdf->Ln($rowHeight);
         }
+
         // Conclusion
         // $pdf->SetFont('Arial', 'B', 10);
         // $pdf->Cell(0, 10, '3. Conclusion', 0, 1);
