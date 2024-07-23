@@ -32,6 +32,7 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 export class RegisterStudentComponent {
   myForm: FormGroup = this.formBuilder.group({
     email: ['', [Validators.required, Validators.email, gordonCollegeEmailValidator]],
+    emailCode: ['', [Validators.required]],
     fname: ['', Validators.required],
     lname: ['', Validators.required],
     birthday: ['', Validators.required],
@@ -70,6 +71,9 @@ export class RegisterStudentComponent {
           //Existing Email Error
           else if(token == 2){
             this.openExistingEmailErrorDialog();
+          }
+          else if(token == 3){
+            
           }
           else if(token != false || token != null) {
             const title = "Login Successful"

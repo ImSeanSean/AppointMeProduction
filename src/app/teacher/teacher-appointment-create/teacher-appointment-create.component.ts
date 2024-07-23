@@ -1,4 +1,4 @@
-import { NgStyle, NgFor, NgIf, formatDate } from '@angular/common';
+import { NgStyle, NgFor, NgIf, formatDate, DatePipe } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { MatFormFieldModule } from '@angular/material/form-field';
@@ -12,6 +12,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { Appointment } from '../../interfaces/Appointment';
 import { MatDialog } from '@angular/material/dialog';
 import { ConfirmationInputComponent } from '../../matdialogs/confirmation-input/confirmation-input/confirmation-input.component';
+import { NotificationServicesService } from '../../services/notification-services.service';
 
 @Component({
   selector: 'app-teacher-appointment-create',
@@ -36,7 +37,9 @@ export class TeacherAppointmentCreateComponent implements OnInit {
     private http: HttpClient,
     private route: ActivatedRoute,
     private dialog: MatDialog,
-    private router: Router
+    private router: Router,
+    private datePipe: DatePipe,
+    private notificationService: NotificationServicesService
   ) {}
 
   //Change Route
@@ -85,6 +88,7 @@ export class TeacherAppointmentCreateComponent implements OnInit {
             this.router.navigate([`teacher/dashboard/appointments`])
           })
         })
+        this.notificationService.createNotification(this.queue[0].teacher_id, this.queue[0].student_id, "Approved", "Meeting with" + this.queue[0].teacher_name, '');
       }
     })
   }
@@ -131,6 +135,16 @@ export class TeacherAppointmentCreateComponent implements OnInit {
     });
   }
 
+  getFormattedTime(date:string){
+    const today = new Date();
+    const [hours, minutes, seconds] = date.split(':');
+    today.setHours(parseInt(hours), parseInt(minutes), parseInt(seconds));
+
+    // Format the Date object to a string using DatePipe
+    return this.datePipe.transform(today, 'h:mm a');
+  }
+
+
   ngOnInit(): void {
     this.selectedDate = new Date().toISOString().split('T')[0];
     this.teacherId = localStorage.getItem('id');
@@ -142,6 +156,8 @@ export class TeacherAppointmentCreateComponent implements OnInit {
         this.appointments = result;
         this.updateFilteredAppointments();
         this.allIsLoaded = true;
+        this.selectedMode = this.queue[0].mode
+        this.selectedTime = this.queue[0].time
       });
     });
   }

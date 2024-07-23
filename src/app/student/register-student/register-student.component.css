@@ -13,9 +13,8 @@ body, html {
 }
 
 section {
-    position: relative;
     width: 100vw;
-    height: 90vh;
+    height: 100vh;
     display: flex;
 }
 
@@ -34,7 +33,7 @@ section .imgBx {
     flex-direction: column;
     font-size: 50px;
     color: #ffff;
-    gap: 30px;
+    gap: 15px; /* Reduced gap */
     font-weight: bold;
 }
 
@@ -62,19 +61,25 @@ section .contentBx {
 
 section .contentBx .formBx {
     width: 95%;
+    position: relative;
 }
+
+section .contentBx .formBx form {
+    left: 0;
+    right: 0;
+}
+
 
 .logo-img {
     width: 100px;
     height: auto;
-
 }
 
 .logo-container {
     display: flex;
     flex-direction: column;
     align-items: center;
-    margin-bottom: 20px;
+    margin-bottom: 15px; /* Reduced margin */
 }
 
 .blue-text {
@@ -90,7 +95,6 @@ section .contentBx .formBx {
     text-align: center;
 }
 
-
 .btn-signup {
     width: 150px;
     height: 50px;
@@ -99,7 +103,7 @@ section .contentBx .formBx {
     background: #06572A;
     color: #fff;
     font-weight: 600;
-    margin: 10px 0;
+    margin: 8px 0; /* Reduced margin */
     text-transform: uppercase;
     cursor: pointer;
 }
@@ -109,17 +113,15 @@ section .contentBx .formBx {
     border-color: #06572A;
 }
 
-.coll input {
+.coll input, .coll select {
     width: 100%;
     height: 50px;
     background: #f0f0f0;
-    margin: 10px 0;
+    margin: 4px 0; /* Reduced margin */
     border: 2px solid #06572A;
     border-radius: 50px;
-    display: flex;
-    align-items: center;
-    padding: 12px 30px;
-    font-size: 20px;
+    padding: 8px 15px; /* Reduced padding */
+    font-size: 16px; /* Smaller font size */
 }
 
 .btn-secondary {
@@ -140,10 +142,11 @@ section .contentBx .formBx {
     display: flex;
     align-items: center;
 }
+
 .email-container .coll {
     display: flex;
     align-items: center;
-    gap: 10px;
+    gap: 5px; /* Reduced gap */
     width: 100%;
 }
 
@@ -153,21 +156,25 @@ section .contentBx .formBx {
 }
 
 .email-container .input-group .form-control {
-    border-radius: 50px 50 0 50px;
+    border-radius: 50px 50px 0 50px;
+
 }
 
+.password-container{
+    margin-top: -3px;
+}
 
 .coll select {
     width: 100%;
     height: 50px;
     background: #f0f0f0;
-    margin: 10px 0;
+    margin: 8px 0; /* Reduced margin */
     border: 2px solid #06572A;
     border-radius: 50px;
     display: flex;
     align-items: center;
-    padding: 12px 30px;
-    font-size: 20px;
+    padding: 10px 20px; /* Reduced padding */
+    font-size: 16px;
     appearance: none; /* Remove default arrow */
 }
 
@@ -188,101 +195,117 @@ section .contentBx .formBx {
 
 .birthday-sex-container .coll #birthday,
 .birthday-sex-container .coll #sex {
-    width: calc(100% - 10px);
+    width: calc(100% - 5px); /* Reduced width adjustment */
     height: 50px;
     background: #f0f0f0;
-    margin: 10px 0;
+    margin: 8px 0; /* Reduced margin */
     border: 2px solid #06572A;
     border-radius: 50px;
     display: flex;
     align-items: center;
-    padding: 12px 30px;
-    font-size: 20px;
+    padding: 10px 20px; /* Reduced padding */
+    font-size: 16px;
+    margin-top: 3px;
 }
 
 .birthday-sex-container .coll #birthday {
-    margin-right: 10px;
+    margin-right: 5px; /* Reduced margin */
 }
 
 .row.course-block-year {
     display: flex;
     flex-wrap: wrap;
-    gap: 10px; /* Adjust the gap between elements */
+    gap: 5px; /* Reduced gap */
+    margin-top: -9px;
 }
 
 .row.course-block-year .coll {
     flex-grow: 1;
-    max-width: calc(33.33% - 10px); /* Limit the maximum width of each container */
+    max-width: calc(33.33% - 5px); /* Limited max width */
 }
 
-/* Adjust margin for the last element to avoid overflow */
 .row.course-block-year .coll:last-child {
     margin-right: 0;
 }
 
 .name-container {
     display: flex;
-    gap: 10px; /* Adjust the gap between input fields */
+    gap: 5px; /* Reduced gap */
 }
 
 .name-container .coll {
     flex-grow: 1;
 }
 
-
 .name-container .coll:last-child {
     margin-right: 0;
 }
 
-
-small{
-    padding: 0; 
-    margin-left: 20px;
+small {
+    font-size: 10px; /* Smaller font size for error messages */
     color: red;
+    margin: 0;
+    padding: 0;
+    line-height: 1.2;
+    display: block; /* Ensure it behaves like a block element */
+    margin-left: 20px; /* Push it to the right */
 }
 
-/* Container for both email and email code inputs */
 .email-row {
     display: flex;
     align-items: center;
-    gap: 20px; /* Space between the email and email code containers */
+    gap: 5px; /* Reduced gap */
     width: 100%;
+    position: relative;
 }
 
 .email-container {
     flex: 1;
 }
 
+.cooldown-message {
+    font-size: 10px; /* Smaller font size for error messages */
+    color: red;
+    margin: 0;
+    padding: 0;
+    line-height: 1.2;
+    display: block; /* Ensure it behaves like a block element */
+    margin-left: 20px; /* Push it to the right */
+}
+
 .email-code-container {
     flex: 1;
     display: flex;
     align-items: center;
-    gap: 0; /* Adjust the gap between the input and button */
+    gap: 0; /* No gap between input and button */
 }
 
-/* Style for email input */
+.email-code-container-wrapper {
+    flex: 1;
+    display: flex;
+    flex-direction: column; /* Stack items vertically */
+}
+
 .email-container .input-field {
     width: 100%;
     height: 50px;
     background: #f0f0f0;
     border: 2px solid #06572A;
     border-radius: 50px;
-    padding: 12px 30px;
-    font-size: 20px;
+    padding: 10px 20px; /* Reduced padding */
+    font-size: 16px;
 }
 
-/* Style for email code input */
 .email-code-container .input-field {
-    width: calc(100% - 120px); /* Adjust width to leave space for the button */
+    width: calc(100% - 100px); /* Adjust width to leave space for the button */
     border-radius: 50px 0 0 50px;
     height: 50px;
     background: #f0f0f0;
     border: 2px solid #06572A;
-    padding: 12px 30px;
-    font-size: 20px;
+    padding: 10px 20px; /* Reduced padding */
+    font-size: 16px;
 }
 
-/* Style for the send code button */
 .email-code-container .btn-send-code {
     border-radius: 0 50px 50px 0;
     background-color: #06572A;
@@ -290,17 +313,10 @@ small{
     border: 1px solid #06572A;
     cursor: pointer;
     height: 50px;
-    padding: 0 20px; /* Adjust padding to fit the text */
+    padding: 0 10px; /* Reduced padding */
     font-size: 16px; /* Adjust font size as needed */
     text-align: center; /* Center text inside the button */
     white-space: nowrap; /* Prevent text from wrapping */
-}
-
-.btn-send-code:disabled {
-    background-color: #b0bec5; /* Gray background when disabled */
-    color: #fff; /* Maintain text color */
-    cursor: not-allowed; /* Change cursor to indicate disabled state */
-    opacity: 0.7; /* Slightly transparent */
 }
 
 .email-code-container .btn-send-code:hover {
@@ -308,11 +324,10 @@ small{
     border-color: #06572A;
 }
 
-
-
+/* Responsive adjustments */
 @media (max-width: 919px) {
     .fs-3 {
-        font-size: 25px;
+        font-size: 20px;
     }
 }
 
@@ -328,11 +343,11 @@ small{
 
 @media (min-width: 886px) {
     section .imgBx {
-        display: flex; 
+        display: flex;
     }
 
     section .contentBx {
-        width: 65%; 
+        width: 65%;
     }
 }
 
@@ -340,14 +355,13 @@ small{
     .fs-3 {
         font-size: 16px;
     }
-    
 }
 
 @media (max-width: 710px) {
     .coll input, .coll select {
         height: 40px;
-        padding: 8px 20px;
-        font-size: 16px;
+        padding: 8px 15px;
+        font-size: 14px;
     }
 
     .btn-signup {
@@ -366,76 +380,18 @@ small{
 
     .birthday-sex-container .coll #birthday,
     .birthday-sex-container .coll #sex {
-        height: 40px;
-        padding: 8px 20px;
-        font-size: 16px;
+        height: 30px;
+        padding: 8px 15px;
+        font-size: 14px;
     }
 
     .row.course-block-year .coll {
-        max-width: calc(50% - 5px); 
+        max-width: calc(50% - 5px);
     }
 
     .item {
         font-size: 30px;
-        gap: 20px;
-    }
-
-    .text-center {
-        font-size: 14px;
+        gap: 10px; 
     }
 }
 
-@media (max-width: 400px) {
-    .coll input, .coll select {
-        height: 30px;
-        padding: 6px 15px;
-        font-size: 12px;
-    }
-
-    .btn-signup {
-        width: 100px;
-        height: 30px;
-        font-size: 12px;
-    }
-
-    .logo-img {
-        width: 60px;
-    }
-
-    .blue-text {
-        font-size: 20px;
-    }
-
-    .birthday-sex-container .coll #birthday,
-    .birthday-sex-container .coll #sex {
-        height: 30px;
-        padding: 6px 15px;
-        font-size: 12px;
-    }
-
-    .row.course-block-year .coll {
-        max-width: 100%;
-    }
-
-    .item {
-        font-size: 20px;
-        gap: 10px;
-    }
-
-    .text-center {
-        font-size: 12px;
-    }
-
-    .email-container .coll input {
-        font-size: 12px;
-    }
-
-    .custom-checkbox {
-        font-size: 12px;
-    }
-
-    .form-check-input {
-        width: 15px;
-        height: 15px;
-    }
-}

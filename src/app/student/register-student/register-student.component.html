@@ -11,7 +11,7 @@
                 </div>
                 <form [formGroup]="myForm" (ngSubmit)="onSubmit()">
                     <div class="row email-row">
-                        <div class="email-container">
+                        <div class="email-container coll" >
                             <input type="text" class="input-field" placeholder="Email" autocomplete="off" formControlName="email" required>
                             <small *ngIf="myForm.get('email')?.invalid && myForm.get('email')?.touched">
                                 <ng-container *ngIf="myForm.get('email')?.errors?.['gordonCollegeEmail']">
@@ -22,12 +22,14 @@
                                   </ng-container>
                             </small>
                         </div>
-                        <div class="email-code-container">
-                            <input type="text" class="input-field" placeholder="Email Code" autocomplete="off" formControlName="emailCode" required>
-                            <button id="sendCodeButton" type="button" class="btn btn-send-code" (click)="sendVerification()" [disabled]="isButtonDisabled">Send Code</button>
-                            <small *ngIf="cooldownMessage">{{ cooldownMessage }}</small>
+                        <div class="email-code-container-wrapper">
+                            <div class="email-code-container coll ">
+                                <input type="text" class="input-field" placeholder="Email Code" autocomplete="off" formControlName="emailCode" required>
+                                <button id="sendCodeButton" type="button" class="btn-send-code" (click)="sendVerification()" [disabled]="isButtonDisabled">Send Code</button>
+                            </div>
+                            <small *ngIf="cooldownMessage" class="cooldown-message">{{ cooldownMessage }}</small>
                         </div>
-                    </div>                                   
+                    </div>                                                              
                     <div class="row name-container">
                         <div class="coll">
                             <input type="text" class="input-field" placeholder="First Name" autocomplete="off" formControlName="fname" required>
@@ -107,22 +109,21 @@
                             </small>    
                         </div>
                     </div>                    
-                    <div class="row">
+                    <div class="row password-container">
                         <div class="coll">
                             <input type="password" class="input-field" placeholder="Password" autocomplete="off" formControlName="password" required>
+                            <small *ngIf="myForm.get('password')?.invalid && myForm.get('password')?.touched">
+                                Enter your password.
+                            </small>
                         </div>
-                        <small *ngIf="myForm.get('password')?.invalid && myForm.get('password')?.touched">
-                            Enter your password.
-                        </small>
-                    </div>
-                    <div class="row">
                         <div class="coll">
                             <input type="password" class="input-field" placeholder="Confirm Password" autocomplete="off" formControlName="confirmpassword" required>
+                            <small *ngIf="myForm.get('confirmpassword')?.invalid && myForm.get('confirmpassword')?.touched">
+                                Confirm your password.
+                            </small>
                         </div>
-                        <small *ngIf="myForm.get('confirmpassword')?.invalid && myForm.get('confirmpassword')?.touched">
-                            Confirm your password.
-                        </small>
                     </div>
+                    
                     <div class="row justify-content-center">
                         <div class="col mb-3 text-center">
                             <button type="submit" class="btn btn-signup">Sign Up</button>

@@ -150,6 +150,7 @@ export class AppointmentViewConfirmedComponent {
       .subscribe(
         (response) => {
           console.log('Appointment complete successfully:', response);
+          this.notificationService.createNotification(this.appointments[0].ConsultantID, this.appointments[0].StudentID, "Finished", "Meeting with" + this.appointments[0].ConsultantFirstName, '')
         },
         (error) => {
           console.error('Error completing appointment:', error);
@@ -162,7 +163,8 @@ export class AppointmentViewConfirmedComponent {
     this.http.post(`${mainPort}/pdo/api/reject_appointment`, data)
     .subscribe(
       (response) => {
-        console.log('Appointment rejected successfully:', response);
+        console.log('Appointment cancelled successfully:', response);
+        this.notificationService.createNotification(this.appointments[0].ConsultantID, this.appointments[0].StudentID, "Cancelled", "Meeting with" + this.appointments[0].ConsultantFirstName, '')
       },
       (error) => {
         console.error('Error rejecting appointment:', error);
@@ -176,7 +178,7 @@ export class AppointmentViewConfirmedComponent {
       key: localStorage.getItem('token'),
       student_id: this.appointments[0].user_id,
       teacher_id: this.appointments[0].ConsultantID,
-      title: 'Follow-Up: ' + this.appointments[0].appointment_title,
+      title: this.appointments[0].appointment_title,
       appointment_id: this.appointmentId,
       mode: null,
       urgency: null,
