@@ -22,8 +22,10 @@ export class AppointmentViewFinishedComponent {
   usertype = localStorage.getItem('user');
   appointmentId: string | null = null;
   appointments: Appointment[] = [];
+  information: string | null = null;
   remarks: string | null = null;
   summary: string | null = null;
+  edit = false;
 
   constructor(private http: HttpClient, private router: Router, private activatedRoute: ActivatedRoute, public dialog: MatDialog) {}
 
@@ -32,6 +34,7 @@ export class AppointmentViewFinishedComponent {
       (data: Appointment[]) => {
         // Handle successful response
         this.appointments = data; 
+        this.information = this.appointments[0].AppointmentInfo
         this.remarks = this.appointments[0].remarks
         this.summary = this.appointments[0].AppointmentSummary
       },
@@ -50,6 +53,17 @@ export class AppointmentViewFinishedComponent {
       user = "student";
     }
     this.router.navigate([`${user}/dashboard/confirmed-appointments`]);
+  }
+
+  openInformation():void {
+    const $data ={
+      key: localStorage.getItem('token'),
+      appointment_id: this.appointmentId,
+      appointment_summary: this.information
+    }
+    this.http.post(`${mainPort}/pdo/api/provide_information`, $data).subscribe(result =>{
+      window.location.reload();
+    });
   }
 
   openSummary():void {
@@ -75,7 +89,7 @@ export class AppointmentViewFinishedComponent {
     dialogRef.afterClosed().subscribe(result => {
       if (result != null) {
         if (this.remarks == null){
-          this.remarks = "No Remarks have been provided."
+          this.remarks = "No remarks have been provided."
         }
         const $data = {
           key: localStorage.getItem('token'),
@@ -137,6 +151,7 @@ export class AppointmentViewFinishedComponent {
 
   changeSelectedInfo(info:string){
     this.selectedInfo = info;
+    this.edit = false;
   }
   //Documentation
   generateFPDF(): Observable<any> {
@@ -162,5 +177,9 @@ export class AppointmentViewFinishedComponent {
         // Handle error as needed
       }
     );
+  }
+
+  changeEdit(){
+    this.edit = !this.edit;
   }
 }

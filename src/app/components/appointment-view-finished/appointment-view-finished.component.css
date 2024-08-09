@@ -248,6 +248,27 @@ textarea {
   font-weight: 300;
 }
 
+.edit {
+  border-radius: 18px;
+  background-color: #7aae6c;
+  height: 40px;
+  width: 10vw;
+  text-align: center;
+  color: white;
+  padding-top: 5px;
+}
+
+.edit:hover {
+  background-color: #168021;
+}
+
+.edit p {
+  margin-top: 7px;
+  cursor: pointer;
+  font-size: 110%;
+  font-weight: 300;
+}
+
 .buttons{
   display: flex;
   justify-content: space-between;

@@ -178,6 +178,9 @@ switch ($_SERVER['REQUEST_METHOD']) {
             case 'rate_appointment':
                 echo json_encode($post->rate_appointment($data));
                 break;
+            case 'provide_information':
+                echo json_encode($post->provide_information($data));
+                break;
             case 'provide_summary':
                 echo json_encode($post->provide_summary($data));
                 break;

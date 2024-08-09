@@ -75,23 +75,40 @@
               <i class='bx bx-download'></i>
             </div>
           </div>
-          <textarea placeholder="No Appointment Information provided." *ngIf="selectedInfo == 'Appointment'"readonly>{{ appointments[0]?.AppointmentInfo || 'No Appointment Information provided.'}}
+          <textarea placeholder="No Appointment Information provided." *ngIf="selectedInfo == 'Appointment'" [(ngModel)]="information" [readonly]="edit == false"></textarea>
+          <textarea placeholder="No Appointment Summary provided." *ngIf="selectedInfo == 'Summary'" [(ngModel)]="summary" [readonly]="edit == false">
           </textarea>
-          <textarea placeholder="No Appointment Summary provided." *ngIf="selectedInfo == 'Summary'" [(ngModel)]="summary" [readonly]="appointments[0].AppointmentSummary !== null">
-          </textarea>
-          <textarea placeholder="No Student Remarks provided." *ngIf="selectedInfo == 'Remarks'" [(ngModel)]="remarks" [readonly]="appointments[0]?.remarks !== null || usertype == 'teacher'">
+          <textarea placeholder="No Student Remarks provided." *ngIf="selectedInfo == 'Remarks'" [(ngModel)]="remarks" [readonly]="edit == false">
           </textarea>
         </div>
         <div class="textarea-container">
         <div class="buttons">
           <div class="close">
-            <p (click)="closeWindow()">CLOSE</p>
+            <p (click)="closeWindow()">Close</p>
           </div>
-          <div (click)="openSummary()" *ngIf="usertype == 'teacher' && this.appointments[0]?.AppointmentSummary == null && selectedInfo == 'Summary'" class="confirmation" >
-            <p>PROVIDE SUMMARY</p>
+          <div (click)="changeEdit()" *ngIf="edit == false && selectedInfo == 'Appointment' && usertype == 'teacher'" class="edit" >
+            <p>Edit</p>
           </div>
-          <div (click)="openRating()" *ngIf="usertype == 'user' && this.appointments[0]?.rating == null && selectedInfo == 'Remarks'" class="confirmation" >
-            <p>PROVIDE FEEDBACK</p>
+          <div (click)="changeEdit()" *ngIf="edit == false && selectedInfo == 'Summary' && usertype == 'teacher'" class="edit" >
+            <p>Edit</p>
+          </div>
+          <div (click)="changeEdit()" *ngIf="edit == false && selectedInfo == 'Remarks' && usertype == 'user' && this.appointments[0]?.rating != null" class="edit" >
+            <p>Edit</p>
+          </div>
+          <div (click)="changeEdit()" *ngIf="edit == true" class="edit" >
+            <p>Cancel Edit</p>
+          </div>
+          <div (click)="openInformation()" *ngIf="edit == true && selectedInfo == 'Appointment'" class="confirmation" >
+            <p>Update Appointment Information</p>
+          </div>
+          <div (click)="openSummary()" *ngIf="edit == true && selectedInfo == 'Summary'" class="confirmation" >
+            <p>Update Summary</p>
+          </div>
+          <div (click)="openRating()" *ngIf="edit == true && selectedInfo == 'Remarks'" class="confirmation" >
+            <p>Update Feedback</p>
+          </div>
+          <div (click)="openRating()" *ngIf="usertype == 'user' && selectedInfo == 'Remarks' && this.appointments[0]?.rating == null" class="confirmation" >
+            <p>Add Feedback</p>
           </div>
           </div>
         </div>

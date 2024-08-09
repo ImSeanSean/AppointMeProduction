@@ -73,7 +73,7 @@ export class RegisterStudentComponent {
             this.openExistingEmailErrorDialog();
           }
           else if(token == 3){
-            
+            this.openWrongCodeErrorDialog();
           }
           else if(token != false || token != null) {
             const title = "Login Successful"
@@ -132,6 +132,15 @@ export class RegisterStudentComponent {
       data: {
         title: 'Registration Error',
         description: 'Email is already registered.'
+      }
+    });
+  }
+  openWrongCodeErrorDialog(): void{
+    this.dialog.open(ErrorComponent, {
+      width: '300px',
+      data: {
+        title: 'Invalid Validation Code',
+        description: 'Invalid Verification Code'
       }
     });
   }

@@ -104,6 +104,7 @@ class Post extends FPDF
     {
         // Variables
         $email = $data->email;
+        $emailCode = $data->emailCode;
         $fname = $data->fname;
         $lname = $data->lname;
         $birthday = $data->birthday;
@@ -124,9 +125,23 @@ class Post extends FPDF
             return 2;
         }
 
+        //Check if Email Code is Valid
+        $emailCodeCheckSql = "SELECT * FROM `email_verifications` WHERE `email` = :email AND `verification_code` = :code";
+        $emailCodeCheckStmt = $this->pdo->prepare($emailCodeCheckSql);
+        $emailCodeCheckStmt->bindParam(':email', $email);
+        $emailCodeCheckStmt->bindParam(':code', $emailCode);
+        $emailCodeCheckStmt->execute();
+
+        if ($emailCodeCheckStmt->fetch() === false) {
+            return 3;
+        }
+
+        // Extract Student ID from email
+        $studentId = substr($email, 0, strpos($email, '@'));
+
         // Proceed with the insertion
-        $insertSql = "INSERT INTO `user` (`Email`, `FirstName`, `LastName`, `bday`, `gender`, `Course`, `year`, `block`, `Password`) 
-        VALUES (:email, :fname, :lname, :birthday, :gender, :course, :year, :block, :password)";
+        $insertSql = "INSERT INTO `user` (`Email`, `FirstName`, `LastName`, `bday`, `gender`, `Course`, `year`, `block`, `Password`, `StudentID`) 
+                  VALUES (:email, :fname, :lname, :birthday, :gender, :course, :year, :block, :password, :student_id)";
 
         $insertStmt = $this->pdo->prepare($insertSql);
 
@@ -140,6 +155,7 @@ class Post extends FPDF
         $insertStmt->bindParam(':year', $year);
         $insertStmt->bindParam(':block', $block);
         $insertStmt->bindParam(':password', $password);
+        $insertStmt->bindParam(':student_id', $studentId);
         // Execute SQL
         try {
             $insertStmt->execute();
@@ -718,6 +734,45 @@ class Post extends FPDF
             }
         } else {
             return $this->sendPayLoad(null, "failed", "User is not authorized to confirm this appointment.", 403);
+        }
+    }
+    public function provide_information($data)
+    {
+        try {
+            $jwt = $data->key;
+            error_log("JWT Token: " . $jwt);
+            $key = JWT::decode($jwt, new Key($this->secretKey, 'HS256'));
+            // Check authorization here (example: verify that the user is authorized to create an appointment)
+            if ($key->type !== 'teacher') {
+                return "Unauthorized: Only teachers are allowed to provide summary.";
+            }
+            $appointmentId = $data->appointment_id;
+            $appointmentSummary = $data->appointment_summary;
+            //Find Appointment
+            $sqlValidation = "SELECT * FROM appointment WHERE AppointmentID = :appointmentId";
+            $stmt = $this->pdo->prepare($sqlValidation);
+            $stmt->bindParam(':appointmentId', $appointmentId);
+            $stmt->execute();
+            $validationResult = $stmt->fetch(PDO::FETCH_ASSOC);
+            // Check if appointment exists
+
+            // Update Appointment
+            $sqlUpdate = "UPDATE appointment SET AppointmentInfo = :appointmentSummary WHERE AppointmentID = :id";
+            $stmt = $this->pdo->prepare($sqlUpdate);
+            $stmt->bindParam(':appointmentSummary', $appointmentSummary);
+            $stmt->bindParam(':id', $appointmentId);
+            $stmt->execute();
+            // Optionally, return success response or handle accordingly
+            return "Summary provided successfully.";
+        } catch (\Firebase\JWT\ExpiredException $e) {
+            return "Unauthorized: Token has expired. Please login again.";
+        } catch (\Firebase\JWT\BeforeValidException $e) {
+            return "Unauthorized: Token is not yet valid.";
+        } catch (\Firebase\JWT\SignatureInvalidException $e) {
+            return "Unauthorized: Invalid token signature.";
+        } catch (PDOException $e) {
+            // Handle the exception, return an error response, or log the error
+            return "Error rating appointment" . $e->getMessage();
         }
     }
     public function provide_summary($data)
@@ -1314,169 +1369,159 @@ class Post extends FPDF
     }
 
     function generatePDF($appointmentId)
-{
-    // Fetch appointment data
-    $appointmentData = $this->fetchAppointmentData($appointmentId);
-    $appointmentCount = count($appointmentData);
-    $firstRow = $appointmentData[0];
-    $lastRow = $appointmentData[$appointmentCount - 1];
+    {
+        // Fetch appointment data
+        $appointmentData = $this->fetchAppointmentData($appointmentId);
+        $appointmentCount = count($appointmentData);
+        $firstRow = $appointmentData[0];
+        $lastRow = $appointmentData[$appointmentCount - 1];
 
-    if (!$appointmentData) {
-        echo "No appointment found with the given ID.";
-        return;
-    }
-
-    // Create PDF object
-    $pdf = new FPDF();
-    $pdf->AddPage();
-    $pdf->SetY(40);
-
-    // Add logo
-    $pdf->Image('assets/Logo/logo1.png', 10, 10, 30, 30);
-    $pdf->Image('assets/Logo/logo2.png', 170, 10, 30, 30);
-
-    // Set font for header text
-    $pdf->SetFont('Arial', 'B', 12);
-
-    // Set position for the header text in the center
-    $pdf->SetXY(60, 15);
-    $pdf->Cell(90, 10, 'GORDON COLLEGE', 0, 1, 'C');
-    $pdf->SetXY(60, 20);
-    $pdf->Cell(90, 10, 'COLLEGE OF COMPUTER STUDIES', 0, 1, 'C');
-    $pdf->SetXY(60, 25);
-    $pdf->Cell(90, 10, 'APPOINTMENT TEAM', 0, 1, 'C');
-
-    // Add two empty rows for spacing
-    $pdf->Cell(0, 10, '', 0, 1);
-
-    // Title
-    $pdf->SetFont('Arial', 'B', 14);
-    $pdf->Cell(0, 10, 'Appointment Summary Report', 0, 1, 'C');
-
-    // Appointment details
-    $pdf->SetFont('Arial', 'B', 12);
-    $pdf->Cell(45, 10, 'Appointment Title:', 1);
-    $pdf->SetFont('Arial', '', 12);
-    $pdf->Cell(0, 10, $firstRow['appointment_title'], 1, 1);
-
-    $pdf->SetFont('Arial', 'B', 12);
-    $pdf->Cell(45, 10, 'Faculty Member:', 1);
-    $pdf->SetFont('Arial', '', 12);
-    $pdf->Cell(0, 10, $firstRow['ConsultantFirstName'] . ' ' . $firstRow['ConsultantLastName'], 1, 1);
-
-    $pdf->SetFont('Arial', 'B', 12);
-    $pdf->Cell(45, 10, 'Student:', 1);
-    $pdf->SetFont('Arial', '', 12);
-    $pdf->Cell(45, 10, $firstRow['UserName'] . ' ' . $firstRow['UserLastName'], 1);
-    $pdf->SetFont('Arial', 'B', 12);
-    $pdf->Cell(45, 10, 'Student Id:', 1);
-    $pdf->SetFont('Arial', '', 12);
-    $pdf->Cell(0, 10, $firstRow['StudentID'], 1, 1);
-
-    $pdf->SetFont('Arial', 'B', 12);
-    $pdf->Cell(45, 10, 'Start Date:', 1);
-    $pdf->SetFont('Arial', '', 12);
-    $pdf->Cell(45, 10, date('m/d/Y', strtotime($firstRow['AppointmentDate'])), 1);
-    $pdf->SetFont('Arial', 'B', 12);
-    $pdf->Cell(45, 10, 'End Date:', 1);
-    $pdf->SetFont('Arial', '', 12);
-    $pdf->Cell(0, 10, date('m/d/Y', strtotime($lastRow['AppointmentDate'])), 1, 1); // Adjust if you have an end date field
-
-    // Appointment Objective
-    $pdf->SetFont('Arial', 'B', 12);
-    $pdf->Cell(0, 10, '1. Appointment Objective', 0, 1);
-    $currentY = $pdf->GetY();
-    $pdf->SetFont('Arial', '', 12);
-
-    // Draw the MultiCell within the rectangle
-    $pdf->SetX(10); 
-    $pdf->MultiCell(190, 10, $firstRow['AppointmentInfo'], 0, 'L');
-    $contentHeight = $pdf->GetY() - $currentY;
-
-    // Adjust the rectangle height if the content height exceeds 30
-    $rectHeight = max(20, $contentHeight);
-    $pdf->Rect(10, $currentY, 190, $rectHeight);
-    $pdf->SetY($currentY + $rectHeight + 10);
-
-
-    // Meeting Summaries
-    $pdf->SetFont('Arial', 'B', 12);
-    $pdf->Cell(0, 6, '2. Meeting Summaries', 0, 1);
-    $pdf->SetFont('Arial', 'B', 12);
-    $pdf->Cell(30, 6, 'Date', 1);
-    $pdf->Cell(30, 6, 'Time', 1);
-    $pdf->Cell(60, 6, 'Remarks', 1);
-    $pdf->Cell(70, 6, 'Summary', 1, 1);
-
-    // Add meeting summaries here. For demonstration, static data is used.
-    for ($i = 0; $i < $appointmentCount; $i++) {
-        $pdf->SetFont('Arial', '', 12);
-        
-        $summaryText = $appointmentData[$i]['AppointmentSummary'];
-        $maxHeight = 12; 
-        
-        $nb = $pdf->GetStringWidth($summaryText) / 70;
-        $cellHeight = 6 * ceil($nb);
-        
-        if ($cellHeight > $maxHeight) {
-                $maxHeight = $cellHeight;
+        if (!$appointmentData) {
+            echo "No appointment found with the given ID.";
+            return;
         }
-        
-        // Create the cells with the adjusted height
-        $pdf->Cell(30, $maxHeight, date('m/d/Y', strtotime($appointmentData[$i]['AppointmentDate'])), 1);
-        $pdf->Cell(30, $maxHeight, date('H:i A', strtotime($appointmentData[$i]['AppointmentDate'])), 1);
-        
-        if ($i == 0) {
-            $pdf->Cell(60, $maxHeight, 'Initial Meeting', 1);
-        } else if ($i == $appointmentCount - 1) {
-            $pdf->Cell(60, $maxHeight, 'Final Meeting', 1);
-        } else {
-            $pdf->Cell(60, $maxHeight, 'Follow-up Meeting', 1);
+
+        // Create PDF object
+        $pdf = new FPDF();
+        $pdf->AddPage();
+        $pdf->SetY(40);
+
+        // Add logo
+        $pdf->Image('assets/Logo/logo1.png', 10, 10, 30, 30);
+        $pdf->Image('assets/Logo/logo2.png', 170, 10, 30, 30);
+
+        // Set font for header text
+        $pdf->SetFont('Arial', 'B', 12);
+
+        // Set position for the header text in the center
+        $pdf->SetXY(60, 15);
+        $pdf->Cell(90, 10, 'GORDON COLLEGE', 0, 1, 'C');
+        $pdf->SetXY(60, 20);
+        $pdf->Cell(90, 10, 'COLLEGE OF COMPUTER STUDIES', 0, 1, 'C');
+        $pdf->SetXY(60, 25);
+        $pdf->Cell(90, 10, 'APPOINTMENT TEAM', 0, 1, 'C');
+
+        // Add two empty rows for spacing
+        $pdf->Cell(0, 10, '', 0, 1);
+
+        // Title
+        $pdf->SetFont('Arial', 'B', 14);
+        $pdf->Cell(0, 10, 'Appointment Summary Report', 0, 1, 'C');
+
+        // Appointment details
+        $pdf->SetFont('Arial', 'B', 12);
+        $pdf->Cell(45, 10, 'Appointment Title:', 1);
+        $pdf->SetFont('Arial', '', 12);
+        $pdf->Cell(0, 10, $firstRow['appointment_title'], 1, 1);
+
+        $pdf->SetFont('Arial', 'B', 12);
+        $pdf->Cell(45, 10, 'Faculty Member:', 1);
+        $pdf->SetFont('Arial', '', 12);
+        $pdf->Cell(0, 10, $firstRow['ConsultantFirstName'] . ' ' . $firstRow['ConsultantLastName'], 1, 1);
+
+        $pdf->SetFont('Arial', 'B', 12);
+        $pdf->Cell(45, 10, 'Student:', 1);
+        $pdf->SetFont('Arial', '', 12);
+        $pdf->Cell(45, 10, $firstRow['UserName'] . ' ' . $firstRow['UserLastName'], 1);
+        $pdf->SetFont('Arial', 'B', 12);
+        $pdf->Cell(45, 10, 'Student Id:', 1);
+        $pdf->SetFont('Arial', '', 12);
+        $pdf->Cell(0, 10, $firstRow['StudentID'], 1, 1);
+
+        $pdf->SetFont('Arial', 'B', 12);
+        $pdf->Cell(45, 10, 'Start Date:', 1);
+        $pdf->SetFont('Arial', '', 12);
+        $pdf->Cell(45, 10, date('m/d/Y', strtotime($firstRow['AppointmentDate'])), 1);
+        $pdf->SetFont('Arial', 'B', 12);
+        $pdf->Cell(45, 10, 'End Date:', 1);
+        $pdf->SetFont('Arial', '', 12);
+        $pdf->Cell(0, 10, date('m/d/Y', strtotime($lastRow['AppointmentDate'])), 1, 1); // Adjust if you have an end date field
+
+        // Appointment Objective
+        $pdf->SetFont('Arial', 'B', 12);
+        $pdf->Cell(0, 10, '1. Appointment Objective', 0, 1);
+        $currentY = $pdf->GetY();
+        $pdf->SetFont('Arial', '', 12);
+
+        // Draw the MultiCell within the rectangle
+        $pdf->SetX(10);
+        $pdf->MultiCell(190, 10, $firstRow['AppointmentInfo'], 0, 'L');
+        $contentHeight = $pdf->GetY() - $currentY;
+
+        // Adjust the rectangle height if the content height exceeds 30
+        $rectHeight = max(20, $contentHeight);
+        $pdf->Rect(10, $currentY, 190, $rectHeight);
+        $pdf->SetY($currentY + $rectHeight + 10);
+
+
+        // Meeting Summaries
+        $pdf->SetFont('Arial', 'B', 12);
+        $pdf->Cell(0, 6, '2. Meeting Summaries', 0, 1);
+        $pdf->SetFont('Arial', 'B', 12);
+        $pdf->Cell(30, 6, 'Date', 1);
+        $pdf->Cell(30, 6, 'Time', 1);
+        $pdf->Cell(60, 6, 'Remarks', 1);
+        $pdf->Cell(70, 6, 'Summary', 1, 1);
+
+        // Add meeting summaries here. For demonstration, static data is used.
+        for ($i = 0; $i < $appointmentCount; $i++) {
+            $pdf->SetFont('Arial', '', 12);
+
+            $summaryText = $appointmentData[$i]['AppointmentSummary'];
+
+            $nb = ceil($pdf->GetStringWidth($summaryText) / 60);
+            $cellHeight = 6 * $nb;
+
+            $rowHeight = max($cellHeight, 6);
+
+            // Create the cells with the adjusted height
+            $pdf->Cell(30, $rowHeight, date('m/d/Y', strtotime($appointmentData[$i]['AppointmentDate'])), 1);
+            $pdf->Cell(30, $rowHeight, date('H:i A', strtotime($appointmentData[$i]['AppointmentDate'])), 1);
+            $pdf->Cell(60, $rowHeight, $appointmentData[$i]['rating'], 1);
+
+            $x = $pdf->GetX();
+            $y = $pdf->GetY();
+
+            // Create a MultiCell for the Student Remarks
+            $pdf->MultiCell(70, 6, $summaryText, 1);
+
+            $pdf->SetXY($x + 70, $y);
+            $pdf->Ln($rowHeight);
         }
-        
-        $pdf->SetFont('Arial', '', 12);
-        $x = $pdf->GetX();
-        $y = $pdf->GetY();
-            
-        $pdf->MultiCell(70, 6, $summaryText, 1);
-            
-        $pdf->SetXY($x + 70, $y);
-        $pdf->Ln($maxHeight);
-    }
-    
-    // Meeting Ratings
-    $pdf->SetY($pdf->GetY() + 6);
-    $pdf->SetFont('Arial', 'B', 12);
-    $pdf->Cell(0, 6, '3. Student Remarks', 0, 1);
-    $pdf->SetFont('Arial', 'B', 12);
-    $pdf->Cell(30, 6, 'Date', 1);
-    $pdf->Cell(30, 6, 'Time', 1);
-    $pdf->Cell(60, 6, 'Student Rating', 1);
-    $pdf->Cell(70, 6, 'Student Remarks', 1, 1);
 
-    foreach ($appointmentData as $appointment) {
-        $pdf->SetFont('Arial', '', 12);
+        // Meeting Ratings
+        $pdf->SetY($pdf->GetY() + 6);
+        $pdf->SetFont('Arial', 'B', 12);
+        $pdf->Cell(0, 6, '3. Student Remarks', 0, 1);
+        $pdf->SetFont('Arial', 'B', 12);
+        $pdf->Cell(30, 6, 'Date', 1);
+        $pdf->Cell(30, 6, 'Time', 1);
+        $pdf->Cell(60, 6, 'Student Rating', 1);
+        $pdf->Cell(70, 6, 'Student Remarks', 1, 1);
 
-        $remarks = $appointment['remarks'];
-        $nb = ceil($pdf->GetStringWidth($remarks) / 70);
-        $cellHeight = 6 * $nb;
+        foreach ($appointmentData as $appointment) {
+            $pdf->SetFont('Arial', '', 12);
 
-        $rowHeight = max($cellHeight, 6);
+            $remarks = $appointment['remarks'];
+            $nb = ceil($pdf->GetStringWidth($remarks) / 60);
+            $cellHeight = 6 * $nb;
 
-        // Create the cells with the adjusted height
-        $pdf->Cell(30, $rowHeight, date('m/d/Y', strtotime($appointment['AppointmentDate'])), 1);
-        $pdf->Cell(30, $rowHeight, date('H:i A', strtotime($appointment['AppointmentDate'])), 1);
-        $pdf->Cell(60, $rowHeight, $appointment['rating'], 1);
+            $rowHeight = max($cellHeight, 6);
 
-        $x = $pdf->GetX();
-        $y = $pdf->GetY();
+            // Create the cells with the adjusted height
+            $pdf->Cell(30, $rowHeight, date('m/d/Y', strtotime($appointment['AppointmentDate'])), 1);
+            $pdf->Cell(30, $rowHeight, date('H:i A', strtotime($appointment['AppointmentDate'])), 1);
+            $pdf->Cell(60, $rowHeight, $appointment['rating'], 1);
 
-        // Create a MultiCell for the Student Remarks
-        $pdf->MultiCell(70, 6, $remarks, 1);
+            $x = $pdf->GetX();
+            $y = $pdf->GetY();
 
-        $pdf->SetXY($x + 70, $y);
-        $pdf->Ln($rowHeight);
-    }
+            // Create a MultiCell for the Student Remarks
+            $pdf->MultiCell(70, 6, $remarks, 1);
+
+            $pdf->SetXY($x + 70, $y);
+            $pdf->Ln($rowHeight);
+        }
 
         // Conclusion
         // $pdf->SetFont('Arial', 'B', 10);

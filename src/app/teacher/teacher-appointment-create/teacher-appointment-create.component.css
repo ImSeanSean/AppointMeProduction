@@ -185,3 +185,11 @@
     padding: 15px;
     justify-content: space-evenly;
 }
+
+.empty{
+    display: flex;
+    justify-content: center;
+    margin-top: 20vh;
+    font-size: 40px;
+    color: rgb(177, 177, 177);
+}

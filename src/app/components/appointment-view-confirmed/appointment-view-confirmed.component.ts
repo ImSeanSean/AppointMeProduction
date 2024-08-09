@@ -101,12 +101,38 @@ export class AppointmentViewConfirmedComponent {
             reason.afterClosed().subscribe(result => {
               if(result[0]){
                 this.addQueue(result[1])
-                this.completeAppointment()
+                const summary = this.dialog.open(ConfirmationInputComponent, {
+                  height: '40vh',
+                  width: '30vw',
+                  data: {
+                    title: 'Appointment Summary',
+                    description: 'Provide summary...'
+                  }
+                })
+                summary.afterClosed().subscribe(result => {
+                  if(result[0]){
+                    this.provideSummary(result[1]);
+                    this.completeAppointment()
+                  }
+                })
               }
             })
           }
           else{
-            this.completeAppointment()
+            const summary = this.dialog.open(ConfirmationInputComponent, {
+              height: '40vh',
+              width: '30vw',
+              data: {
+                title: 'Appointment Summary',
+                description: 'Provide summary...'
+              }
+            })
+            summary.afterClosed().subscribe(result => {
+              if(result[0]){
+                this.provideSummary(result[1]);
+                this.completeAppointment()
+              }
+            })
           }
         })
       }
@@ -227,6 +253,17 @@ export class AppointmentViewConfirmedComponent {
         console.error('HTTP Error:', error);
       }
     );
+  }
+
+  provideSummary(summary: any){
+    const $data ={
+      key: localStorage.getItem('token'),
+      appointment_id: this.appointmentId,
+      appointment_summary: summary
+    }
+    this.http.post(`${mainPort}/pdo/api/provide_summary`, $data).subscribe(result =>{
+      window.location.reload();
+    });
   }
 }
 
