@@ -1584,4 +1584,223 @@ class Post extends FPDF
             throw new Exception("Database error: " . $e->getMessage());
         }
     }
+    function generateAllReports($data)
+    {
+        $consultantId = $data->consultantId;
+        // Fetch all grouped appointment data for the specific ConsultantID
+        $groupedAppointments = $this->fetchAllAppointmentsData($consultantId);
+
+        // Create PDF object
+        $pdf = new FPDF();
+
+        // Loop through each group of connected appointments
+        foreach ($groupedAppointments as $groupId => $appointments) {
+            $this->generatePDFForGroup($pdf, $appointments);
+        }
+
+        // Output the final PDF
+        $pdf->Output('D', 'All_Appointment_Reports.pdf');
+    }
+
+    private function generatePDFForGroup($pdf, $appointmentData)
+    {
+        $appointmentCount = count($appointmentData);
+        $firstRow = $appointmentData[0];
+        $lastRow = $appointmentData[$appointmentCount - 1];
+
+        // Add a new page for each appointment group
+        $pdf->AddPage();
+        $pdf->SetY(40);
+
+        // (Keep the rest of the original generatePDF() logic here for adding content to the PDF...)
+        // Note: Ensure the content is added for all appointments within the group
+        // Add logo
+        $pdf->Image('assets/Logo/logo1.png', 10, 10, 30, 30);
+        $pdf->Image('assets/Logo/logo2.png', 170, 10, 30, 30);
+
+        // Set font for header text
+        $pdf->SetFont('Arial', 'B', 12);
+
+        // Set position for the header text in the center
+        $pdf->SetXY(60, 15);
+        $pdf->Cell(90, 10, 'GORDON COLLEGE', 0, 1, 'C');
+        $pdf->SetXY(60, 20);
+        $pdf->Cell(90, 10, 'COLLEGE OF COMPUTER STUDIES', 0, 1, 'C');
+        $pdf->SetXY(60, 25);
+        $pdf->Cell(90, 10, 'APPOINTMENT TEAM', 0, 1, 'C');
+
+        // Add two empty rows for spacing
+        $pdf->Cell(0, 10, '', 0, 1);
+
+        // Title
+        $pdf->SetFont('Arial', 'B', 14);
+        $pdf->Cell(0, 10, 'Appointment Summary Report', 0, 1, 'C');
+
+        // Appointment details
+        $pdf->SetFont('Arial', 'B', 12);
+        $pdf->Cell(45, 10, 'Appointment Title:', 1);
+        $pdf->SetFont('Arial', '', 12);
+        $pdf->Cell(0, 10, $firstRow['appointment_title'], 1, 1);
+
+        $pdf->SetFont('Arial', 'B', 12);
+        $pdf->Cell(45, 10, 'Faculty Member:', 1);
+        $pdf->SetFont('Arial', '', 12);
+        $pdf->Cell(0, 10, $firstRow['ConsultantFirstName'] . ' ' . $firstRow['ConsultantLastName'], 1, 1);
+
+        $pdf->SetFont('Arial', 'B', 12);
+        $pdf->Cell(45, 10, 'Student:', 1);
+        $pdf->SetFont('Arial', '', 12);
+        $pdf->Cell(45, 10, $firstRow['UserName'] . ' ' . $firstRow['UserLastName'], 1);
+        $pdf->SetFont('Arial', 'B', 12);
+        $pdf->Cell(45, 10, 'Student Id:', 1);
+        $pdf->SetFont('Arial', '', 12);
+        $pdf->Cell(0, 10, $firstRow['StudentID'], 1, 1);
+
+        $pdf->SetFont('Arial', 'B', 12);
+        $pdf->Cell(45, 10, 'Start Date:', 1);
+        $pdf->SetFont('Arial', '', 12);
+        $pdf->Cell(45, 10, date('m/d/Y', strtotime($firstRow['AppointmentDate'])), 1);
+        $pdf->SetFont('Arial', 'B', 12);
+        $pdf->Cell(45, 10, 'End Date:', 1);
+        $pdf->SetFont('Arial', '', 12);
+        $pdf->Cell(0, 10, date('m/d/Y', strtotime($lastRow['AppointmentDate'])), 1, 1); // Adjust if you have an end date field
+
+        // Appointment Objective
+        $pdf->SetFont('Arial', 'B', 12);
+        $pdf->Cell(0, 10, '1. Appointment Objective', 0, 1);
+        $currentY = $pdf->GetY();
+        $pdf->SetFont('Arial', '', 12);
+
+        // Draw the MultiCell within the rectangle
+        $pdf->SetX(10);
+        $pdf->MultiCell(190, 10, $firstRow['AppointmentInfo'], 0, 'L');
+        $contentHeight = $pdf->GetY() - $currentY;
+
+        // Adjust the rectangle height if the content height exceeds 30
+        $rectHeight = max(20, $contentHeight);
+        $pdf->Rect(10, $currentY, 190, $rectHeight);
+        $pdf->SetY($currentY + $rectHeight + 10);
+
+
+        // Meeting Summaries
+        $pdf->SetFont('Arial', 'B', 12);
+        $pdf->Cell(0, 6, '2. Meeting Summaries', 0, 1);
+        $pdf->SetFont('Arial', 'B', 12);
+        $pdf->Cell(30, 6, 'Date', 1);
+        $pdf->Cell(30, 6, 'Time', 1);
+        $pdf->Cell(60, 6, 'Remarks', 1);
+        $pdf->Cell(70, 6, 'Summary', 1, 1);
+
+        // Add meeting summaries here. For demonstration, static data is used.
+        for ($i = 0; $i < $appointmentCount; $i++) {
+            $pdf->SetFont('Arial', '', 12);
+
+            $summaryText = $appointmentData[$i]['AppointmentSummary'];
+
+            $nb = ceil($pdf->GetStringWidth($summaryText) / 60);
+            $cellHeight = 6 * $nb;
+
+            $rowHeight = max($cellHeight, 6);
+
+            // Create the cells with the adjusted height
+            $pdf->Cell(30, $rowHeight, date('m/d/Y', strtotime($appointmentData[$i]['AppointmentDate'])), 1);
+            $pdf->Cell(30, $rowHeight, date('H:i A', strtotime($appointmentData[$i]['AppointmentDate'])), 1);
+            $pdf->Cell(60, $rowHeight, $appointmentData[$i]['rating'], 1);
+
+            $x = $pdf->GetX();
+            $y = $pdf->GetY();
+
+            // Create a MultiCell for the Student Remarks
+            $pdf->MultiCell(70, 6, $summaryText, 1);
+
+            $pdf->SetXY($x + 70, $y);
+            $pdf->Ln($rowHeight);
+        }
+
+        // Meeting Ratings
+        $pdf->SetY($pdf->GetY() + 6);
+        $pdf->SetFont('Arial', 'B', 12);
+        $pdf->Cell(0, 6, '3. Student Remarks', 0, 1);
+        $pdf->SetFont('Arial', 'B', 12);
+        $pdf->Cell(30, 6, 'Date', 1);
+        $pdf->Cell(30, 6, 'Time', 1);
+        $pdf->Cell(60, 6, 'Student Rating', 1);
+        $pdf->Cell(70, 6, 'Student Remarks', 1, 1);
+
+        foreach ($appointmentData as $appointment) {
+            $pdf->SetFont('Arial', '', 12);
+
+            $remarks = $appointment['remarks'];
+            $nb = ceil($pdf->GetStringWidth($remarks) / 60);
+            $cellHeight = 6 * $nb;
+
+            $rowHeight = max($cellHeight, 6);
+
+            // Create the cells with the adjusted height
+            $pdf->Cell(30, $rowHeight, date('m/d/Y', strtotime($appointment['AppointmentDate'])), 1);
+            $pdf->Cell(30, $rowHeight, date('H:i A', strtotime($appointment['AppointmentDate'])), 1);
+            $pdf->Cell(60, $rowHeight, $appointment['rating'], 1);
+
+            $x = $pdf->GetX();
+            $y = $pdf->GetY();
+
+            // Create a MultiCell for the Student Remarks
+            $pdf->MultiCell(70, 6, $remarks, 1);
+
+            $pdf->SetXY($x + 70, $y);
+            $pdf->Ln($rowHeight);
+        }
+    }
+
+    // Fetch all appointments and group them by connected appointment chain
+    private function fetchAllAppointmentsData($consultantId)
+    {
+        $sql = "
+        WITH RECURSIVE appointment_chain AS (
+            SELECT a.*, a.AppointmentID as GroupID
+            FROM appointment a
+            WHERE a.PreviousAppointmentID IS NULL
+            AND a.ConsultantID = :consultantId
+            UNION ALL
+            SELECT a2.*, ac.GroupID
+            FROM appointment a2
+            INNER JOIN appointment_chain ac ON a2.PreviousAppointmentID = ac.AppointmentID
+            WHERE a2.ConsultantID = :consultantIdd
+        )
+        SELECT 
+            ac.*,
+            user.FirstName AS UserName, user.LastName AS UserLastName, user.StudentID,
+            consultant.first_name AS ConsultantFirstName, consultant.last_name AS ConsultantLastName
+        FROM appointment_chain ac
+        LEFT JOIN user ON ac.user_id = user.UserID
+        LEFT JOIN consultant ON ac.ConsultantID = consultant.ConsultantID
+        ORDER BY ac.GroupID, ac.AppointmentID;
+        ";
+
+        try {
+            $stmt = $this->pdo->prepare($sql);
+            $stmt->bindParam(':consultantId', $consultantId, PDO::PARAM_INT);
+            $stmt->bindParam(':consultantIdd', $consultantId, PDO::PARAM_INT);
+            $stmt->execute();
+            $appointments = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+            // Group appointments by the GroupID
+            $groupedAppointments = [];
+            foreach ($appointments as $appointment) {
+                $groupId = $appointment['GroupID'];
+                $groupedAppointments[$groupId][] = $appointment;
+            }
+
+            return $groupedAppointments;
+        } catch (PDOException $e) {
+            throw new Exception("Database error: " . $e->getMessage());
+        }
+    }
+
+    private function fetchAppointmentById($appointmentId)
+    {
+        $stmt = $this->pdo->prepare("SELECT * FROM appointment WHERE AppointmentID = ?");
+        $stmt->execute([$appointmentId]);
+        return $stmt->fetch(PDO::FETCH_ASSOC);
+    }
 }

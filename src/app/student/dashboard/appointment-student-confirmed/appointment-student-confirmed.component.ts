@@ -60,4 +60,35 @@ export class AppointmentStudentConfirmedComponent {
             })
           );
       }
+      generateFPDF(): Observable<Blob> {
+        const token = localStorage.getItem('token');
+        const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
+        const userid = localStorage.getItem('id');
+        const data = {
+          consultantId: userid
+        }
+        
+        // The key part here is ensuring that the responseType is set to 'blob'
+        return this.http.post(`${mainPort}/pdo/api/generate_all_reports`, data, {
+          headers,
+          responseType: 'blob' // Correctly specify the response type as 'blob'
+        });
+      }
+    
+      downloadPDF() {
+        this.generateFPDF().subscribe(
+          (blob: Blob) => {
+            const url = window.URL.createObjectURL(blob);
+            const link = document.createElement('a');
+            link.href = url;
+            link.download = 'Appointment_Summary_Report.pdf';
+            link.click();
+            window.URL.revokeObjectURL(url);
+          },
+          error => {
+            console.error('Error generating PDF:', error);
+            // Handle error as needed
+          }
+        );
+      }
 }

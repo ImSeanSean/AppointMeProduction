@@ -223,6 +223,9 @@ switch ($_SERVER['REQUEST_METHOD']) {
             case 'generate_report':
                 echo json_encode($post->generatePDF($data));
                 break;
+            case 'generate_all_reports':
+                echo json_encode($post->generateAllReports($data));
+                break;
             default:
                 http_response_code(403);
                 break;
