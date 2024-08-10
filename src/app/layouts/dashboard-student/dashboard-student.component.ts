@@ -8,21 +8,23 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { SettingComponent } from "../setting/setting.component";
 import { mainPort } from '../../app.component';
 import { ProfileServiceService } from '../../services/ProfileService/profile-service.service';
-import {MatIconModule} from '@angular/material/icon';
-import {MatButtonModule} from '@angular/material/button';
-import {MatBadgeModule} from '@angular/material/badge';
-import { Notification } from '../../interfaces/Notification';
+import { MatIconModule } from '@angular/material/icon';
+import { MatButtonModule } from '@angular/material/button';
+import { MatBadgeModule } from '@angular/material/badge';
 import { NotificationServicesService } from '../../services/notification-services.service';
 
 @Component({
-    selector: 'app-dashboard-student',
-    standalone: true,
-    templateUrl: './dashboard-student.component.html',
-    styleUrl: './dashboard-student.component.css',
-    imports: [NavbarComponent, RouterModule, NgIf, SettingComponent, RouterLinkActive, MatBadgeModule, MatButtonModule, MatIconModule]
+  selector: 'app-dashboard-student',
+  standalone: true,
+  templateUrl: './dashboard-student.component.html',
+  styleUrl: './dashboard-student.component.css',
+  imports: [NavbarComponent, RouterModule, NgIf, SettingComponent, RouterLinkActive, MatBadgeModule, MatButtonModule, MatIconModule]
 })
 export class DashboardStudentComponent {
-  constructor(private http: HttpClient, private router: Router, private profileService: ProfileServiceService, private notificationService: NotificationServicesService) {}
+  @ViewChild('notificationBox', { static: false }) box: ElementRef | undefined;
+  down: boolean = false;
+
+  constructor(private http: HttpClient, private router: Router, private profileService: ProfileServiceService, private notificationService: NotificationServicesService) { }
 
   user: User[] = [];
   teacher: Teacher[] = [];
@@ -31,7 +33,7 @@ export class DashboardStudentComponent {
   lastName = "";
   unreadNotificationsCount = 0;
 
-  redirectToHomePage(){
+  redirectToHomePage() {
     this.router.navigate(['']);
   }
 
@@ -41,7 +43,7 @@ export class DashboardStudentComponent {
     console.log(token);
     return this.http.get<User[]>(`${mainPort}/pdo/api/get_user`, { headers });
   }
-  getTeacher(){
+  getTeacher() {
     const token = localStorage.getItem('token');
     const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
     console.log(token);
@@ -49,12 +51,12 @@ export class DashboardStudentComponent {
   }
   ngOnInit(): void {
     this.countUnreadNotifications();
-    if(this.usertype == "user"){
+    if (this.usertype == "user") {
       this.getUser().subscribe(
         (data: User[]) => {
           this.user = data;
-          this.firstName = this.user[0].FirstName; 
-          this.lastName = this.user[0].LastName; 
+          this.firstName = this.user[0].FirstName;
+          this.lastName = this.user[0].LastName;
           console.log(this.user);
           console.log(localStorage.getItem('user'))
           //Save to Service
@@ -65,11 +67,11 @@ export class DashboardStudentComponent {
         }
       );
     }
-    else if(this.usertype == "teacher"){
+    else if (this.usertype == "teacher") {
       this.getTeacher().subscribe(
         (data: Teacher[]) => {
           this.teacher = data;
-          this.firstName = this.teacher[0].first_name; 
+          this.firstName = this.teacher[0].first_name;
           this.lastName = this.teacher[0].last_name;
           console.log(this.user);
           console.log("what")
@@ -84,7 +86,22 @@ export class DashboardStudentComponent {
     });
   }
 
+  toggleNotifi(): void {
+    if (this.box) {
+      const boxElement = this.box.nativeElement as HTMLElement;
+      if (this.down) {
+        boxElement.style.height = '0px';
+        boxElement.style.opacity = '0';
+        this.down = false;
+      } else {
+        boxElement.style.height = '510px';
+        boxElement.style.opacity = '1';
+        this.down = true;
+      }
+    }
+  }
+
   countUnreadNotifications() {
-    this.notificationService.countNotifications(); 
+    this.notificationService.countNotifications();
   }
 }

@@ -4,12 +4,16 @@
         <h1><span style="color: #228B22;">Appoint</span><span style="color: #F78914;">Me</span></h1>
     </div>
     <div class="navbar">
-        <div class="notifications" routerLink="./notification">
+        <div class="notifications" (click)="toggleNotifi()">
             <i class='bx bx-bell' matBadge="{{unreadNotificationsCount}}" matBadgeSize="medium"></i>
             <label>Notifications</label>
+
+            <!-- Notification Box -->
+            <div class="notifi-box" #notificationBox id="box">
+            </div>
         </div>
         <div class="profile">
-            <i class='bx bx-user-circle' ></i>
+            <i class='bx bx-user-circle'></i>
             <label>Welcome, {{firstName}} {{lastName}}</label>
         </div>
     </div>
@@ -17,10 +21,16 @@
 <div class="body">
     <div class="sidebar">
         <ul>
-            <a routerLink="./appointments" routerLinkActive="active-link"><li><i class='bx bx-bookmark-alt-minus'></i></li></a>
-            <a routerLink="./confirmed-appointments" routerLinkActive="active-link"><li><i class='bx bx-calendar-check'></i></li></a>
+            <a routerLink="./appointments" routerLinkActive="active-link">
+                <li><i class='bx bx-bookmark-alt-minus'></i></li>
+            </a>
+            <a routerLink="./confirmed-appointments" routerLinkActive="active-link">
+                <li><i class='bx bx-calendar-check'></i></li>
+            </a>
             <!-- <a routerLink="./schedule" routerLinkActive="active-link"><li><i class='bx bx-time-five'></i></li></a> -->
-            <a routerLink="./analytics" routerLinkActive="active-link"><li><i class='bx bx-line-chart'></i></li></a>
+            <a routerLink="./analytics" routerLinkActive="active-link">
+                <li><i class='bx bx-line-chart'></i></li>
+            </a>
             <!-- <a routerLink="./profile" routerLinkActive="active-link"><li><i class='bx bx-user'></i></li></a> -->
             <!-- <a routerLink="./report" routerLinkActive="active-link"><li><i class='bx bx-line-chart'></i></li></a> -->
             <!-- <a routerLink="./headteacher/teacher-registration" *ngIf="headteacher == true" routerLinkActive="active-link"><li><i class='bx bx-book-reader'></i></li></a> -->
@@ -28,7 +38,7 @@
         </ul>
         <ul>
             <li class="settings">
-                <i class='bx bx-cog' ></i>
+                <i class='bx bx-cog'></i>
                 <app-setting></app-setting>
             </li>
         </ul>

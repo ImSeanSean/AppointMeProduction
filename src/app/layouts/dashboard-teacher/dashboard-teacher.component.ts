@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, ElementRef, ViewChild } from '@angular/core';
 import { Teacher } from '../../interfaces/Teacher';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Router, RouterLinkActive, RouterModule, RouterOutlet } from '@angular/router';
@@ -14,13 +14,16 @@ import { NavbarComponent } from '../navbar/navbar.component';
 import { NotificationServicesService } from '../../services/notification-services.service';
 
 @Component({
-    selector: 'app-dashboard-teacher',
-    standalone: true,
-    templateUrl: './dashboard-teacher.component.html',
-    styleUrl: './dashboard-teacher.component.css',
-    imports: [NavbarComponent, RouterModule, NgIf, SettingComponent, RouterLinkActive, MatBadgeModule, MatButtonModule, MatIconModule]
+  selector: 'app-dashboard-teacher',
+  standalone: true,
+  templateUrl: './dashboard-teacher.component.html',
+  styleUrl: './dashboard-teacher.component.css',
+  imports: [NavbarComponent, RouterModule, NgIf, SettingComponent, RouterLinkActive, MatBadgeModule, MatButtonModule, MatIconModule]
 })
 export class DashboardTeacherComponent {
+  @ViewChild('notificationBox', { static: false }) box: ElementRef | undefined;
+  down: boolean = false;
+
   user: User[] = [];
   teacher: Teacher[] = [];
   usertype = localStorage.getItem('user');
@@ -29,9 +32,9 @@ export class DashboardTeacherComponent {
   headteacher = false;
   unreadNotificationsCount = 0;
 
-  constructor(private http: HttpClient, private router: Router, private userInfo: UserInformationService, private notificationService: NotificationServicesService) {}
+  constructor(private http: HttpClient, private router: Router, private userInfo: UserInformationService, private notificationService: NotificationServicesService) { }
 
-  redirectToHomePage(){
+  redirectToHomePage() {
     this.router.navigate(['']);
   }
 
@@ -41,7 +44,7 @@ export class DashboardTeacherComponent {
     console.log(token);
     return this.http.get<User[]>(`${mainPort}/pdo/api/get_user`, { headers });
   }
-  getTeacher(){
+  getTeacher() {
     const token = localStorage.getItem('token');
     const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
     console.log(token);
@@ -49,24 +52,24 @@ export class DashboardTeacherComponent {
   }
   ngOnInit(): void {
     this.countUnreadNotifications();
-    if(this.usertype == "user"){
+    if (this.usertype == "user") {
       this.getUser().subscribe(
         (data: User[]) => {
           this.user = data;
-          this.firstName = this.user[0].FirstName; 
-          this.lastName = this.user[0].LastName; 
+          this.firstName = this.user[0].FirstName;
+          this.lastName = this.user[0].LastName;
         },
         (error) => {
           console.error('Error fetching teachers:', error);
         }
       );
     }
-    if(this.usertype == "user"){
+    if (this.usertype == "user") {
       this.getUser().subscribe(
         (data: User[]) => {
           this.user = data;
-          this.firstName = this.user[0].FirstName; 
-          this.lastName = this.user[0].LastName; 
+          this.firstName = this.user[0].FirstName;
+          this.lastName = this.user[0].LastName;
           console.log(this.user);
           console.log(localStorage.getItem('user'))
         },
@@ -75,11 +78,11 @@ export class DashboardTeacherComponent {
         }
       );
     }
-    else if(this.usertype == "teacher"){
+    else if (this.usertype == "teacher") {
       this.getTeacher().subscribe(
         (data: Teacher[]) => {
           this.teacher = data;
-          this.firstName = this.teacher[0].first_name; 
+          this.firstName = this.teacher[0].first_name;
           this.lastName = this.teacher[0].last_name;
           this.headteacher = this.teacher[0].headteacher;
           this.userInfo.userId = this.teacher[0].ConsultantID;
@@ -94,7 +97,23 @@ export class DashboardTeacherComponent {
       this.unreadNotificationsCount = count;
     });
   }
+
+  toggleNotifi(): void {
+    if (this.box) {
+      const boxElement = this.box.nativeElement as HTMLElement;
+      if (this.down) {
+        boxElement.style.height = '0px';
+        boxElement.style.opacity = '0';
+        this.down = false;
+      } else {
+        boxElement.style.height = '510px';
+        boxElement.style.opacity = '1';
+        this.down = true;
+      }
+    }
+  }
+
   countUnreadNotifications() {
-    this.notificationService.countNotificationsTeacher(); 
+    this.notificationService.countNotificationsTeacher();
   }
 }
