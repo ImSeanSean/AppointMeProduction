@@ -1,17 +1,17 @@
 <h2>Provide Rating</h2>
 <mat-dialog-content class="content">
     <p>{{description}}</p>
-    <div class="radio">
-        <input class="radio__input" type="radio" value="1" name="mode" id="1" [(ngModel)]="selectedRating">
-        <label class="radio__label" for="1">1</label>
-        <input class="radio__input" type="radio" value="2" name="mode" id="2" [(ngModel)]="selectedRating">
-        <label class="radio__label" for="2">2</label>
-        <input class="radio__input" type="radio" value="3" name="mode" id="3" [(ngModel)]="selectedRating">
-        <label class="radio__label" for="3">3</label>
-        <input class="radio__input" type="radio" value="4" name="mode" id="4" [(ngModel)]="selectedRating">
-        <label class="radio__label" for="4">4</label>
-        <input class="radio__input" type="radio" value="5" name="mode" id="5" [(ngModel)]="selectedRating">
-        <label class="radio__label" for="5">5</label>
+    <div class="star-rating">
+        <input class="star-rating__input" type="radio" value="1" name="rating" id="star-1" [(ngModel)]="selectedRating">
+        <label class="star-rating__label" for="star-1" title="1 star">★</label>
+        <input class="star-rating__input" type="radio" value="2" name="rating" id="star-2" [(ngModel)]="selectedRating">
+        <label class="star-rating__label" for="star-2" title="2 stars">★</label>
+        <input class="star-rating__input" type="radio" value="3" name="rating" id="star-3" [(ngModel)]="selectedRating">
+        <label class="star-rating__label" for="star-3" title="3 stars">★</label>
+        <input class="star-rating__input" type="radio" value="4" name="rating" id="star-4" [(ngModel)]="selectedRating">
+        <label class="star-rating__label" for="star-4" title="4 stars">★</label>
+        <input class="star-rating__input" type="radio" value="5" name="rating" id="star-5" [(ngModel)]="selectedRating">
+        <label class="star-rating__label" for="star-5" title="5 stars">★</label>
     </div>
 </mat-dialog-content>
 <mat-dialog-actions align="end" class="action">
