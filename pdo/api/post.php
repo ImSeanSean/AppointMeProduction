@@ -421,17 +421,19 @@ class Post extends FPDF
         // Variables
         $email = $data->email;
         $password = $data->password;
+
         // SQL
         $sql = "SELECT * FROM user WHERE Email = :email";
         $stmt = $this->pdo->prepare($sql);
         $stmt->bindParam(':email', $email, PDO::PARAM_STR);
         $stmt->execute();
+
         // If User Found
         $user = $stmt->fetch(PDO::FETCH_ASSOC);
 
         if ($user) {
             if ($password == $user['Password']) {
-                // Use the correct column name for user ID
+                // Successful login
                 $payload = [
                     'iss' => 'AppointMe',
                     'iat' => time(),
@@ -441,47 +443,67 @@ class Post extends FPDF
                 ];
 
                 $jwt = JWT::encode($payload, $this->secretKey, 'HS256');
+
+                // Log successful login
+                $this->logLogin($user['UserID'], null, true);
+
                 return $jwt;
             } else {
+                // Log failed login attempt
+                $this->logLogin($user['UserID'], null, false);
                 return false;
             }
         } else {
+            // Log failed login attempt
+            $this->logLogin(null, null, false);
             return false;
         }
     }
+
     public function login_teacher($data)
     {
         // Variables
         $email = $data->email;
         $password = $data->password;
-        // SQL
+
+        // SQL to fetch consultant details
         $sql = "SELECT * FROM consultant WHERE Email = :email";
         $stmt = $this->pdo->prepare($sql);
         $stmt->bindParam(':email', $email, PDO::PARAM_STR);
         $stmt->execute();
-        // If User Found
+
+        // If Consultant Found
         $consultant = $stmt->fetch(PDO::FETCH_ASSOC);
 
         if ($consultant) {
             if ($password == $consultant['Password']) {
-                // Use the correct column name for user ID
+                // Successful login
                 $payload = [
                     'iss' => 'AppointMe',
                     'iat' => time(),
-                    'exp' => time() + time() + (24 * 60 * 60),
+                    'exp' => time() + (24 * 60 * 60),
                     'user_id' => $consultant['ConsultantID'],
                     'type' => 'teacher'
                 ];
 
                 $jwt = JWT::encode($payload, $this->secretKey, 'HS256');
+
+                // Log successful login
+                $this->logLogin(null, $consultant['ConsultantID'], true);
+
                 return $jwt;
             } else {
+                // Log failed login attempt
+                $this->logLogin(null, $consultant['ConsultantID'], false);
                 return false;
             }
         } else {
+            // Log failed login attempt
+            $this->logLogin(null, null, false);
             return false;
         }
     }
+
     //Teacher Related Functio
     public function approveTeacher($data)
     {
@@ -612,10 +634,12 @@ class Post extends FPDF
             $jwt = $data->key;
             error_log("JWT Token: " . $jwt);
             $key = JWT::decode($jwt, new Key($this->secretKey, 'HS256'));
+
             // Check authorization here (example: verify that the user is authorized to create an appointment)
             if ($key->type !== 'teacher') {
                 return "Unauthorized: Only teachers are allowed to create appointments.";
             }
+
             $user_id = $data->user_id;
             $teacher_id = $data->teacher;
             $previous_appointment_id = $data->previous_appointment_id;
@@ -627,6 +651,7 @@ class Post extends FPDF
             $appointmentInfo = $data->appointmentInfo;
             $details = $data->details;
 
+            // Prepare and execute SQL to insert appointment
             $sql = "INSERT INTO appointment (user_id, ConsultantID, PreviousAppointmentID, AppointmentDate, appointment_title, AppointmentInfo, TeacherMessage, mode)
                     VALUES (:user_id, :consultant_id, :previous_appointment_id, :appointment_date, :appointment_title, :appointmentInfo, :TeacherMessage, :mode)";
 
@@ -644,6 +669,11 @@ class Post extends FPDF
             $stmt->execute();
             $appointment_id = $this->pdo->lastInsertId();
 
+            // Log the action
+            $actionType = 'appointment_created';
+            $actionDetails = "Appointment ID $appointment_id created by teacher ID $teacher_id";
+            $this->logAction(null, $teacher_id, $actionType, $actionDetails);
+
             // Optionally, return success response or handle accordingly
             return $appointment_id;
         } catch (\Firebase\JWT\ExpiredException $e) {
@@ -654,89 +684,156 @@ class Post extends FPDF
             return "Unauthorized: Invalid token signature.";
         } catch (PDOException $e) {
             // Handle the exception, return an error response, or log the error
-            return "Error creating appointment" . $e;
+            return "Error creating appointment: " . $e->getMessage();
         }
     }
+
     public function confirm_appointment($data)
     {
-        $appointmentId = $data->appointment_id;
+        try {
+            $appointmentId = $data->appointment_id;
 
-        // SQL query to validate user authority and check appointment status
-        $sqlValidation = "SELECT * FROM appointment WHERE AppointmentID = $appointmentId";
-        $validationResult = $this->executeQuery($sqlValidation);
+            // SQL query to validate user authority and check appointment status
+            $sqlValidation = "SELECT * FROM appointment WHERE AppointmentID = :appointmentId";
+            $stmtValidation = $this->pdo->prepare($sqlValidation);
+            $stmtValidation->bindParam(':appointmentId', $appointmentId, PDO::PARAM_INT);
+            $stmtValidation->execute();
+            $validationResult = $stmtValidation->fetch(PDO::FETCH_ASSOC);
 
-        if ($validationResult['code'] == 200 && !empty($validationResult['data'])) {
-            $appointmentStatus = $validationResult['data'][0]['Status'];
+            if ($validationResult) {
+                $appointmentStatus = $validationResult['Status'];
+                $consultantId = $validationResult['ConsultantID'];
 
-            if ($appointmentStatus == 1) {
-                // Appointment is already confirmed
-                return $this->sendPayLoad(null, "failed", "Appointment is already confirmed.", 400);
-            }
+                if ($appointmentStatus == 1) {
+                    // Appointment is already confirmed
+                    return $this->sendPayLoad(null, "failed", "Appointment is already confirmed.", 400);
+                }
 
-            // SQL query to update the status to 1 (confirmed)
-            $sqlUpdate = "UPDATE appointment SET Status = 1 WHERE AppointmentID = $appointmentId";
-            $updateResult = $this->executeQuery($sqlUpdate);
+                // SQL query to update the status to 1 (confirmed)
+                $sqlUpdate = "UPDATE appointment SET Status = 1 WHERE AppointmentID = :appointmentId";
+                $stmtUpdate = $this->pdo->prepare($sqlUpdate);
+                $stmtUpdate->bindParam(':appointmentId', $appointmentId, PDO::PARAM_INT);
+                $stmtUpdate->execute();
 
-            if ($updateResult['code'] == 200) {
-                return $this->sendPayLoad(null, "success", "Appointment confirmed successfully.", $updateResult['code']);
+                // Log the action
+                $jwt = $data->key;
+                $key = JWT::decode($jwt, new Key($this->secretKey, 'HS256'));
+                $userId = ($key->type === 'teacher') ? $key->user_id : null;
+                $actionType = 'appointment_confirmed';
+                $actionDetails = "Appointment ID $appointmentId confirmed by consultant ID $userId";
+
+                $this->logAction($userId, $consultantId, $actionType, $actionDetails);
+
+                return $this->sendPayLoad(null, "success", "Appointment confirmed successfully.", 200);
             } else {
-                return $this->sendPayLoad(null, "failed", "Failed to confirm appointment.", $updateResult['code']);
+                return $this->sendPayLoad(null, "failed", "Appointment not found or user is not authorized.", 403);
             }
-        } else {
-            return $this->sendPayLoad(null, "failed", "User is not authorized to confirm this appointment.", 403);
+        } catch (\Firebase\JWT\ExpiredException $e) {
+            return $this->sendPayLoad(null, "failed", "Unauthorized: Token has expired. Please login again.", 401);
+        } catch (\Firebase\JWT\BeforeValidException $e) {
+            return $this->sendPayLoad(null, "failed", "Unauthorized: Token is not yet valid.", 401);
+        } catch (\Firebase\JWT\SignatureInvalidException $e) {
+            return $this->sendPayLoad(null, "failed", "Unauthorized: Invalid token signature.", 401);
+        } catch (PDOException $e) {
+            // Handle the exception, return an error response, or log the error
+            return $this->sendPayLoad(null, "failed", "Error confirming appointment: " . $e->getMessage(), 500);
         }
     }
+
     public function reject_appointment($data)
     {
         $appointmentId = $data->appointment_id;
+
+        // SQL to delete the appointment
         $sql = "DELETE FROM appointment WHERE AppointmentID = :appointment_id";
 
         try {
+            // Prepare and execute the delete statement
             $stmt = $this->pdo->prepare($sql);
-            $stmt->bindParam(':appointment_id', $appointmentId);
+            $stmt->bindParam(':appointment_id', $appointmentId, PDO::PARAM_INT);
             $stmt->execute();
 
             // Check if any rows were affected (appointment deleted successfully)
             $rowCount = $stmt->rowCount();
 
             if ($rowCount > 0) {
+                // Log the action
+                $jwt = $data->key;
+                $key = JWT::decode($jwt, new Key($this->secretKey, 'HS256'));
+                $userId = ($key->type === 'teacher') ? $key->user_id : null;
+                $consultantId = null; // Assuming that consultant ID is not relevant in this context
+                $actionType = 'appointment_rejected';
+                $actionDetails = "Appointment ID $appointmentId rejected and deleted by consultant ID $userId";
+
+                $this->logAction($userId, $consultantId, $actionType, $actionDetails);
+
                 return $this->sendPayLoad(null, "success", "Appointment rejected and deleted successfully.", 200);
             } else {
                 return $this->sendPayLoad(null, "failed", "Failed to reject appointment. Appointment not found.", 404);
             }
         } catch (\PDOException $e) {
             return $this->sendPayLoad(null, "failed", "Error rejecting appointment: " . $e->getMessage(), 500);
+        } catch (\Firebase\JWT\ExpiredException $e) {
+            return $this->sendPayLoad(null, "failed", "Unauthorized: Token has expired. Please login again.", 401);
+        } catch (\Firebase\JWT\BeforeValidException $e) {
+            return $this->sendPayLoad(null, "failed", "Unauthorized: Token is not yet valid.", 401);
+        } catch (\Firebase\JWT\SignatureInvalidException $e) {
+            return $this->sendPayLoad(null, "failed", "Unauthorized: Invalid token signature.", 401);
         }
     }
+
     public function complete_appointment($data)
     {
         $appointmentId = $data->appointment_id;
 
-        // SQL query to validate user authority and check appointment status
-        $sqlValidation = "SELECT * FROM appointment WHERE AppointmentID = $appointmentId";
-        $validationResult = $this->executeQuery($sqlValidation);
+        try {
+            // Validate JWT and get user details
+            $jwt = $data->key;
+            $key = JWT::decode($jwt, new Key($this->secretKey, 'HS256'));
+            $userId = ($key->type === 'teacher') ? $key->user_id : null;
+            $consultantId = null; // Assuming that consultant ID is not relevant in this context
 
-        if ($validationResult['code'] == 200 && !empty($validationResult['data'])) {
-            $appointmentStatus = $validationResult['data'][0]['Completed'];
+            // SQL query to validate appointment status
+            $sqlValidation = "SELECT * FROM appointment WHERE AppointmentID = :appointment_id";
+            $stmtValidation = $this->pdo->prepare($sqlValidation);
+            $stmtValidation->bindParam(':appointment_id', $appointmentId, PDO::PARAM_INT);
+            $stmtValidation->execute();
+            $validationResult = $stmtValidation->fetch(PDO::FETCH_ASSOC);
 
-            if ($appointmentStatus == 1) {
-                // Appointment is already confirmed
-                return $this->sendPayLoad(null, "failed", "Appointment is already marked as completed.", 400);
-            }
+            if ($validationResult) {
+                $appointmentStatus = $validationResult['Completed'];
 
-            // SQL query to update the status to 1 (confirmed)
-            $sqlUpdate = "UPDATE appointment SET Completed = 1 WHERE AppointmentID = $appointmentId";
-            $updateResult = $this->executeQuery($sqlUpdate);
+                if ($appointmentStatus == 1) {
+                    // Appointment is already marked as completed
+                    return $this->sendPayLoad(null, "failed", "Appointment is already marked as completed.", 400);
+                }
 
-            if ($updateResult['code'] == 200) {
-                return $this->sendPayLoad(null, "success", "Appointment completed successfully.", $updateResult['code']);
+                // SQL query to update the status to 1 (completed)
+                $sqlUpdate = "UPDATE appointment SET Completed = 1 WHERE AppointmentID = :appointment_id";
+                $stmtUpdate = $this->pdo->prepare($sqlUpdate);
+                $stmtUpdate->bindParam(':appointment_id', $appointmentId, PDO::PARAM_INT);
+                $stmtUpdate->execute();
+
+                // Log the action
+                $actionType = 'appointment_completed';
+                $actionDetails = "Appointment ID $appointmentId marked as completed by consultant ID $userId";
+                $this->logAction($userId, $consultantId, $actionType, $actionDetails);
+
+                return $this->sendPayLoad(null, "success", "Appointment completed successfully.", 200);
             } else {
-                return $this->sendPayLoad(null, "failed", "Failed to complete appointment.", $updateResult['code']);
+                return $this->sendPayLoad(null, "failed", "Appointment not found or user is not authorized.", 403);
             }
-        } else {
-            return $this->sendPayLoad(null, "failed", "User is not authorized to confirm this appointment.", 403);
+        } catch (\Firebase\JWT\ExpiredException $e) {
+            return $this->sendPayLoad(null, "failed", "Unauthorized: Token has expired. Please login again.", 401);
+        } catch (\Firebase\JWT\BeforeValidException $e) {
+            return $this->sendPayLoad(null, "failed", "Unauthorized: Token is not yet valid.", 401);
+        } catch (\Firebase\JWT\SignatureInvalidException $e) {
+            return $this->sendPayLoad(null, "failed", "Unauthorized: Invalid token signature.", 401);
+        } catch (\PDOException $e) {
+            return $this->sendPayLoad(null, "failed", "Error completing appointment: " . $e->getMessage(), 500);
         }
     }
+
     public function provide_information($data)
     {
         try {
@@ -1815,11 +1912,83 @@ class Post extends FPDF
             throw new Exception("Database error: " . $e->getMessage());
         }
     }
-
-    private function fetchAppointmentById($appointmentId)
+    //Administrator Logs
+    public function logLogin($user_id = null, $consultant_id = null, $success = false)
     {
-        $stmt = $this->pdo->prepare("SELECT * FROM appointment WHERE AppointmentID = ?");
-        $stmt->execute([$appointmentId]);
-        return $stmt->fetch(PDO::FETCH_ASSOC);
+        if ($user_id === null && $consultant_id === null) {
+            throw new InvalidArgumentException('Either user_id or consultant_id must be provided');
+        }
+
+        $user_id = isset($user_id) ? intval($user_id) : null;
+        $consultant_id = isset($consultant_id) ? intval($consultant_id) : null;
+        $success = (bool)$success;
+
+        $sql = "INSERT INTO admin_login_logs (user_id, consultant_id, login_time, success)
+                VALUES (:user_id, :consultant_id, NOW(), :success)";
+
+        try {
+            $stmt = $this->pdo->prepare($sql);
+            $stmt->bindParam(':user_id', $user_id, PDO::PARAM_INT);
+            $stmt->bindParam(':consultant_id', $consultant_id, PDO::PARAM_INT);
+            $stmt->bindParam(':success', $success, PDO::PARAM_BOOL);
+            $stmt->execute();
+        } catch (PDOException $e) {
+            error_log('Database error: ' . $e->getMessage());
+            throw new Exception('Failed to log login attempt');
+        }
+    }
+
+    public function logAction($userId, $consultantId, $actionType, $details)
+    {
+        try {
+            // Check if userId exists if provided
+            if ($userId !== null) {
+                $sql = "SELECT COUNT(*) FROM user WHERE UserID = :user_id";
+                $stmt = $this->pdo->prepare($sql);
+                $stmt->bindParam(':user_id', $userId, PDO::PARAM_INT);
+                $stmt->execute();
+                $userExists = $stmt->fetchColumn();
+            } else {
+                $userExists = 0;
+            }
+
+            // Check if consultantId exists if provided
+            if ($consultantId !== null) {
+                $sql = "SELECT COUNT(*) FROM consultant WHERE ConsultantID = :consultant_id";
+                $stmt = $this->pdo->prepare($sql);
+                $stmt->bindParam(':consultant_id', $consultantId, PDO::PARAM_INT);
+                $stmt->execute();
+                $consultantExists = $stmt->fetchColumn();
+            } else {
+                $consultantExists = 0;
+            }
+
+            // Proceed only if either userId or consultantId exists
+            if (($userId !== null && $userExists) || ($consultantId !== null && $consultantExists)) {
+                // Prepare the SQL query to insert the action log
+                $sql = "INSERT INTO action_logs (user_id, consultant_id, action_type, action_time, details) 
+                        VALUES (:user_id, :consultant_id, :action_type, NOW(), :details)";
+
+                $stmt = $this->pdo->prepare($sql);
+
+                // Bind parameters
+                $stmt->bindParam(':user_id', $userId, PDO::PARAM_INT);
+                $stmt->bindParam(':consultant_id', $consultantId, PDO::PARAM_INT);
+                $stmt->bindParam(':action_type', $actionType, PDO::PARAM_STR);
+                $stmt->bindParam(':details', $details, PDO::PARAM_STR);
+
+                // Execute the query
+                $stmt->execute();
+
+                return true;
+            } else {
+                // Neither userId nor consultantId exists
+                return false;
+            }
+        } catch (PDOException $e) {
+            // Handle exceptions (e.g., log error, notify admin)
+            error_log("Database error: " . $e->getMessage());
+            return false;
+        }
     }
 }

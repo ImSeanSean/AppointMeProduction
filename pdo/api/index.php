@@ -226,6 +226,7 @@ switch ($_SERVER['REQUEST_METHOD']) {
             case 'generate_all_reports':
                 echo json_encode($post->generateAllReports($data));
                 break;
+                //All Admin Logs
             default:
                 http_response_code(403);
                 break;

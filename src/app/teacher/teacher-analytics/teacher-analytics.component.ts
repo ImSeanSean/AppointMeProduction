@@ -85,8 +85,12 @@ export class TeacherAnalyticsComponent implements OnInit{
     let appointmentCount = 0;
   
     this.appointments.forEach(appointment => {
-      if (appointment.rating !== undefined && appointment.rating !== null) {
-        totalRating += appointment.rating;
+      const ratings = [appointment.rating, appointment.rating2, appointment.rating3, appointment.rating4];
+      const validRatings = ratings.filter(rating => rating !== undefined && rating !== null);
+  
+      if (validRatings.length > 0) {
+        const average = validRatings.reduce((sum, rating) => sum + rating, 0) / validRatings.length;
+        totalRating += average;
         appointmentCount++;
       }
     });
@@ -98,27 +102,32 @@ export class TeacherAnalyticsComponent implements OnInit{
     const averageRating = totalRating / appointmentCount;
     return parseFloat(averageRating.toFixed(2)); 
   }
-  getRatingForWeek(): number {
-    const { startOfWeek, endOfWeek } = this.getStartAndEndOfWeek();
-    let totalRating = 0;
-    let appointmentCount = 0;
-  
-    this.appointments.forEach(appointment => {
-      const appointmentDate = new Date(appointment.AppointmentDate);
-      if (appointment.rating !== undefined && appointment.rating !== null &&
-          appointmentDate >= startOfWeek && appointmentDate <= endOfWeek) {
-        totalRating += appointment.rating;
-        appointmentCount++;
-      }
-    });
-  
-    if (appointmentCount === 0) {
-      return 0; 
+
+getRatingForWeek(): number {
+  const { startOfWeek, endOfWeek } = this.getStartAndEndOfWeek();
+  let totalRating = 0;
+  let appointmentCount = 0;
+
+  this.appointments.forEach(appointment => {
+    const appointmentDate = new Date(appointment.AppointmentDate);
+    const ratings = [appointment.rating, appointment.rating2, appointment.rating3, appointment.rating4];
+    const validRatings = ratings.filter(rating => rating !== undefined && rating !== null);
+
+    if (validRatings.length > 0 && appointmentDate >= startOfWeek && appointmentDate <= endOfWeek) {
+      const average = validRatings.reduce((sum, rating) => sum + rating, 0) / validRatings.length;
+      totalRating += average;
+      appointmentCount++;
     }
-  
-    const averageRating = totalRating / appointmentCount;
-    return parseFloat(averageRating.toFixed(2)); 
+  });
+
+  if (appointmentCount === 0) {
+    return 0; 
   }
+
+  const averageRating = totalRating / appointmentCount;
+  return parseFloat(averageRating.toFixed(2)); 
+}
+
   //Appointment Card Functions
   changeRoute(id:string, completed:boolean, status:boolean) {
     if(status == false){
