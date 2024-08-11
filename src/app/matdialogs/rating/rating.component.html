@@ -1,7 +1,7 @@
 <h2>Provide Rating</h2>
 <mat-dialog-content class="content">
     <p>{{description}}</p>
-    <!-- <div class="radio">
+    <div class="radio">
         <input class="radio__input" type="radio" value="1" name="mode" id="1" [(ngModel)]="selectedRating">
         <label class="radio__label" for="1">1</label>
         <input class="radio__input" type="radio" value="2" name="mode" id="2" [(ngModel)]="selectedRating">
@@ -12,7 +12,7 @@
         <label class="radio__label" for="4">4</label>
         <input class="radio__input" type="radio" value="5" name="mode" id="5" [(ngModel)]="selectedRating">
         <label class="radio__label" for="5">5</label>
-    </div> -->
+    </div>
 </mat-dialog-content>
 <mat-dialog-actions align="end" class="action">
     <button mat-button (click)="closeDialog()" class="no">Cancel</button>
