@@ -75,7 +75,18 @@ button{
     background: #F78914;
     color: white;
 }
+
+
+p {
+    font-size: 20px;
+    color: black;
+    font-weight: bold;
+    margin-left: 130px;
+    
+}
 .star-rating {
+    margin-left: 125px;
+    margin-top: 10px;
     display: inline-flex;
     flex-direction: row-reverse;
     font-size: 0;
@@ -86,7 +97,7 @@ button{
   }
   
   .star-rating__label {
-    font-size: 30px;
+    font-size: 50px;
     color: #ddd;
     cursor: pointer;
   }
