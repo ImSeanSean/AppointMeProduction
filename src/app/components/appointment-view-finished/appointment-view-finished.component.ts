@@ -1,4 +1,4 @@
-import { DatePipe, NgClass, NgIf } from '@angular/common';
+import { DatePipe, NgClass, NgFor, NgIf } from '@angular/common';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Component } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
@@ -15,7 +15,7 @@ import { NotificationServicesService } from '../../services/notification-service
 @Component({
   selector: 'app-appointment-view-finished',
   standalone: true,
-  imports: [FormsModule, NgIf, NgClass],
+  imports: [FormsModule, NgIf, NgClass, NgFor],
   templateUrl: './appointment-view-finished.component.html',
   styleUrl: './appointment-view-finished.component.css'
 })
@@ -38,6 +38,7 @@ export class AppointmentViewFinishedComponent {
         this.information = this.appointments[0].AppointmentInfo
         this.remarks = this.appointments[0].remarks
         this.summary = this.appointments[0].AppointmentSummary
+        this.getAverageStars();
       },
       (error) => {
         // Handle errors
@@ -80,8 +81,8 @@ export class AppointmentViewFinishedComponent {
 
   openRating(): void {
     const dialogRef = this.dialog.open(RatingComponent, {
-      height: '250px',
-      width: '490px',
+      height: '300px',
+      width: '500px',
       data: {
         description: "Rate your experience"
       }
@@ -95,9 +96,13 @@ export class AppointmentViewFinishedComponent {
         const $data = {
           key: localStorage.getItem('token'),
           appointment_id: this.appointmentId,
-          appointment_rating: result,
+          empathy: result.empathy,
+          clarity: result.clarity,
+          engagement: result.engagement,
+          helpfulness: result.helpfulness,
           appointment_remarks: this.remarks
         }
+        console.log($data)
         this.http.post(`${mainPort}/pdo/api/rate_appointment`, $data)
         .subscribe(
           (response: any) => {
@@ -180,6 +185,26 @@ export class AppointmentViewFinishedComponent {
       }
     );
   }
+  //Stars
+  fullStars: number[] = [];
+  halfStar: number = 0;
+  emptyStars: number[] = [];
+
+  getAverageStars() {
+    let average = (this.appointments[0].rating + 
+                   this.appointments[0].rating2 + 
+                   this.appointments[0].rating3 + 
+                   this.appointments[0].rating4) / 4;
+
+    const fullStarCount = Math.floor(average);
+    const decimalPart = average - fullStarCount;
+    const halfStarCount = decimalPart >= 0 ? 1 : 0;
+    const emptyStarCount = 5 - fullStarCount - halfStarCount;
+
+    this.fullStars = Array(fullStarCount).fill(0); 
+    this.halfStar = halfStarCount;
+    this.emptyStars = Array(emptyStarCount).fill(0); 
+}
 
   changeEdit(){
     this.edit = !this.edit;

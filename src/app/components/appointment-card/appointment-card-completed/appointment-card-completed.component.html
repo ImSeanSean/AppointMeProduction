@@ -1,26 +1,32 @@
 <div class="card-container">
     <div class="appointment-card" *ngFor="let appointment of filterAppointments(appointments)" (click)="setValue(appointment.AppointmentID)">
-        <div class="box"></div>
-        <div class="Text">
-            <div class="title">
-                <p>{{appointment.appointment_title}}</p>
-            </div>
-            <div class="mid">
-                <p>Teacher: {{appointment.ConsultantFirstName}} {{appointment.ConsultantLastName}}</p>
-                <p>Student: {{appointment.UserName}} {{appointment.UserLastName}}</p>
-            </div>
-            <div class="bottom">
-                <p>Date: {{getFormattedDate(appointment.AppointmentDate)}}</p>
-                <p>Time: {{getFormattedTime(appointment.AppointmentDate)}}</p>
-            </div>
-            <div class="extra">
-                <p>Mode: {{appointment.mode}}</p>
-                <p>Rating: {{appointment.rating}}</p> 
-            </div>
-            <div class="feedback" *ngIf="appointment.rating == null">
-                <p>No feedback has been provided.</p>
-            </div>
+      <div class="box"></div>
+      <div class="Text">
+        <div class="title">
+          <p>{{appointment.appointment_title}}</p>
         </div>
+        <div class="mid">
+          <p>Teacher: {{appointment.ConsultantFirstName}} {{appointment.ConsultantLastName}}</p>
+          <p>Student: {{appointment.UserName}} {{appointment.UserLastName}}</p>
+        </div>
+        <div class="bottom">
+          <p>Date: {{getFormattedDate(appointment.AppointmentDate)}}</p>
+          <p>Time: {{getFormattedTime(appointment.AppointmentDate)}}</p>
+        </div>
+        <div class="extra">
+          <p>Mode: {{appointment.mode}}</p>
+          <p>Rating:             
+            <ng-container *ngIf="getAverageStars(appointment) as stars">
+              <i class="bx bxs-star" *ngFor="let _ of stars.fullStars"></i>
+              <i class="bx bxs-star-half" *ngIf="stars.halfStar > 0"></i>
+              <i class="bx bx-star" *ngFor="let _ of stars.emptyStars"></i>
+            </ng-container>
+          </p>
+        </div>
+        <div class="feedback" *ngIf="appointment.rating == null">
+          <p>No feedback has been provided.</p>
+        </div>
+      </div>
     </div>
-</div>
-
+  </div>
+  

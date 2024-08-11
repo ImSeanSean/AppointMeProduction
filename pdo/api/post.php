@@ -821,30 +821,45 @@ class Post extends FPDF
             $jwt = $data->key;
             error_log("JWT Token: " . $jwt);
             $key = JWT::decode($jwt, new Key($this->secretKey, 'HS256'));
+
             // Check authorization here (example: verify that the user is authorized to create an appointment)
             if ($key->type !== 'student') {
                 return "Unauthorized: Only students are allowed to rate appointments.";
             }
-            // The rest of the function
-            //Initialize Data
+
+            // Initialize Data
             $appointmentId = $data->appointment_id;
-            $appointmentRating = $data->appointment_rating;
+            $appointmentRating = $data->helpfulness;
+            $appointmentRating2 = $data->empathy;
+            $appointmentRating3 = $data->clarity;
+            $appointmentRating4 = $data->engagement;
             $appointmentRemarks = $data->appointment_remarks;
-            //Find Appointment
+
+            // Find Appointment
             $sqlValidation = "SELECT * FROM appointment WHERE AppointmentID = :appointmentId";
             $stmt = $this->pdo->prepare($sqlValidation);
             $stmt->bindParam(':appointmentId', $appointmentId);
             $stmt->execute();
             $validationResult = $stmt->fetch(PDO::FETCH_ASSOC);
+
             // Check if appointment exists
+            if (!$validationResult) {
+                return "Error: Appointment not found.";
+            }
 
             // Update Appointment
-            $sqlUpdate = "UPDATE appointment SET rating = :rating, remarks = :remarks WHERE AppointmentID = :id";
+            $sqlUpdate = "UPDATE appointment 
+                          SET rating = :rating, rating2 = :rating2, rating3 = :rating3, rating4 = :rating4, remarks = :remarks 
+                          WHERE AppointmentID = :id";
             $stmt = $this->pdo->prepare($sqlUpdate);
             $stmt->bindParam(':rating', $appointmentRating);
+            $stmt->bindParam(':rating2', $appointmentRating2);
+            $stmt->bindParam(':rating3', $appointmentRating3);
+            $stmt->bindParam(':rating4', $appointmentRating4);
             $stmt->bindParam(':remarks', $appointmentRemarks);
             $stmt->bindParam(':id', $appointmentId);
             $stmt->execute();
+
             // Optionally, return success response or handle accordingly
             return "Appointment rated successfully.";
         } catch (\Firebase\JWT\ExpiredException $e) {
@@ -855,9 +870,10 @@ class Post extends FPDF
             return "Unauthorized: Invalid token signature.";
         } catch (PDOException $e) {
             // Handle the exception, return an error response, or log the error
-            return "Error rating appointment" . $e->getMessage();
+            return "Error rating appointment: " . $e->getMessage();
         }
     }
+
     //Queue
     public function add_queue($data)
     {

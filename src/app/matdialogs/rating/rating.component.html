@@ -1,20 +1,71 @@
 <h2>Provide Rating</h2>
 <mat-dialog-content class="content">
     <p>{{description}}</p>
-    <div class="star-rating">
-        <input class="star-rating__input" type="radio" value="1" name="rating" id="star-1" [(ngModel)]="selectedRating">
-        <label class="star-rating__label" for="star-1" title="1 star">★</label>
-        <input class="star-rating__input" type="radio" value="2" name="rating" id="star-2" [(ngModel)]="selectedRating">
-        <label class="star-rating__label" for="star-2" title="2 stars">★</label>
-        <input class="star-rating__input" type="radio" value="3" name="rating" id="star-3" [(ngModel)]="selectedRating">
-        <label class="star-rating__label" for="star-3" title="3 stars">★</label>
-        <input class="star-rating__input" type="radio" value="4" name="rating" id="star-4" [(ngModel)]="selectedRating">
-        <label class="star-rating__label" for="star-4" title="4 stars">★</label>
-        <input class="star-rating__input" type="radio" value="5" name="rating" id="star-5" [(ngModel)]="selectedRating">
-        <label class="star-rating__label" for="star-5" title="5 stars">★</label>
+    <div class="ratings">
+        <div class="rate">
+            <h4>Helpfulness</h4>
+            <div class="star-rating">
+                <input class="star-rating__input" type="radio" value="5" name="ratingHelpfulness" id="helpfulness-star-5" [(ngModel)]="selectedRatingHelpfulness">
+                <label class="star-rating__label" for="helpfulness-star-5" title="5 stars">★</label>
+                <input class="star-rating__input" type="radio" value="4" name="ratingHelpfulness" id="helpfulness-star-4" [(ngModel)]="selectedRatingHelpfulness">
+                <label class="star-rating__label" for="helpfulness-star-4" title="4 stars">★</label>
+                <input class="star-rating__input" type="radio" value="3" name="ratingHelpfulness" id="helpfulness-star-3" [(ngModel)]="selectedRatingHelpfulness">
+                <label class="star-rating__label" for="helpfulness-star-3" title="3 stars">★</label>
+                <input class="star-rating__input" type="radio" value="2" name="ratingHelpfulness" id="helpfulness-star-2" [(ngModel)]="selectedRatingHelpfulness">
+                <label class="star-rating__label" for="helpfulness-star-2" title="2 stars">★</label>
+                <input class="star-rating__input" type="radio" value="1" name="ratingHelpfulness" id="helpfulness-star-1" [(ngModel)]="selectedRatingHelpfulness">
+                <label class="star-rating__label" for="helpfulness-star-1" title="1 star">★</label>
+            </div>
+        </div>
+        <div class="rate">
+            <h4>Empathy</h4>
+            <div class="star-rating">
+                <input class="star-rating__input" type="radio" value="5" name="ratingEmpathy" id="empathy-star-5" [(ngModel)]="selectedRatingEmpathy">
+                <label class="star-rating__label" for="empathy-star-5" title="5 stars">★</label>
+                <input class="star-rating__input" type="radio" value="4" name="ratingEmpathy" id="empathy-star-4" [(ngModel)]="selectedRatingEmpathy">
+                <label class="star-rating__label" for="empathy-star-4" title="4 stars">★</label>
+                <input class="star-rating__input" type="radio" value="3" name="ratingEmpathy" id="empathy-star-3" [(ngModel)]="selectedRatingEmpathy">
+                <label class="star-rating__label" for="empathy-star-3" title="3 stars">★</label>
+                <input class="star-rating__input" type="radio" value="2" name="ratingEmpathy" id="empathy-star-2" [(ngModel)]="selectedRatingEmpathy">
+                <label class="star-rating__label" for="empathy-star-2" title="2 stars">★</label>
+                <input class="star-rating__input" type="radio" value="1" name="ratingEmpathy" id="empathy-star-1" [(ngModel)]="selectedRatingEmpathy">
+                <label class="star-rating__label" for="empathy-star-1" title="1 star">★</label>
+            </div>
+        </div>
+        <div class="rate">
+            <h4>Clarity</h4>
+            <div class="star-rating">
+                <input class="star-rating__input" type="radio" value="5" name="ratingClarity" id="clarity-star-5" [(ngModel)]="selectedRatingClarity">
+                <label class="star-rating__label" for="clarity-star-5" title="5 stars">★</label>
+                <input class="star-rating__input" type="radio" value="4" name="ratingClarity" id="clarity-star-4" [(ngModel)]="selectedRatingClarity">
+                <label class="star-rating__label" for="clarity-star-4" title="4 stars">★</label>
+                <input class="star-rating__input" type="radio" value="3" name="ratingClarity" id="clarity-star-3" [(ngModel)]="selectedRatingClarity">
+                <label class="star-rating__label" for="clarity-star-3" title="3 stars">★</label>
+                <input class="star-rating__input" type="radio" value="2" name="ratingClarity" id="clarity-star-2" [(ngModel)]="selectedRatingClarity">
+                <label class="star-rating__label" for="clarity-star-2" title="2 stars">★</label>
+                <input class="star-rating__input" type="radio" value="1" name="ratingClarity" id="clarity-star-1" [(ngModel)]="selectedRatingClarity">
+                <label class="star-rating__label" for="clarity-star-1" title="1 star">★</label>
+            </div>
+        </div>
+        <div class="rate">
+            <h4>Engagement</h4>
+            <div class="star-rating">
+                <input class="star-rating__input" type="radio" value="5" name="ratingEngagement" id="engagement-star-5" [(ngModel)]="selectedRatingEngagement">
+                <label class="star-rating__label" for="engagement-star-5" title="5 stars">★</label>
+                <input class="star-rating__input" type="radio" value="4" name="ratingEngagement" id="engagement-star-4" [(ngModel)]="selectedRatingEngagement">
+                <label class="star-rating__label" for="engagement-star-4" title="4 stars">★</label>
+                <input class="star-rating__input" type="radio" value="3" name="ratingEngagement" id="engagement-star-3" [(ngModel)]="selectedRatingEngagement">
+                <label class="star-rating__label" for="engagement-star-3" title="3 stars">★</label>
+                <input class="star-rating__input" type="radio" value="2" name="ratingEngagement" id="engagement-star-2" [(ngModel)]="selectedRatingEngagement">
+                <label class="star-rating__label" for="engagement-star-2" title="2 stars">★</label>
+                <input class="star-rating__input" type="radio" value="1" name="ratingEngagement" id="engagement-star-1" [(ngModel)]="selectedRatingEngagement">
+                <label class="star-rating__label" for="engagement-star-1" title="1 star">★</label>
+            </div>
+        </div>
     </div>
+    
 </mat-dialog-content>
 <mat-dialog-actions align="end" class="action">
-    <button mat-button (click)="closeDialog()" class="no">Cancel</button>
+    <button mat-button (click)="cancelDialog()" class="no">Cancel</button>
     <button mat-button (click)="closeDialog()" class="yes">Rate</button>
 </mat-dialog-actions>

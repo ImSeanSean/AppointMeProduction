@@ -12,7 +12,10 @@ import { MAT_DIALOG_DATA, MatDialog, MatDialogRef, MatDialogActions, MatDialogCl
 export class RatingComponent {
   title: string = 'Confirmation';
   description: string = 'Are you sure?';
-  selectedRating: number | null = null;
+  selectedRatingHelpfulness: number | null = null;
+  selectedRatingEmpathy: number | null = null;
+  selectedRatingClarity: number | null = null;
+  selectedRatingEngagement: number | null = null;
 
   constructor(@Inject(MAT_DIALOG_DATA) public data: any, public dialogRef: MatDialogRef<RatingComponent>) {
     if (data) {
@@ -22,6 +25,15 @@ export class RatingComponent {
   }
 
   closeDialog(): void {
-    this.dialogRef.close(this.selectedRating);
+    let selectedRating = {
+      helpfulness: this.selectedRatingHelpfulness,
+      empathy: this.selectedRatingEmpathy,
+      clarity: this.selectedRatingClarity,
+      engagement: this.selectedRatingEngagement
+    }
+    this.dialogRef.close(selectedRating);
+  }
+  cancelDialog():void {
+    this.dialogRef.close();
   }
 }

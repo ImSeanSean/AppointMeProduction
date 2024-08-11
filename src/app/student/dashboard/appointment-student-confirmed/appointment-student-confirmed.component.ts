@@ -5,7 +5,7 @@ import { CompletedAppointmentDataService } from '../../../services/appointment-v
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Observable, catchError } from 'rxjs';
 import { Appointment } from '../../../interfaces/Appointment';
-import { NgIf } from '@angular/common';
+import { NgFor, NgIf } from '@angular/common';
 import { mainPort } from '../../../app.component';
 
 @Component({
@@ -13,7 +13,7 @@ import { mainPort } from '../../../app.component';
     standalone: true,
     templateUrl: './appointment-student-confirmed.component.html',
     styleUrl: './appointment-student-confirmed.component.css',
-    imports: [AppointmentCardCompletedComponent, NgIf]
+    imports: [AppointmentCardCompletedComponent, NgIf, NgFor]
 })
 export class AppointmentStudentConfirmedComponent {
     appointmentId: number | null | undefined;
@@ -29,6 +29,7 @@ export class AppointmentStudentConfirmedComponent {
             (data: Appointment[]) => {
               // Handle successful response
               this.appointments = data; 
+              this.getAverageStars();
             },
             (error) => {
               // Handle errors
@@ -90,5 +91,25 @@ export class AppointmentStudentConfirmedComponent {
             // Handle error as needed
           }
         );
+      }
+        //Stars
+        fullStars: number[] = [];
+        halfStar: number = 0;
+        emptyStars: number[] = [];
+
+        getAverageStars() {
+          let average = (this.appointments[0].rating + 
+                        this.appointments[0].rating2 + 
+                        this.appointments[0].rating3 + 
+                        this.appointments[0].rating4) / 4;
+
+          const fullStarCount = Math.floor(average);
+          const decimalPart = average - fullStarCount;
+          const halfStarCount = decimalPart >= 0 ? 1 : 0;
+          const emptyStarCount = 5 - fullStarCount - halfStarCount;
+
+          this.fullStars = Array(fullStarCount).fill(0); 
+          this.halfStar = halfStarCount;
+          this.emptyStars = Array(emptyStarCount).fill(0); 
       }
 }

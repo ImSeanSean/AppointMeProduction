@@ -67,9 +67,19 @@
   width: 60%;
 }
 
+.textDate{
+  display: flex;
+  justify-content: center;
+}
+
 .textDate p{
   font-size: 18px;
   text-align: center;
+}
+
+.textDate i{
+  font-size: 18px;
+  color: #168021;
 }
 
 .textName h1 {

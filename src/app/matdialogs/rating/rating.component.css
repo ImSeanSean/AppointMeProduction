@@ -81,12 +81,10 @@ p {
     font-size: 20px;
     color: black;
     font-weight: bold;
-    margin-left: 130px;
-    
 }
 .star-rating {
-    margin-left: 125px;
-    margin-top: 10px;
+    /* margin-left: 125px;
+    margin-top: 10px; */
     display: inline-flex;
     flex-direction: row-reverse;
     font-size: 0;
@@ -107,3 +105,9 @@ p {
   .star-rating__input:checked ~ .star-rating__label {
     color: #ffd700;
   }
+
+.ratings{
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-around;
+}

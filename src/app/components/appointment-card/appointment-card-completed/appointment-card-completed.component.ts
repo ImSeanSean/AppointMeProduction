@@ -58,7 +58,6 @@ export class AppointmentCardCompletedComponent {
       this.getAppointment().subscribe(
         (data: Appointment[]) => {
           this.appointments = data;
-          console.log(this.appointments);
         },
         (error) => {
           console.error('Error fetching appointments:', error);
@@ -69,12 +68,34 @@ export class AppointmentCardCompletedComponent {
       this.getAppointmentTeacher().subscribe(
         (data: Appointment[]) => {
           this.appointments = data;
-          console.log(this.appointments);
         },
         (error) => {
           console.error('Error fetching appointments:', error);
         }
       );
     }
+  }
+
+  //Stars
+  fullStars: number[] = [];
+  halfStar: number = 0;
+  emptyStars: number[] = [];
+
+  getAverageStars(appointment: Appointment) {
+    let average = (appointment.rating + 
+                   appointment.rating2 + 
+                   appointment.rating3 + 
+                   appointment.rating4) / 4;
+  
+    const fullStarCount = Math.floor(average);
+    const decimalPart = average - fullStarCount;
+    const halfStarCount = decimalPart >= 0 ? 1 : 0;
+    const emptyStarCount = 5 - fullStarCount - halfStarCount;
+  
+    return {
+      fullStars: Array(fullStarCount).fill(0), 
+      halfStar: halfStarCount,
+      emptyStars: Array(emptyStarCount).fill(0)
+    };
   }
 }

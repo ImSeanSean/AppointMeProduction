@@ -53,8 +53,9 @@
             <h4>Rating</h4>
           </div>
           <div class="textDate">
-            <p *ngIf="this.appointments[0]?.rating != null">{{this.appointments[0]?.rating}}</p>
-            <p *ngIf="this.appointments[0]?.rating == null" style="color: gray;">Yet to be rated.</p>
+            <i class="bx bxs-star" *ngFor="let star of fullStars"></i>
+            <i class="bx bxs-star-half" *ngIf="halfStar > 0"></i>
+            <i class="bx bx-star" *ngFor="let star of emptyStars"></i>
           </div>
         </div>
 

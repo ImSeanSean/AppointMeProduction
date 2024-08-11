@@ -395,7 +395,7 @@ barChartData = {
 }
 
 appointmentPieChartData = {
-  labels: ["Pending", "Confirmed", "Completed"],
+  labels: ["Queue", "Confirmed", "Completed"],
   datasets: [
     {
       data: [1, 1, 1], // Initialize with zeroes

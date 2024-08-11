@@ -20,5 +20,8 @@ export interface Appointment {
     urgency: string;
     remarks: string;
     rating: number;
+    rating2: number;
+    rating3: number;
+    rating4: number;
   }
   
