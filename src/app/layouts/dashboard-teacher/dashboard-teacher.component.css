@@ -60,7 +60,60 @@ header .navbar .notifi-box {
     transition: 1s opacity, 250ms height;
     box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
     background-color: white;
-    overflow: hidden;
+    overflow-x: hidden;
+    overflow-y: scroll;
+    padding: 10px;
+}
+
+.notification-card{
+    display: flex;
+    background-color: rgb(240, 240, 240);
+    padding: 10px;
+    border-radius: 10px;
+    margin-bottom: 10px;
+}
+
+.notification-card:hover{
+    background-color: gainsboro;
+}
+
+.notification-card .logo{
+    display: flex;
+    align-items: center;
+}
+
+.notification-card .logo i{
+    font-size: 40px;
+    color: #519E50;
+}
+
+.notification-card .logo-rejected{
+    display: flex;
+    align-items: center;
+}
+
+.notification-card .logo-rejected i{
+    font-size: 40px;
+    color: rgb(160, 74, 74);
+}
+
+.notification-card .details{
+    margin-left: 10px;
+}
+
+.notification-card .details p{
+    font-size: 14px;
+}
+
+.notification-card .new{
+    display: flex;
+    align-items: center;
+    margin-left: auto;
+}
+
+.notification-card .new i{
+    font-size: 15px;
+    color: #168021;
 }
 
 header i {

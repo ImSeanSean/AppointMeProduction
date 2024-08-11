@@ -78,17 +78,19 @@ export class TeacherAppointmentCreateComponent implements OnInit {
           appointmentInfo: this.queue[0].reason,
           details: result[1]
         }
-        this.http.post(`${mainPort}/pdo/api/create_appointment`, data).subscribe(result => {
+        console.log(data)
+        this.http.post<number>(`${mainPort}/pdo/api/create_appointment`, data).subscribe((result: number) => {
           this.updateValues()
           const data = {
             key: localStorage.getItem('token'),
             queue_id: this.queue[0].queue_id
           }
+          this.notificationService.createNotification(null, this.queue[0].student_id, result, "Approved", "Meeting with " + this.queue[0].teacher_name + ": Approved", 'Your appointment request has been approved.');
+
           this.http.post(`${mainPort}/pdo/api/delete_queue`, data).subscribe(result => {
             this.router.navigate([`teacher/dashboard/appointments`])
           })
-        })
-        this.notificationService.createNotification(this.queue[0].teacher_id, this.queue[0].student_id, "Approved", "Meeting with" + this.queue[0].teacher_name, '');
+        })      
       }
     })
   }
@@ -136,12 +138,16 @@ export class TeacherAppointmentCreateComponent implements OnInit {
   }
 
   getFormattedTime(date:string){
-    const today = new Date();
-    const [hours, minutes, seconds] = date.split(':');
-    today.setHours(parseInt(hours), parseInt(minutes), parseInt(seconds));
-
-    // Format the Date object to a string using DatePipe
-    return this.datePipe.transform(today, 'h:mm a');
+    if (date){
+      const today = new Date();
+      const [hours, minutes, seconds] = date.split(':');
+      today.setHours(parseInt(hours), parseInt(minutes), parseInt(seconds));
+  
+      // Format the Date object to a string using DatePipe
+      return this.datePipe.transform(today, 'h:mm a');
+    } else {
+      return null;
+    }
   }
 
 

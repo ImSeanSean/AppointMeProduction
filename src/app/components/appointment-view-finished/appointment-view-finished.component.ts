@@ -10,6 +10,7 @@ import { RatingComponent } from '../../matdialogs/rating/rating.component';
 import { FormsModule } from '@angular/forms';
 import { ErrorComponent } from '../../matdialogs/error/error.component';
 import { mainPort } from '../../app.component';
+import { NotificationServicesService } from '../../services/notification-services.service';
 
 @Component({
   selector: 'app-appointment-view-finished',
@@ -27,7 +28,7 @@ export class AppointmentViewFinishedComponent {
   summary: string | null = null;
   edit = false;
 
-  constructor(private http: HttpClient, private router: Router, private activatedRoute: ActivatedRoute, public dialog: MatDialog) {}
+  constructor(private http: HttpClient, private router: Router, private activatedRoute: ActivatedRoute, public dialog: MatDialog, private notificationService: NotificationServicesService) {}
 
   ngOnInit() {
     this.getAppointment().subscribe(
@@ -107,6 +108,7 @@ export class AppointmentViewFinishedComponent {
                 description: response
               }
             });
+            this.notificationService.createNotification(this.appointments[0].ConsultantID, null, this.appointments[0].AppointmentID, "Rated", "Meeting with " + this.appointments[0].UserName + " " + this.appointments[0].UserLastName, 'Student provided feedback to an appointment.')
             this.router.navigate(['student/dashboard/confirmed-appointments']);
           },
         );

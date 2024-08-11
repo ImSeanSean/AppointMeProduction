@@ -1,0 +1,208 @@
+<!--If Confirmed-->
+<div class="main" *ngIf="appointments[0]?.Completed == 0">
+    <div class="title">
+      <h2>Appointment Request Details</h2>
+    </div>
+    <div class="content">
+      <div class="top">
+        <div class="textName">
+          <p>Appointment</p>
+          <h1>{{this.appointments[0]?.appointment_title}}</h1>
+        </div>
+      </div>
+      <div class="body">
+        <div class="group"> 
+          <h3>Request Information</h3>
+          <div class="date">
+            <div class="box">
+              <h4>Student ID</h4>
+            </div>
+            <div class="textDate">
+              <p>{{this.appointments[0].StudentID}}</p>
+            </div>
+          </div>
+  
+          <div class="date">
+            <div class="box">
+              <h4>Student</h4>
+            </div>
+            <div class="textDate">
+              <p>{{this.appointments[0]?.UserName}} {{this.appointments[0].UserLastName}}</p>
+            </div>
+          </div>
+          
+          <div class="date">
+            <div class="box">
+              <h4>Date</h4>
+            </div>
+            <div class="textDate">
+              <p>{{getFormattedDate(this.appointments[0].AppointmentDate)}}</p>
+            </div>
+          </div>
+    
+          <div class="date">
+            <div class="box">
+              <h4>Time</h4>
+            </div>
+            <div class="textDate">
+              <p>{{getFormattedTime(this.appointments[0].AppointmentDate)}}</p>
+            </div>
+          </div>
+  
+          <div class="date">
+            <div class="box">
+              <h4>Mode</h4>
+            </div>
+            <div class="textDate">
+              <p>{{this.appointments[0]?.mode}}</p>
+            </div>
+          </div>
+  
+        </div>
+        <div class="textarea-container">
+          <div class="textarea" *ngIf="usertype == 'user'">
+            <div class="purpose-text">
+              <p>Teacher's Message:</p>
+            </div>
+            <textarea placeholder="No Appointment Purpose Stated" readonly>{{this.appointments[0].TeacherMessage}}</textarea>
+          </div>
+          <div class="textarea" *ngIf="usertype == 'teacher'">
+            <div class="purpose-text">
+              <p>Appointment Purpose:</p>
+            </div>
+            <textarea placeholder="No Appointment Purpose Stated" readonly>{{this.appointments[0].AppointmentInfo}}</textarea>
+          </div>
+          <div class="buttons">
+            <div class="close">
+              <p (click)="closeWindow()">CLOSE</p>
+            </div>
+            <div (click)="openConfirmationReject()" *ngIf="usertype == 'teacher'" class="reject">
+              <p>CANCEL APPOINTMENT</p>
+            </div>
+            <div (click)="openConfirmationComplete()" *ngIf="usertype == 'teacher'" class="confirmation">
+              <p>COMPLETE APPOINTMENT</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+<!--If Completed-->  
+<div class="main" *ngIf="appointments[0].Completed == 1">
+    <div class="title">
+      <h2>Appointment Request Details</h2>
+    </div>
+    <div class="content">
+      <div class="top">
+        <div class="textName">
+          <p>Appointment</p>
+          <h1>{{this.appointments[0]?.appointment_title}}</h1>
+        </div>
+      </div>
+      <div class="body">
+        <div class="group"> 
+          <h3>Request Information</h3>
+          <div class="date">
+            <div class="box">
+              <h4>Student</h4>
+            </div>
+            <div class="textDate">
+              <p>{{this.appointments[0]?.UserName}} {{this.appointments[0]?.UserLastName}}</p>
+            </div>
+          </div>
+          
+          <div class="date">
+            <div class="box">
+              <h4>Date</h4>
+            </div>
+            <div class="textDate">
+              <p>{{getFormattedDate(this.appointments[0]?.AppointmentDate)}}</p>
+            </div>
+          </div>
+    
+          <div class="date">
+            <div class="box">
+              <h4>Time</h4>
+            </div>
+            <div class="textDate">
+              <p>{{getFormattedTime(this.appointments[0]?.AppointmentDate)}}</p>
+            </div>
+          </div>
+  
+          <div class="date">
+            <div class="box">
+              <h4>Mode</h4>
+            </div>
+            <div class="textDate">
+              <p>{{this.appointments[0]?.mode}}</p>
+            </div>
+          </div>
+  
+          <div class="date">
+            <div class="box">
+              <h4>Rating</h4>
+            </div>
+            <div class="textDate">
+              <p *ngIf="this.appointments[0]?.rating != null">{{this.appointments[0]?.rating}}</p>
+              <p *ngIf="this.appointments[0]?.rating == null" style="color: gray;">Yet to be rated.</p>
+            </div>
+          </div>
+  
+        </div>
+        <div class="textarea-container">
+          <div class="textarea">
+            <div class="purpose-text">
+              <div class="button" (click)="changeSelectedInfo('Appointment')" [ngClass]="{'active-button': selectedInfo === 'Appointment'}">
+                <p>Appointment Information</p>
+              </div>
+              <div class="button" (click)="changeSelectedInfo('Summary')" [ngClass]="{'active-button': selectedInfo === 'Summary'}">
+                <p>Appointment Summary</p>
+              </div>
+              <div class="button" (click)="changeSelectedInfo('Remarks')" [ngClass]="{'active-button': selectedInfo === 'Remarks'}">
+                <p>Student's Remarks:</p>
+              </div>
+              <div class="download" (click)="downloadPDF()">
+                <i class='bx bx-download'></i>
+              </div>
+            </div>
+            <textarea placeholder="No Appointment Information provided." *ngIf="selectedInfo == 'Appointment'" [(ngModel)]="information" [readonly]="edit == false"></textarea>
+            <textarea placeholder="No Appointment Summary provided." *ngIf="selectedInfo == 'Summary'" [(ngModel)]="summary" [readonly]="edit == false">
+            </textarea>
+            <textarea placeholder="No Student Remarks provided." *ngIf="selectedInfo == 'Remarks'" [(ngModel)]="remarks" [readonly]="edit == false">
+            </textarea>
+          </div>
+          <div class="textarea-container">
+          <div class="buttons">
+            <div class="close">
+              <p (click)="closeWindow()">Close</p>
+            </div>
+            <div (click)="changeEdit()" *ngIf="edit == false && selectedInfo == 'Appointment' && usertype == 'teacher'" class="edit" >
+              <p>Edit</p>
+            </div>
+            <div (click)="changeEdit()" *ngIf="edit == false && selectedInfo == 'Summary' && usertype == 'teacher'" class="edit" >
+              <p>Edit</p>
+            </div>
+            <div (click)="changeEdit()" *ngIf="edit == false && selectedInfo == 'Remarks' && usertype == 'user' && this.appointments[0]?.rating != null" class="edit" >
+              <p>Edit</p>
+            </div>
+            <div (click)="changeEdit()" *ngIf="edit == true" class="edit" >
+              <p>Cancel Edit</p>
+            </div>
+            <div (click)="openInformation()" *ngIf="edit == true && selectedInfo == 'Appointment'" class="confirmation" >
+              <p>Update Appointment Information</p>
+            </div>
+            <div (click)="openSummary()" *ngIf="edit == true && selectedInfo == 'Summary'" class="confirmation" >
+              <p>Update Summary</p>
+            </div>
+            <div (click)="openRating()" *ngIf="edit == true && selectedInfo == 'Remarks'" class="confirmation" >
+              <p>Update Feedback</p>
+            </div>
+            <div (click)="openRating()" *ngIf="usertype == 'user' && selectedInfo == 'Remarks' && this.appointments[0]?.rating == null" class="confirmation" >
+              <p>Add Feedback</p>
+            </div>
+            </div>
+          </div>
+        </div>
+      </div>
+  </div>
+  

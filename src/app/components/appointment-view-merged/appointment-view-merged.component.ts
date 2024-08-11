@@ -1,27 +1,33 @@
-import { DatePipe, NgIf } from '@angular/common';
+import { DatePipe, NgClass, NgIf } from '@angular/common';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Component } from '@angular/core';
+import { MatDialog } from '@angular/material/dialog';
 import { Router, ActivatedRoute } from '@angular/router';
 import { Observable, catchError } from 'rxjs';
-import { Appointment } from '../../interfaces/Appointment';
-import { MatDialog } from '@angular/material/dialog';
-import { ConfirmationComponent } from '../../matdialogs/confirmation/confirmation.component';
 import { mainPort } from '../../app.component';
+import { Appointment } from '../../interfaces/Appointment';
 import { ConfirmationInputComponent } from '../../matdialogs/confirmation-input/confirmation-input/confirmation-input.component';
-import { NotificationServicesService } from '../../services/notification-services.service';
+import { ConfirmationComponent } from '../../matdialogs/confirmation/confirmation.component';
 import { ErrorComponent } from '../../matdialogs/error/error.component';
+import { NotificationServicesService } from '../../services/notification-services.service';
+import { RatingComponent } from '../../matdialogs/rating/rating.component';
+import { FormControl, FormsModule, NgModel, ReactiveFormsModule } from '@angular/forms';
 
 @Component({
-  selector: 'app-appointment-view-confirmed',
+  selector: 'app-appointment-view-merged',
   standalone: true,
-  imports: [NgIf],
-  templateUrl: './appointment-view-confirmed.component.html',
-  styleUrl: './appointment-view-confirmed.component.css'
+  imports: [NgIf, NgClass, FormsModule],
+  templateUrl: './appointment-view-merged.component.html',
+  styleUrl: './appointment-view-merged.component.css'
 })
-export class AppointmentViewConfirmedComponent {
+export class AppointmentViewMergedComponent {
   usertype = localStorage.getItem('user');
   appointmentId: string | null = null;
   appointments: Appointment[] = [];
+  information: string | null = null;
+  remarks: string | null = null;
+  summary: string | null = null;
+  edit = false;
 
   constructor(private http: HttpClient, private router: Router, private activatedRoute: ActivatedRoute, public dialog: MatDialog, private notificationService: NotificationServicesService) {}
 
@@ -30,7 +36,9 @@ export class AppointmentViewConfirmedComponent {
       (data: Appointment[]) => {
         // Handle successful response
         this.appointments = data; 
-        console.log(this.appointments)
+        this.information = this.appointments[0].AppointmentInfo
+        this.remarks = this.appointments[0].remarks
+        this.summary = this.appointments[0].AppointmentSummary
       },
       (error) => {
         // Handle errors
@@ -176,7 +184,7 @@ export class AppointmentViewConfirmedComponent {
       .subscribe(
         (response) => {
           console.log('Appointment complete successfully:', response);
-          this.notificationService.createNotification(null, this.appointments[0].StudentID, this.appointments[0].AppointmentID, "Finished", "Meeting with " + this.appointments[0].ConsultantFirstName, 'Appointment has been marked as completed.')
+          this.notificationService.createNotification(null, this.appointments[0].StudentID, this.appointments[0].AppointmentID, "Finished", "Meeting with" + this.appointments[0].ConsultantFirstName, 'Appointment has been marked as completed.')
         },
         (error) => {
           console.error('Error completing appointment:', error);
@@ -190,7 +198,7 @@ export class AppointmentViewConfirmedComponent {
     .subscribe(
       (response) => {
         console.log('Appointment cancelled successfully:', response);
-        this.notificationService.createNotification(null, this.appointments[0].StudentID, null, "Rejected", "Meeting with " + this.appointments[0].ConsultantFirstName, 'Your appointment has been cancelled.')
+        this.notificationService.createNotification(null, this.appointments[0].StudentID, null, "Rejected", "Meeting with" + this.appointments[0].ConsultantFirstName, 'Your appointment has been cancelled.')
       },
       (error) => {
         console.error('Error rejecting appointment:', error);
@@ -265,6 +273,101 @@ export class AppointmentViewConfirmedComponent {
       window.location.reload();
     });
   }
+  //Completed
+  
+  //Matdialogs
+  openInformation():void {
+    const $data ={
+      key: localStorage.getItem('token'),
+      appointment_id: this.appointmentId,
+      appointment_summary: this.information
+    }
+    this.http.post(`${mainPort}/pdo/api/provide_information`, $data).subscribe(result =>{
+      window.location.reload();
+    });
+  }
+
+  openSummary():void {
+    const $data ={
+      key: localStorage.getItem('token'),
+      appointment_id: this.appointmentId,
+      appointment_summary: this.summary
+    }
+    this.http.post(`${mainPort}/pdo/api/provide_summary`, $data).subscribe(result =>{
+      window.location.reload();
+    });
+  }
+
+  openRating(): void {
+    const dialogRef = this.dialog.open(RatingComponent, {
+      height: '250px',
+      width: '490px',
+      data: {
+        description: "Rate your experience"
+      }
+    });
+  
+    dialogRef.afterClosed().subscribe(result => {
+      if (result != null) {
+        if (this.remarks == null){
+          this.remarks = "No remarks have been provided."
+        }
+        const $data = {
+          key: localStorage.getItem('token'),
+          appointment_id: this.appointmentId,
+          appointment_rating: result,
+          appointment_remarks: this.remarks
+        }
+        this.http.post(`${mainPort}/pdo/api/rate_appointment`, $data)
+        .subscribe(
+          (response: any) => {
+            this.dialog.open(ErrorComponent, {
+              width: '300px',
+              data: {
+                title: 'Appointment Status',
+                description: response
+              }
+            });
+            this.router.navigate(['student/dashboard/confirmed-appointments']);
+          },
+        );
+      }
+    });
+  }
+  //Change Information View
+  selectedInfo: string = "Appointment";
+
+  changeSelectedInfo(info:string){
+    this.selectedInfo = info;
+    this.edit = false;
+  }
+  //Documentation
+  generateFPDF(): Observable<any> {
+    const token = localStorage.getItem('token');
+    const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
+    const options = { headers, responseType: 'blob' as 'json' };
+
+    return this.http.post(`${mainPort}/pdo/api/generate_report`, this.appointmentId, options);
+  }
+
+  downloadPDF() {
+    this.generateFPDF().subscribe(
+      (blob: Blob) => {
+        const url = window.URL.createObjectURL(blob);
+        const link = document.createElement('a');
+        link.href = url;
+        link.download = 'Appointment_Summary_Report.pdf';
+        link.click();
+        window.URL.revokeObjectURL(url);
+      },
+      error => {
+        console.error('Error generating PDF:', error);
+        // Handle error as needed
+      }
+    );
+  }
+
+  changeEdit(){
+    this.edit = !this.edit;
+  }
 }
-
-

@@ -188,10 +188,19 @@
 
 .left-container label{
     color: #168021;
-    padding-left: 120px;
-    padding-top: 25px;
-    padding-bottom: 10px;
     font-size: 25px;
+}
+
+.top{
+    width: 75%;
+    display: flex;
+    margin: auto;
+}
+
+.top i{
+    font-size: 28px;
+    margin-left: auto;
+    cursor: pointer;
 }
 
 .left-container hr {
@@ -229,6 +238,7 @@
     margin: 10px 0;
     margin: auto;
 }
+
 @media (max-width: 830px) {
     .title {
         height: 50px;

@@ -77,7 +77,7 @@ export class AppointmentViewComponent {
       let desc = result[1]
       if (bool) {
         this.rejectAppointment();
-        this.notificationService.createNotification(this.queue[0].teacher_id, this.queue[0].student_id, "Rejected", "Meeting with" + this.queue[0].teacher_name, desc)
+        this.notificationService.createNotification(null, this.queue[0].student_id, null, "Rejected", "Meeting with " + this.queue[0].teacher_name, desc)
       }
     });
   }

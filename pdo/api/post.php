@@ -642,9 +642,10 @@ class Post extends FPDF
             $stmt->bindParam(':mode', $mode);
 
             $stmt->execute();
+            $appointment_id = $this->pdo->lastInsertId();
 
             // Optionally, return success response or handle accordingly
-            return "Appointment created successfully.";
+            return $appointment_id;
         } catch (\Firebase\JWT\ExpiredException $e) {
             return "Unauthorized: Token has expired. Please login again.";
         } catch (\Firebase\JWT\BeforeValidException $e) {
@@ -1310,16 +1311,18 @@ class Post extends FPDF
         // Extract data
         $teacherId = $data->TeacherId;
         $userId = $data->UserId;
+        $appointmentId = $data->AppointmentId;
         $type = $data->Type;
         $title = $data->Title;
         $description = $data->Description;
 
+
         // Prepare SQL statement
-        $sql = "INSERT INTO notification (ConsultantId, UserId, NotificationType, NotificationName, NotificationDescription) VALUES (?, ?, ?, ?, ?)";
+        $sql = "INSERT INTO notification (ConsultantId, UserId, AppointmentId, NotificationType, NotificationName, NotificationDescription) VALUES (?, ?, ?, ?, ?, ?)";
 
         // Prepare and execute the statement
         $stmt = $this->pdo->prepare($sql);
-        $stmt->execute([$teacherId, $userId, $type, $title, $description]);
+        $stmt->execute([$teacherId, $userId, $appointmentId, $type, $title, $description]);
 
         // Check if the query was successful
         if ($stmt->rowCount() > 0) {

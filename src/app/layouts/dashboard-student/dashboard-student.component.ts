@@ -1,7 +1,7 @@
 import { Component, ElementRef, ViewChild } from '@angular/core';
 import { NavbarComponent } from "../navbar/navbar.component";
 import { Router, RouterLinkActive, RouterModule } from '@angular/router';
-import { NgIf } from '@angular/common';
+import { NgFor, NgIf } from '@angular/common';
 import { User } from '../../interfaces/User';
 import { Teacher } from '../../interfaces/Teacher';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
@@ -12,13 +12,14 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
 import { MatBadgeModule } from '@angular/material/badge';
 import { NotificationServicesService } from '../../services/notification-services.service';
+import { Notification } from '../../interfaces/Notification';
 
 @Component({
   selector: 'app-dashboard-student',
   standalone: true,
   templateUrl: './dashboard-student.component.html',
   styleUrl: './dashboard-student.component.css',
-  imports: [NavbarComponent, RouterModule, NgIf, SettingComponent, RouterLinkActive, MatBadgeModule, MatButtonModule, MatIconModule]
+  imports: [NavbarComponent, RouterModule, NgIf, SettingComponent, RouterLinkActive, MatBadgeModule, MatButtonModule, MatIconModule, NgFor]
 })
 export class DashboardStudentComponent {
   @ViewChild('notificationBox', { static: false }) box: ElementRef | undefined;
@@ -32,6 +33,7 @@ export class DashboardStudentComponent {
   firstName = "";
   lastName = "";
   unreadNotificationsCount = 0;
+  notifications: Notification[] = [];
 
   redirectToHomePage() {
     this.router.navigate(['']);
@@ -61,6 +63,13 @@ export class DashboardStudentComponent {
           console.log(localStorage.getItem('user'))
           //Save to Service
           this.profileService.updateProfile(this.user[0]);
+          //Get Notifications
+          const token = localStorage.getItem('token');
+          const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
+          this.http.get<Notification[]>(`${mainPort}/pdo/api/get_notifications_student`, {headers}).subscribe(notifications=>{
+            this.notifications = notifications
+            console.log(notifications)
+          }) 
         },
         (error) => {
           console.error('Error fetching teachers:', error);
@@ -98,6 +107,33 @@ export class DashboardStudentComponent {
         boxElement.style.opacity = '1';
         this.down = true;
       }
+    }
+  }
+
+  markAsRead(notificationId: number): void {
+    this.notificationService.markAsRead(notificationId).subscribe(result => {
+      if (result == true){
+        const token = localStorage.getItem('token');
+        const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
+        this.http.get<Notification[]>(`${mainPort}/pdo/api/get_notifications_student`, {headers}).subscribe(notifications=>{
+          this.notifications = notifications
+        }) 
+      } else {
+
+      }
+    });
+  }
+
+  navigateToAppointment(appointmentId: any): void{
+    console.log(appointmentId)
+    if(appointmentId == null){
+      return
+    }
+    if(this.usertype == "user"){
+      this.router.navigate([`student/dashboard/appointment/${appointmentId}`])
+    }
+    if(this.usertype == "teacher"){
+      this.router.navigate([`teacher/dashboard/appointment/${appointmentId}`])
     }
   }
 

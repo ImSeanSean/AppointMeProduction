@@ -33,7 +33,7 @@ export class NotificationServicesService {
     this.http.get<Notification[]>(`${mainPort}/pdo/api/get_notifications_teacher`, {headers}).subscribe(notifications => {
       let unreadCount = 0;
       for (let notification of notifications) {
-        if (!notification.marked) {
+        if (!notification.markedTeacher) {
           unreadCount++;
         }
       }
@@ -50,10 +50,11 @@ export class NotificationServicesService {
     return this.http.post(`${mainPort}/pdo/api/delete_notification`, notificationId);
   }
 
-  createNotification(teacherid:number, userid:number, type:string, title:string, description:string){
+  createNotification(teacherid:number | null, userid:number | null, appointmentid:number | null, type:string, title:string, description:string){
     const data = {
       TeacherId: teacherid,
       UserId: userid,
+      AppointmentId: appointmentid,
       Type: type,
       Title: title,
       Description: description

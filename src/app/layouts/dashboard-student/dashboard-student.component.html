@@ -7,9 +7,23 @@
         <div class="notifications" (click)="toggleNotifi()">
             <i class='bx bx-bell' matBadge=" {{unreadNotificationsCount}}" matBadgeSize="medium"></i>
             <label>Notifications</label>
-
             <!-- Notification Box -->
             <div class="notifi-box" #notificationBox id="box">
+                <div class="notification-card" *ngFor="let notification of notifications" (click)="navigateToAppointment(notification.AppointmentID); markAsRead(notification.NotificationID)">
+                    <div class="logo" *ngIf="notification.NotificationType == 'Approved'">
+                        <i class='bx bxs-check-circle'></i>
+                    </div>
+                    <div class="logo-rejected" *ngIf="notification.NotificationType == 'Rejected'">
+                        <i class='bx bxs-x-circle'></i>
+                    </div>
+                    <div class="details">
+                        <h4>{{notification.NotificationName}}</h4>
+                        <p>{{notification.NotificationDescription}}</p>
+                    </div>
+                    <div class="new" *ngIf="notification.marked != true">
+                        <i class='bx bxs-circle'></i>
+                    </div>
+                </div>
             </div>
         </div>
         <div class="profile">
@@ -40,5 +54,6 @@
         </ul>
     </div>
     <div class="main">
+        <router-outlet></router-outlet>
     </div>
 </div>

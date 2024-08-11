@@ -4,8 +4,10 @@
     </div>
     <div class="card-container">
         <div class="left-container">
-            <label>COMPLETED</label>
-            <i class='bx bx-download' (click)="downloadPDF()"></i>
+            <div class="top">
+                <label>COMPLETED</label>
+                <i class='bx bx-download' (click)="downloadPDF()"></i>
+            </div>
             <hr>
             <div class="appointment-list">
                 <app-appointment-card-completed></app-appointment-card-completed>
