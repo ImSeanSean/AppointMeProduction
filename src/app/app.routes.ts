@@ -28,6 +28,7 @@
     import { DashboardAdminComponent } from './layouts/dashboard-admin/dashboard-admin.component';
     import { AdminLoginComponent } from './admin/admin-login/admin-login.component';
     import { AppointmentViewMergedComponent } from './components/appointment-view-merged/appointment-view-merged.component';
+import { AdminAnalyticsComponent } from './admin/admin-analytics/admin-analytics.component';
 
     export const routes: Routes = [
         {path: '', component: HomepageComponent},
@@ -86,7 +87,8 @@
                 {path: 'login', component: AdminLoginComponent},
                 {path: 'dashboard', component: DashboardAdminComponent,
                     children: [
-                        {path: 'user-management', component: UserManagementComponent}
+                        {path: 'user-management', component: UserManagementComponent},
+                        {path: 'analytics', component: AdminAnalyticsComponent}
                     ]
                 }
             ]

@@ -837,30 +837,45 @@ class Post extends FPDF
     public function provide_information($data)
     {
         try {
+            // Decode JWT and get user details
             $jwt = $data->key;
             error_log("JWT Token: " . $jwt);
             $key = JWT::decode($jwt, new Key($this->secretKey, 'HS256'));
-            // Check authorization here (example: verify that the user is authorized to create an appointment)
+
+            // Check authorization
             if ($key->type !== 'teacher') {
                 return "Unauthorized: Only teachers are allowed to provide summary.";
             }
+
             $appointmentId = $data->appointment_id;
             $appointmentSummary = $data->appointment_summary;
-            //Find Appointment
+            $userId = $key->user_id;
+            $consultantId = null; // Assuming that consultant ID is not relevant in this context
+
+            // Find Appointment
             $sqlValidation = "SELECT * FROM appointment WHERE AppointmentID = :appointmentId";
             $stmt = $this->pdo->prepare($sqlValidation);
-            $stmt->bindParam(':appointmentId', $appointmentId);
+            $stmt->bindParam(':appointmentId', $appointmentId, PDO::PARAM_INT);
             $stmt->execute();
             $validationResult = $stmt->fetch(PDO::FETCH_ASSOC);
+
             // Check if appointment exists
+            if (!$validationResult) {
+                return "Failed: Appointment not found.";
+            }
 
             // Update Appointment
             $sqlUpdate = "UPDATE appointment SET AppointmentInfo = :appointmentSummary WHERE AppointmentID = :id";
             $stmt = $this->pdo->prepare($sqlUpdate);
-            $stmt->bindParam(':appointmentSummary', $appointmentSummary);
-            $stmt->bindParam(':id', $appointmentId);
+            $stmt->bindParam(':appointmentSummary', $appointmentSummary, PDO::PARAM_STR);
+            $stmt->bindParam(':id', $appointmentId, PDO::PARAM_INT);
             $stmt->execute();
-            // Optionally, return success response or handle accordingly
+
+            // Log the action
+            $actionType = 'summary_provided';
+            $actionDetails = "Appointment ID $appointmentId information updated by consultant ID $userId";
+            $this->logAction($userId, $consultantId, $actionType, $actionDetails);
+
             return "Summary provided successfully.";
         } catch (\Firebase\JWT\ExpiredException $e) {
             return "Unauthorized: Token has expired. Please login again.";
@@ -869,37 +884,52 @@ class Post extends FPDF
         } catch (\Firebase\JWT\SignatureInvalidException $e) {
             return "Unauthorized: Invalid token signature.";
         } catch (PDOException $e) {
-            // Handle the exception, return an error response, or log the error
-            return "Error rating appointment" . $e->getMessage();
+            return "Error providing summary: " . $e->getMessage();
         }
     }
+
     public function provide_summary($data)
     {
         try {
+            // Decode JWT and get user details
             $jwt = $data->key;
             error_log("JWT Token: " . $jwt);
             $key = JWT::decode($jwt, new Key($this->secretKey, 'HS256'));
-            // Check authorization here (example: verify that the user is authorized to create an appointment)
+
+            // Check authorization
             if ($key->type !== 'teacher') {
                 return "Unauthorized: Only teachers are allowed to provide summary.";
             }
+
             $appointmentId = $data->appointment_id;
             $appointmentSummary = $data->appointment_summary;
-            //Find Appointment
+            $userId = $key->user_id;
+            $consultantId = null; // Assuming that consultant ID is not relevant in this context
+
+            // Find Appointment
             $sqlValidation = "SELECT * FROM appointment WHERE AppointmentID = :appointmentId";
             $stmt = $this->pdo->prepare($sqlValidation);
-            $stmt->bindParam(':appointmentId', $appointmentId);
+            $stmt->bindParam(':appointmentId', $appointmentId, PDO::PARAM_INT);
             $stmt->execute();
             $validationResult = $stmt->fetch(PDO::FETCH_ASSOC);
+
             // Check if appointment exists
+            if (!$validationResult) {
+                return "Failed: Appointment not found.";
+            }
 
             // Update Appointment
             $sqlUpdate = "UPDATE appointment SET AppointmentSummary = :appointmentSummary WHERE AppointmentID = :id";
             $stmt = $this->pdo->prepare($sqlUpdate);
-            $stmt->bindParam(':appointmentSummary', $appointmentSummary);
-            $stmt->bindParam(':id', $appointmentId);
+            $stmt->bindParam(':appointmentSummary', $appointmentSummary, PDO::PARAM_STR);
+            $stmt->bindParam(':id', $appointmentId, PDO::PARAM_INT);
             $stmt->execute();
-            // Optionally, return success response or handle accordingly
+
+            // Log the action
+            $actionType = 'summary_provided';
+            $actionDetails = "Appointment ID $appointmentId summary updated by consultant ID $userId";
+            $this->logAction($userId, $consultantId, $actionType, $actionDetails);
+
             return "Summary provided successfully.";
         } catch (\Firebase\JWT\ExpiredException $e) {
             return "Unauthorized: Token has expired. Please login again.";
@@ -908,18 +938,19 @@ class Post extends FPDF
         } catch (\Firebase\JWT\SignatureInvalidException $e) {
             return "Unauthorized: Invalid token signature.";
         } catch (PDOException $e) {
-            // Handle the exception, return an error response, or log the error
-            return "Error rating appointment" . $e->getMessage();
+            return "Error providing summary: " . $e->getMessage();
         }
     }
+
     public function rate_appointment($data)
     {
         try {
+            // Decode JWT and get user details
             $jwt = $data->key;
             error_log("JWT Token: " . $jwt);
             $key = JWT::decode($jwt, new Key($this->secretKey, 'HS256'));
 
-            // Check authorization here (example: verify that the user is authorized to create an appointment)
+            // Check authorization
             if ($key->type !== 'student') {
                 return "Unauthorized: Only students are allowed to rate appointments.";
             }
@@ -931,11 +962,13 @@ class Post extends FPDF
             $appointmentRating3 = $data->clarity;
             $appointmentRating4 = $data->engagement;
             $appointmentRemarks = $data->appointment_remarks;
+            $userId = $key->user_id;
+            $consultantId = null; // Assuming that consultant ID is not relevant in this context
 
             // Find Appointment
             $sqlValidation = "SELECT * FROM appointment WHERE AppointmentID = :appointmentId";
             $stmt = $this->pdo->prepare($sqlValidation);
-            $stmt->bindParam(':appointmentId', $appointmentId);
+            $stmt->bindParam(':appointmentId', $appointmentId, PDO::PARAM_INT);
             $stmt->execute();
             $validationResult = $stmt->fetch(PDO::FETCH_ASSOC);
 
@@ -949,15 +982,19 @@ class Post extends FPDF
                           SET rating = :rating, rating2 = :rating2, rating3 = :rating3, rating4 = :rating4, remarks = :remarks 
                           WHERE AppointmentID = :id";
             $stmt = $this->pdo->prepare($sqlUpdate);
-            $stmt->bindParam(':rating', $appointmentRating);
-            $stmt->bindParam(':rating2', $appointmentRating2);
-            $stmt->bindParam(':rating3', $appointmentRating3);
-            $stmt->bindParam(':rating4', $appointmentRating4);
-            $stmt->bindParam(':remarks', $appointmentRemarks);
-            $stmt->bindParam(':id', $appointmentId);
+            $stmt->bindParam(':rating', $appointmentRating, PDO::PARAM_INT);
+            $stmt->bindParam(':rating2', $appointmentRating2, PDO::PARAM_INT);
+            $stmt->bindParam(':rating3', $appointmentRating3, PDO::PARAM_INT);
+            $stmt->bindParam(':rating4', $appointmentRating4, PDO::PARAM_INT);
+            $stmt->bindParam(':remarks', $appointmentRemarks, PDO::PARAM_STR);
+            $stmt->bindParam(':id', $appointmentId, PDO::PARAM_INT);
             $stmt->execute();
 
-            // Optionally, return success response or handle accordingly
+            // Log the action
+            $actionType = 'appointment_rated';
+            $actionDetails = "Appointment ID $appointmentId rated by student ID $userId with ratings (Helpfulness: $appointmentRating, Empathy: $appointmentRating2, Clarity: $appointmentRating3, Engagement: $appointmentRating4) and remarks: $appointmentRemarks";
+            $this->logAction($userId, $consultantId, $actionType, $actionDetails);
+
             return "Appointment rated successfully.";
         } catch (\Firebase\JWT\ExpiredException $e) {
             return "Unauthorized: Token has expired. Please login again.";
@@ -966,7 +1003,6 @@ class Post extends FPDF
         } catch (\Firebase\JWT\SignatureInvalidException $e) {
             return "Unauthorized: Invalid token signature.";
         } catch (PDOException $e) {
-            // Handle the exception, return an error response, or log the error
             return "Error rating appointment: " . $e->getMessage();
         }
     }
@@ -975,13 +1011,16 @@ class Post extends FPDF
     public function add_queue($data)
     {
         try {
+            // Decode JWT and get user details
             $jwt = $data->key;
             error_log("JWT Token: " . $jwt);
             $key = JWT::decode($jwt, new Key($this->secretKey, 'HS256'));
-            // Check authorization 
+
+            // Check authorization
             if ($key->type !== 'student') {
                 return "Unauthorized: Only students are allowed to add a queue.";
             }
+
             $decodedArray = (array) $key;
             $teacher_id = $data->teacher_id;
             $student_id = $decodedArray['user_id'];
@@ -991,7 +1030,8 @@ class Post extends FPDF
             $day = $data->day;
             $time = $data->time;
             $reason = $data->reason;
-            //Check if already has queue
+
+            // Check if already has queue
             $checkSql = "SELECT COUNT(*) FROM `queue` WHERE `teacher_id` = :teacher_id AND `student_id` = :student_id";
             $checkStmt = $this->pdo->prepare($checkSql);
             $checkStmt->bindParam(':teacher_id', $teacher_id, PDO::PARAM_INT);
@@ -1000,19 +1040,19 @@ class Post extends FPDF
             $count = $checkStmt->fetchColumn();
 
             if ($count > 0) {
-                return '1';
+                return '1'; // Queue already exists
             }
 
-            //Insert
+            // Insert into queue
             $sql = "INSERT INTO `queue` (`teacher_id`, `student_id`, `appointment_title`, `mode`, `urgency`, `day`, `time`, `reason`)
-            VALUES (:teacher_id, :student_id, :appointment_title, :mode, :urgency, :day, :time, :reason)";
+                    VALUES (:teacher_id, :student_id, :appointment_title, :mode, :urgency, :day, :time, :reason)";
 
             $stmt = $this->pdo->prepare($sql);
 
             // Bind the parameters to the query
             $stmt->bindParam(':teacher_id', $teacher_id, PDO::PARAM_INT);
             $stmt->bindParam(':student_id', $student_id, PDO::PARAM_INT);
-            $stmt->bindParam(':appointment_title', $title, PDO::PARAM_INT);
+            $stmt->bindParam(':appointment_title', $title, PDO::PARAM_STR);
             $stmt->bindParam(':mode', $mode, PDO::PARAM_STR);
             $stmt->bindParam(':urgency', $urgency, PDO::PARAM_STR);
             $stmt->bindParam(':day', $day, PDO::PARAM_STR);
@@ -1020,9 +1060,13 @@ class Post extends FPDF
             $stmt->bindParam(':reason', $reason, PDO::PARAM_STR);
 
             if ($stmt->execute()) {
-                return '0';
+                // Log the action
+                $actionType = 'queue_added';
+                $actionDetails = "Student ID $student_id added to queue for Teacher ID $teacher_id with title '$title'";
+                $this->logAction($student_id, $teacher_id, $actionType, $actionDetails);
+                return '0'; // Success
             } else {
-                return '2';
+                return '2'; // Failed to add to queue
             }
         } catch (\Firebase\JWT\ExpiredException $e) {
             return "Unauthorized: Token has expired. Please login again.";
@@ -1032,19 +1076,23 @@ class Post extends FPDF
             return "Unauthorized: Invalid token signature.";
         } catch (PDOException $e) {
             // Handle the exception, return an error response, or log the error
-            return "Error adding you to queue" . $e->getMessage();
+            return "Error adding you to queue: " . $e->getMessage();
         }
     }
+
     public function add_queue_teacher($data)
     {
         try {
+            // Decode JWT and get user details
             $jwt = $data->key;
             error_log("JWT Token: " . $jwt);
             $key = JWT::decode($jwt, new Key($this->secretKey, 'HS256'));
-            // Check authorization 
+
+            // Check authorization
             if ($key->type !== 'teacher') {
                 return "Unauthorized: Only teachers are allowed to requeue.";
             }
+
             $teacher_id = $data->teacher_id;
             $student_id = $data->student_id;
             $mode = $data->mode;
@@ -1052,7 +1100,8 @@ class Post extends FPDF
             $day = $data->day;
             $time = $data->time;
             $reason = $data->reason;
-            //Check if already has queue
+
+            // Check if already has queue
             $checkSql = "SELECT COUNT(*) FROM `queue` WHERE `teacher_id` = :teacher_id AND `student_id` = :student_id";
             $checkStmt = $this->pdo->prepare($checkSql);
             $checkStmt->bindParam(':teacher_id', $teacher_id, PDO::PARAM_INT);
@@ -1061,12 +1110,12 @@ class Post extends FPDF
             $count = $checkStmt->fetchColumn();
 
             if ($count > 0) {
-                return '1';
+                return '1'; // Queue already exists
             }
 
-            //Insert
+            // Insert into queue
             $sql = "INSERT INTO `queue` (`teacher_id`, `student_id`, `mode`, `urgency`, `day`, `time`, `reason`)
-            VALUES (:teacher_id, :student_id, :mode, :urgency, :day, :time, :reason)";
+                    VALUES (:teacher_id, :student_id, :mode, :urgency, :day, :time, :reason)";
 
             $stmt = $this->pdo->prepare($sql);
 
@@ -1080,9 +1129,13 @@ class Post extends FPDF
             $stmt->bindParam(':reason', $reason, PDO::PARAM_STR);
 
             if ($stmt->execute()) {
-                return '0';
+                // Log the action
+                $actionType = 'queue_added_by_teacher';
+                $actionDetails = "Teacher ID $teacher_id added Student ID $student_id to queue";
+                $this->logAction($student_id, $teacher_id, $actionType, $actionDetails);
+                return '0'; // Success
             } else {
-                return '2';
+                return '2'; // Failed to add to queue
             }
         } catch (\Firebase\JWT\ExpiredException $e) {
             return "Unauthorized: Token has expired. Please login again.";
@@ -1092,9 +1145,10 @@ class Post extends FPDF
             return "Unauthorized: Invalid token signature.";
         } catch (PDOException $e) {
             // Handle the exception, return an error response, or log the error
-            return "Error adding you to queue" . $e->getMessage();
+            return "Error adding to queue: " . $e->getMessage();
         }
     }
+
     public function add_followup_queue_teacher($data)
     {
         try {
@@ -1144,6 +1198,9 @@ class Post extends FPDF
             $stmt->bindParam(':reason', $reason, PDO::PARAM_STR);
 
             if ($stmt->execute()) {
+                $actionType = 'queue_added_by_teacher';
+                $actionDetails = "Teacher ID $teacher_id added Student ID $student_id to queue";
+                $this->logAction($student_id, $teacher_id, $actionType, $actionDetails);
                 return '0';
             } else {
                 return '2';
@@ -1202,6 +1259,9 @@ class Post extends FPDF
 
             // Check if the update was successful
             if ($result) {
+                $actionType = 'queue_updated';
+                $actionDetails = "Student ID $key->user_id updated Queue ID $queue_id values.";
+                $this->logAction($key->user_id, null, $actionType, $actionDetails);
                 return "Queue updated successfully.";
             } else {
                 $errorInfo = $stmt->errorInfo();
@@ -1241,6 +1301,17 @@ class Post extends FPDF
             $stmt->execute();
             // Optionally, return success response or handle accordingly
             if ($stmt->rowCount() > 0) {
+                if ($key->type == 'teacher') {
+                    $actionType = 'queue_deleted';
+                    $actionDetails = "Teacher ID $key->user_id deleted Queue ID $queueId.";
+                    $this->logAction(null, $key->user_id, $actionType, $actionDetails);
+                    return "Queue updated successfully.";
+                } else if ($key->type == 'student') {
+                    $actionType = 'queue_deleted';
+                    $actionDetails = "Student ID $key->user_id deleted Queue ID $queueId.";
+                    $this->logAction($key->user_id, null, $actionType, $actionDetails);
+                    return "Queue updated successfully.";
+                }
                 // Appointment successfully removed
                 return "Request removed successfully.";
             } else {

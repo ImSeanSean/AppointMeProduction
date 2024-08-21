@@ -115,6 +115,24 @@ switch ($_SERVER['REQUEST_METHOD']) {
             case 'get_appointments_monthly':
                 echo json_encode($get->get_appointments_monthly());
                 break;
+            case 'get_queue_count':
+                echo json_encode($get->getQueueCount());
+                break;
+            case 'get_appointment_count':
+                echo json_encode($get->getAppointmentCount());
+                break;
+            case 'get_student_count':
+                echo json_encode($get->getStudentCount());
+                break;
+            case 'get_teacher_count':
+                echo json_encode($get->getConsultantCount());
+                break;
+            case 'get_action_logs':
+                echo json_encode($get->getAllActionLogs());
+                break;
+            case 'get_login_logs':
+                echo json_encode($get->getAllLoginLogs());
+                break;
             default:
                 http_response_code(403);
                 break;
@@ -226,7 +244,7 @@ switch ($_SERVER['REQUEST_METHOD']) {
             case 'generate_all_reports':
                 echo json_encode($post->generateAllReports($data));
                 break;
-                //All Admin Logs
+                //All Admin Logs       
             default:
                 http_response_code(403);
                 break;

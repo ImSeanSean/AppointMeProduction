@@ -789,4 +789,130 @@ class Get
             echo json_encode(array('message' => 'Token is invalid or Authorization header is missing'));
         }
     }
+    public function getStudentCount()
+    {
+        try {
+            // SQL query to count the number of students
+            $sql = "SELECT COUNT(*) FROM user";
+            $stmt = $this->pdo->prepare($sql);
+            $stmt->execute();
+
+            // Fetch the count
+            $studentCount = $stmt->fetchColumn();
+
+            return $studentCount;
+        } catch (PDOException $e) {
+            // Handle the exception (e.g., log error, return error message)
+            error_log("Database error: " . $e->getMessage());
+            return "Error retrieving student count: " . $e->getMessage();
+        }
+    }
+    public function getConsultantCount()
+    {
+        try {
+            // SQL query to count the number of students
+            $sql = "SELECT COUNT(*) FROM consultant";
+            $stmt = $this->pdo->prepare($sql);
+            $stmt->execute();
+
+            // Fetch the count
+            $studentCount = $stmt->fetchColumn();
+
+            return $studentCount;
+        } catch (PDOException $e) {
+            // Handle the exception (e.g., log error, return error message)
+            error_log("Database error: " . $e->getMessage());
+            return "Error retrieving student count: " . $e->getMessage();
+        }
+    }
+    public function getAllActionLogs()
+    {
+        try {
+            // SQL query to get all action logs
+            $sql = "SELECT * FROM action_logs ORDER BY action_time DESC";
+            $stmt = $this->pdo->prepare($sql);
+            $stmt->execute();
+
+            // Fetch all action logs
+            $actionLogs = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+            return $actionLogs;
+        } catch (PDOException $e) {
+            // Handle the exception (e.g., log error, return error message)
+            error_log("Database error: " . $e->getMessage());
+            return "Error retrieving action logs: " . $e->getMessage();
+        }
+    }
+    public function getAllLoginLogs()
+    {
+        try {
+            // SQL query to get all login logs
+            $sql = "SELECT * FROM admin_login_logs ORDER BY login_time DESC";
+            $stmt = $this->pdo->prepare($sql);
+            $stmt->execute();
+
+            // Fetch all login logs
+            $loginLogs = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+            return $loginLogs;
+        } catch (PDOException $e) {
+            // Handle the exception (e.g., log error, return error message)
+            error_log("Database error: " . $e->getMessage());
+            return "Error retrieving login logs: " . $e->getMessage();
+        }
+    }
+    public function getAppointmentCount()
+    {
+        try {
+            // SQL query to count all appointments
+            $sql = "SELECT COUNT(*) FROM appointment";
+            $stmt = $this->pdo->prepare($sql);
+            $stmt->execute();
+
+            // Fetch the count
+            $count = $stmt->fetchColumn();
+
+            return $count;
+        } catch (PDOException $e) {
+            // Handle the exception (e.g., log error, return error message)
+            error_log("Database error: " . $e->getMessage());
+            return "Error retrieving appointment count: " . $e->getMessage();
+        }
+    }
+    public function getCount()
+    {
+        try {
+            // SQL query to count all appointments
+            $sql = "SELECT COUNT(*) FROM appointment";
+            $stmt = $this->pdo->prepare($sql);
+            $stmt->execute();
+
+            // Fetch the count
+            $count = $stmt->fetchColumn();
+
+            return $count;
+        } catch (PDOException $e) {
+            // Handle the exception (e.g., log error, return error message)
+            error_log("Database error: " . $e->getMessage());
+            return "Error retrieving appointment count: " . $e->getMessage();
+        }
+    }
+    public function getQueueCount()
+    {
+        try {
+            // SQL query to count all queues
+            $sql = "SELECT COUNT(*) FROM queue";
+            $stmt = $this->pdo->prepare($sql);
+            $stmt->execute();
+
+            // Fetch the count
+            $count = $stmt->fetchColumn();
+
+            return $count;
+        } catch (PDOException $e) {
+            // Handle the exception (e.g., log error, return error message)
+            error_log("Database error: " . $e->getMessage());
+            return "Error retrieving queue count: " . $e->getMessage();
+        }
+    }
 }
