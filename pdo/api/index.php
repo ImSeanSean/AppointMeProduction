@@ -109,6 +109,12 @@ switch ($_SERVER['REQUEST_METHOD']) {
             case 'get_appointments_daily':
                 echo json_encode($get->get_appointments_daily());
                 break;
+            case 'admin_get_action_logs_daily':
+                echo json_encode($get->getLast7DaysActionLogs());
+                break;
+            case 'admin_get_appointments_daily':
+                echo json_encode($get->admin_get_appointments_daily());
+                break;
             case 'get_appointments_weekly':
                 echo json_encode($get->get_appointments_weekly());
                 break;
@@ -120,6 +126,9 @@ switch ($_SERVER['REQUEST_METHOD']) {
                 break;
             case 'get_appointment_count':
                 echo json_encode($get->getAppointmentCount());
+                break;
+            case 'get_daily_appointment_count':
+                echo json_encode($get->getDailyAppointmentCount());
                 break;
             case 'get_student_count':
                 echo json_encode($get->getStudentCount());

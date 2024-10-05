@@ -789,6 +789,62 @@ class Get
             echo json_encode(array('message' => 'Token is invalid or Authorization header is missing'));
         }
     }
+    //Admin
+    public function admin_get_appointments_daily()
+    {
+        $tokenInfo = $this->middleware->validateToken();
+        if ($tokenInfo) {
+            $sqlStr = "SELECT
+                            DATE_FORMAT(dates.AppointmentDay, '%m/%d/%y') AS AppointmentDay,
+                            COALESCE(appt.CompletedCount, 0) AS CompletedCount,
+                            COALESCE(appt.ConfirmedCount, 0) AS ConfirmedCount,
+                            COALESCE(q.PendingCount, 0) AS PendingCount
+                        FROM (
+                            SELECT DISTINCT DATE(AppointmentDate) AS AppointmentDay
+                            FROM appointment
+                            UNION
+                            SELECT DISTINCT DATE(time_created) AS AppointmentDay
+                            FROM queue
+                        ) dates
+                        LEFT JOIN (
+                            SELECT
+                                DATE(AppointmentDate) AS AppointmentDay,
+                                SUM(CASE WHEN Completed = 1 THEN 1 ELSE 0 END) AS CompletedCount,
+                                SUM(CASE WHEN Completed = 0 THEN 1 ELSE 0 END) AS ConfirmedCount
+                            FROM
+                                appointment
+                            GROUP BY
+                                DATE(AppointmentDate)
+                        ) appt ON dates.AppointmentDay = appt.AppointmentDay
+                        LEFT JOIN (
+                            SELECT
+                                DATE(time_created) AS AppointmentDay,
+                                COUNT(*) AS PendingCount
+                            FROM
+                                queue
+                            GROUP BY
+                                DATE(time_created)
+                        ) q ON dates.AppointmentDay = q.AppointmentDay
+                        ORDER BY
+                            dates.AppointmentDay;
+                                                ";
+
+            $result = $this->executeQuery($sqlStr);
+
+            if ($result['code'] == 200) {
+                if (count($result['data']) > 0) {
+                    return $this->sendPayLoad($result['data'], "success", "Successfully retrieved notifications.", $result['code']);
+                } else {
+                    return null;
+                }
+            }
+
+            return $this->sendPayLoad(null, "failed", "Failed to pull data.", $result['code']);
+        } else {
+            http_response_code(401);
+            echo json_encode(array('message' => 'Token is invalid or Authorization header is missing'));
+        }
+    }
     public function getStudentCount()
     {
         try {
@@ -843,6 +899,43 @@ class Get
             return "Error retrieving action logs: " . $e->getMessage();
         }
     }
+    public function getLast7DaysActionLogs()
+    {
+        try {
+            // SQL query to get the last 7 days, even if they have no logs
+            $sql = "
+                SELECT
+                    days.DayName,
+                    IFNULL(COUNT(al.action_time), 0) AS DailyCount
+                FROM (
+                    -- Generate the last 7 days
+                    SELECT 
+                        DATE_FORMAT(NOW() - INTERVAL n DAY, '%a') AS DayName, 
+                        CURDATE() - INTERVAL n DAY AS Date
+                    FROM (
+                        SELECT 0 as n UNION ALL SELECT 1 UNION ALL SELECT 2 
+                        UNION ALL SELECT 3 UNION ALL SELECT 4 UNION ALL SELECT 5 
+                        UNION ALL SELECT 6
+                    ) numbers
+                ) days
+                LEFT JOIN action_logs al
+                    ON DATE(al.action_time) = days.Date
+                GROUP BY days.DayName
+                ORDER BY days.Date ASC";
+
+            $stmt = $this->pdo->prepare($sql);
+            $stmt->execute();
+
+            // Fetch the action logs, including empty days
+            $actionLogs = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+            return $actionLogs;
+        } catch (PDOException $e) {
+            // Handle the exception (e.g., log error, return error message)
+            error_log("Database error: " . $e->getMessage());
+            return "Error retrieving action logs: " . $e->getMessage();
+        }
+    }
     public function getAllLoginLogs()
     {
         try {
@@ -879,6 +972,53 @@ class Get
             return "Error retrieving appointment count: " . $e->getMessage();
         }
     }
+    public function getDailyAppointmentCount()
+    {
+        try {
+            // SQL query to get the daily count of appointments in the last 7 days with day names
+            $sql = "SELECT
+                        DAYNAME(dates.AppointmentDay) AS DayName,
+                        COALESCE(appt.DailyCount, 0) as DailyCount
+                    FROM (
+                        SELECT CURDATE() as AppointmentDay
+                        UNION ALL
+                        SELECT CURDATE() - INTERVAL 1 DAY
+                        UNION ALL
+                        SELECT CURDATE() - INTERVAL 2 DAY
+                        UNION ALL
+                        SELECT CURDATE() - INTERVAL 3 DAY
+                        UNION ALL
+                        SELECT CURDATE() - INTERVAL 4 DAY
+                        UNION ALL
+                        SELECT CURDATE() - INTERVAL 5 DAY
+                        UNION ALL
+                        SELECT CURDATE() - INTERVAL 6 DAY
+                    ) dates
+                    LEFT JOIN (
+                        SELECT DATE(AppointmentDate) as AppointmentDay, COUNT(*) as DailyCount
+                        FROM appointment
+                        WHERE AppointmentDate >= DATE_SUB(CURDATE(), INTERVAL 7 DAY)
+                        GROUP BY DATE(AppointmentDate)
+                    ) appt ON dates.AppointmentDay = appt.AppointmentDay
+                    ORDER BY dates.AppointmentDay ASC";
+
+            $stmt = $this->pdo->prepare($sql);
+            $stmt->execute();
+
+            // Fetch the result set
+            $dailyCounts = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+            // Return the data as a JSON response
+            return $this->sendPayLoad($dailyCounts, "success", "Successfully retrieved daily appointment counts for the last 7 days.", 200);
+        } catch (PDOException $e) {
+            // Handle errors
+            error_log("Database error: " . $e->getMessage());
+            return $this->sendPayLoad(null, "failed", "Error retrieving daily appointment count: " . $e->getMessage(), 500);
+        }
+    }
+
+
+
     public function getCount()
     {
         try {

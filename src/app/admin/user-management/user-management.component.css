@@ -1,181 +1,193 @@
-.whole{
-    overflow: hidden;
-    height: 90vh;
-    border-bottom: 3px solid black;
+.whole {
+  overflow: hidden;
+  height: 90vh;
+  border-bottom: 3px solid black;
 }
 
 .Upper {
-    display: flex;
-    gap: 20px;
-    padding: 20px;
-    align-items: center;
+  display: flex;
+  gap: 20px;
+  padding: 20px;
+  align-items: center;
 }
 
-.top, .bot {
-    display: flex;            
-    align-items: center;      
-    justify-content: center;  
-    background-color: #168021;
-    color: #fff;
-    height: 50px;
-    width: 45vh;
-    font-size: 26px;
-    font-weight: 400;
+.top,
+.bot {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: #168021;
+  color: #fff;
+  height: 50px;
+  width: 45vh;
+  font-size: 26px;
+  font-weight: 400;
 }
 
 .bot {
-    background-color: #F78914; 
+  background-color: #f78914;
 }
 
-hr{
-    border: 1px solid #D9D9D9;
-    margin-bottom: 20px;
-    width: 94vw;
+hr {
+  border: 1px solid #d9d9d9;
+  margin-bottom: 20px;
+  width: 94vw;
 }
-.lower{
-    padding: 10px 30px;
+.lower {
+  padding: 10px 30px;
 }
-.title{
-    margin-bottom: 20px;
-    font-size: 25px;
-    display: flex;
-    flex-direction: row;
+.title {
+  margin-bottom: 20px;
+  font-size: 25px;
+  display: flex;
+  flex-direction: row;
 }
-.act{
-    display: flex;
-    flex-direction: row;
-    margin-left: 85vh;
+.act {
+  display: flex;
+  flex-direction: row;
+  margin-left: 85vh;
 }
-.head{
-    display: flex;
-    flex-direction: row;
-    margin-left: 29vh;
+.head {
+  display: flex;
+  flex-direction: row;
+  margin-left: 29vh;
 }
-.group{
-    overflow: auto;
-    height: 70vh;
-    position: inherit;
+.group {
+  overflow: auto;
+  height: 70vh;
+  position: inherit;
 }
-.teacher-row{
-    display: flex;
-    flex-direction: row;
-    margin-bottom: 30px;
-    width: 100%;
+.teacher-row {
+  display: flex;
+  flex-direction: row;
+  margin-bottom: 30px;
+  width: 100%;
 }
-.teachercard{
-    display: flex;
-    flex-direction: row;
-    height: 90px;
-    width: 90vh;
-    background-color: #D9D9D9;
-    overflow: hidden;
-}
-
-.info{
-    margin-top: 20px;
-    margin-left: 20px;
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
+.teachercard {
+  display: flex;
+  flex-direction: row;
+  height: 90px;
+  width: 90vh;
+  background-color: #d9d9d9;
+  overflow: hidden;
 }
 
-.left{
-    background-color: #F78914;
-    width: 20px;
-}
-.teacher{
-    height: 100%;
-    margin-left: auto;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    background-color: #F78914;
-    width: 30%;
-    padding: 5px;
-}
-.teacher p{
-    color: #fff;
-    text-align: center;
-    font-size: 20px;
+.info {
+  margin-top: 20px;
+  margin-left: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
 }
 
-.left-student{
-    background-color: #168021;
-    width: 20px;
+.left {
+  background-color: #f78914;
+  width: 5vw;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  color: white;
+}
+.teacher {
+  height: 100%;
+  margin-left: auto;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: #f78914;
+  width: 30%;
+  padding: 5px;
+}
+.teacher p {
+  color: #fff;
+  text-align: center;
+  font-size: 20px;
 }
 
-.student{
-    height: 100%;
-    margin-left: auto;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    background-color: #168021;
-    width: 30%;
+.left-student {
+  background-color: #168021;
+  width: 5vw;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  color: white;
 }
 
-.student p{
-    color: #fff;
-    text-align: center;
-    font-size: 20px;
+.student {
+  height: 100%;
+  margin-left: auto;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: #168021;
+  width: 30%;
+}
+
+.student p {
+  color: #fff;
+  text-align: center;
+  font-size: 20px;
 }
 
 /* 2nd part ACTION */
 .action {
-    width: 45vh;
-    display: flex;
-    flex-direction: row;
-    justify-content: center;
-    gap: 40px;
-    margin-left: 60px;
-    margin-top: 20px;
+  width: 45vh;
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  gap: 40px;
+  margin-left: 60px;
+  margin-top: 20px;
 }
 
-
-.edit, .add, .delete{
-    color: #fff;
-    font-weight: 500;
-    font-size: 15px;
+.edit,
+.add,
+.delete {
+  color: #fff;
+  font-weight: 500;
+  font-size: 15px;
 }
-.edit:hover, .add:hover, .delete:hover {
-    opacity: 0.8; 
+.edit:hover,
+.add:hover,
+.delete:hover {
+  opacity: 0.8;
 }
 
 .edit {
-    width: 80px;
-    height: 50px;
-    border-radius: 25px;
-    background-color: #A4A4A4;
+  width: 80px;
+  height: 50px;
+  border-radius: 25px;
+  background-color: #a4a4a4;
 }
 
 .add {
-    width: 80px;
-    height: 50px;
-    border-radius: 25px;
-    background-color: #0BB51C;
+  width: 80px;
+  height: 50px;
+  border-radius: 25px;
+  background-color: #0bb51c;
 }
 
 .delete {
-    width: 80px;
-    height: 50px;
-    border-radius: 25px;
-    background-color: #DE0202;
+  width: 80px;
+  height: 50px;
+  border-radius: 25px;
+  background-color: #de0202;
 }
 
 /*Add Button*/
-button.add-button{
-    background-color: #168021;
-    height: 70px;
-    width: 70px;
-    border-radius: 100%;
-    color: white;
-    font-size: 40px;
-    position: absolute;
-    bottom: 5%;
-    right: 5%;
-    cursor: pointer;
+button.add-button {
+  background-color: #168021;
+  height: 70px;
+  width: 70px;
+  border-radius: 100%;
+  color: white;
+  font-size: 40px;
+  position: absolute;
+  bottom: 5%;
+  right: 5%;
+  cursor: pointer;
 }
 
-.example-margin{
-    color: white    ;
+.example-margin {
+  color: white;
 }

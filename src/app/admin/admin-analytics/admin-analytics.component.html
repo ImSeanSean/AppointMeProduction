@@ -1,88 +1,90 @@
 <div class="main">
-    <div class="title">
-        <h2>Analytics Overview</h2>
-    </div>
-    <div class="content">
-        <div class="top">
-            <div class="large-box">
-                <div class="number">
-                    <h1>{{studentCount}}</h1> 
-                </div>
-                <div class="details">
-                    <h2>STUDENTS</h2>
-                </div>
-            </div>
-            <div class="large-box">
-                <div class="number">
-                    <h1>{{teacherCount}}</h1> 
-                </div>
-                <div class="details">
-                    <h2>TEACHER</h2>
-                </div>
-            </div>
-            <div class="large-box-green">
-                <div class="number">
-                    <h1>{{queueCount}}</h1> 
-                </div>
-                <div class="details">
-                    <h2>QUEUE</h2>
-                </div>
-            </div>
-            <div class="large-box-green">
-                <div class="number">
-                    <h1>{{appointmentCount}}</h1> 
-                </div>
-                <div class="details">
-                    <h2>APPOINTMENTS</h2>
-                </div>
-            </div>
+  <div class="title">
+    <h2>Analytics Overview</h2>
+  </div>
+  <div class="content">
+    <div class="top">
+      <div class="large-box">
+        <div class="number">
+          <h1>{{ studentCount }}</h1>
         </div>
-        <div class="main-content">
-            <div class="left">
-                <div class="appointment-box">
-                    <h2>Login Logs</h2>
-                    <div class="logs" *ngFor="let log of loginLogs">
-                        <p>{{log.login_time}}</p>
-                        <h4 *ngIf="log.user_id != null">Student {{log.user_id}} logged in.</h4>
-                        <h4 *ngIf="log.consultant_id != null">Consultant {{log.consultant_id}} logged in.</h4>
-                    </div>
-                </div>
-            </div>
-            <div class="right">
-                <div class="appointment-box">
-                    <h2>Action Logs</h2>
-                    <div class="logs" *ngFor="let log of actionLogs">
-                        <p>{{log.action_time}}</p>
-                        <h4 *ngIf="log.user_id != null">{{log.details}}</h4>
-                    </div>
-                </div>
-            </div>
+        <div class="details">
+          <h2>STUDENTS</h2>
         </div>
-    </div>
-    <div class="title">
-        <h2>Analytics</h2>
-    </div>
-    <div class="content">
-        <div class="two-column">
-            <div class="column">
-                <h2>{{appointmentMode}} Appointments</h2>
-                <canvas baseChart type="bar" [data]="barChartData"></canvas>
-            </div>
-            <!-- <div class="info">
-                <div class="radio">
-                    <input class="radio__input" type="radio" value="Monthly" [(ngModel)]="appointmentMode" (click)="mapAppointmentBarChartMonthly()" name="modeBar" id="monthly-2">
-                    <label class="radio__label" for="monthly-2">Monthly</label>
-                    <input class="radio__input" type="radio" value="Weekly" [(ngModel)]="appointmentMode" (click)="mapAppointmentBarChartWeekly()" name="modeBar" id="weekly-2">
-                    <label class="radio__label" for="weekly-2">Weekly</label>
-                    <input class="radio__input" type="radio" value="Daily" [(ngModel)]="appointmentMode" (click)="mapAppointmentBarChartDaily()" name="modeBar" id="daily-2">
-                    <label class="radio__label" for="daily-2">Daily</label>
-                </div>
-                <div class="pie">
-                    <h2>Appointment Overview</h2>
-                    <canvas #AppointmentPieChart baseChart type="pie" [data]="appointmentPieChartData" > </canvas>
-                </div>
-            </div> -->
+      </div>
+      <div class="large-box">
+        <div class="number">
+          <h1>{{ teacherCount }}</h1>
         </div>
+        <div class="details">
+          <h2>TEACHER</h2>
+        </div>
+      </div>
+      <div class="large-box-green">
+        <div class="number">
+          <h1>{{ queueCount }}</h1>
+        </div>
+        <div class="details">
+          <h2>QUEUE</h2>
+        </div>
+      </div>
+      <div class="large-box-green">
+        <div class="number">
+          <h1>{{ appointmentCount }}</h1>
+        </div>
+        <div class="details">
+          <h2>APPOINTMENTS</h2>
+        </div>
+      </div>
     </div>
+    <div class="main-content">
+      <div class="left">
+        <div class="appointment-box">
+          <h2>Login Logs</h2>
+          <div class="logs" *ngFor="let log of loginLogs">
+            <p>{{ log.login_time }}</p>
+            <h4 *ngIf="log.user_id != null">
+              Student {{ log.user_id }} logged in.
+            </h4>
+            <h4 *ngIf="log.consultant_id != null">
+              Consultant {{ log.consultant_id }} logged in.
+            </h4>
+          </div>
+        </div>
+      </div>
+      <div class="right">
+        <div class="appointment-box">
+          <h2>Action Logs</h2>
+          <div class="logs" *ngFor="let log of actionLogs">
+            <p>{{ log.action_time }}</p>
+            <h4 *ngIf="log.user_id != null">{{ log.details }}</h4>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="title">
+    <h2>Appointment Analytics</h2>
+  </div>
+  <div class="content">
+    <div class="two-column">
+      <div class="column">
+        <h2>Appointments</h2>
+        <canvas id="appointmentChart" baseChart="myChart"></canvas>
+      </div>
+      <div>
+        <div class="column">
+          <h2>Appointment Activity</h2>
+          <canvas id="dailyAppointmentChart" baseChart="lineChart"></canvas>
+        </div>
+        <div class="column">
+          <h2>User Activity</h2>
+          <canvas
+            id="dailyActionLogsChart"
+            baseChart="actionLogsChart"
+          ></canvas>
+        </div>
+      </div>
+    </div>
+  </div>
 </div>
-    

@@ -1,62 +1,120 @@
 <div class="whole">
-    <div class="Upper">
-        <div class="top" (click)="switchMode('Students')">      
-            <p>User Management</p>
-        </div>
-        <div class="bot" (click)="switchMode('Teachers')">
-            <p>Teacher Management</p>
-        </div>
-        <mat-checkbox class="example-margin" [(ngModel)]="bscsToggle" (ngModelChange)="toggleFilter()">BSCS</mat-checkbox>
-        <mat-checkbox class="example-margin" [(ngModel)]="bsitToggle" (ngModelChange)="toggleFilter()">BSIT</mat-checkbox>
-        <mat-checkbox class="example-margin" [(ngModel)]="bsemcToggle" (ngModelChange)="toggleFilter()">BSEMC</mat-checkbox>
-        <mat-checkbox class="example-margin" [(ngModel)]="coordinatorToggle" (ngModelChange)="toggleFilter()">Coordinator</mat-checkbox>
-        <mat-checkbox class="example-margin" [(ngModel)]="deletedToggle" (ngModelChange)="toggleFilter()">Show Deleted Accounts</mat-checkbox>
+  <div class="Upper">
+    <div class="top" (click)="switchMode('Students')">
+      <p>User Management</p>
     </div>
-    <hr>
-    <div class="lower">
-        <div class="title">
-            <p>{{selectedMode}} Accounts</p>
-            <div class="act">
-                <p>Actions</p>
-            </div>
-        </div>
-        <div class="group" *ngIf="selectedMode == 'Teachers'">
-            <div class="teacher-row" *ngFor="let teacher of filteredTeachers">
-                <div class="teachercard">
-                   <div class="left"></div>
-                   <div class="info">
-                       <p>Full Name: {{teacher.first_name}} {{teacher.last_name}}</p>
-                       <p>Email: {{teacher.Email}}</p>
-                   </div>
-                   <div class="teacher">
-                       <p>{{teacher.department}} {{ teacher.headteacher ? 'Coordinator' : 'Faculty Member' }}</p>
-                   </div>
-                </div>
-                <div class="action">
-                   <button class="edit" (click)="editTeacher(teacher.ConsultantID)">Edit</button>
-                   <button class="delete" (click)="confirmDeleteTeacher(teacher.ConsultantID, teacher.first_name, teacher.last_name)">Delete</button>
-                </div>
-           </div>
-           <button class="add-button" (click)="addTeacher()"><i class='bx bxs-user-plus' ></i></button>
-        </div>
-        <div class="group" *ngIf="selectedMode == 'Students'">
-            <div class="teacher-row" *ngFor="let student of filteredStudents">
-                <div class="teachercard">
-                   <div class="left-student"></div>
-                   <div class="info">
-                       <p>Full Name: {{student.FirstName}} {{student.LastName}}</p>
-                       <p>Email: {{student.Email}}</p>
-                   </div>
-                   <div class="student">
-                       <p>{{student.Course}} {{student.year}}{{student.block}}</p>
-                   </div>
-                </div>
-                <div class="action">
-                   <button class="edit" (click)="editStudent(student.UserID)">Edit</button>
-                   <button class="delete" (click)="confirmDeleteStudent(student.UserID, student.FirstName, student.LastName)">Delete</button>
-                </div>
-           </div>
-           <button class="add-button" (click)="addStudent()"><i class='bx bxs-user-plus' ></i></button>
-        </div>
+    <div class="bot" (click)="switchMode('Teachers')">
+      <p>Teacher Management</p>
     </div>
+    <mat-checkbox
+      class="example-margin"
+      [(ngModel)]="bscsToggle"
+      (ngModelChange)="toggleFilter()"
+      >BSCS</mat-checkbox
+    >
+    <mat-checkbox
+      class="example-margin"
+      [(ngModel)]="bsitToggle"
+      (ngModelChange)="toggleFilter()"
+      >BSIT</mat-checkbox
+    >
+    <mat-checkbox
+      class="example-margin"
+      [(ngModel)]="bsemcToggle"
+      (ngModelChange)="toggleFilter()"
+      >BSEMC</mat-checkbox
+    >
+    <mat-checkbox
+      class="example-margin"
+      [(ngModel)]="coordinatorToggle"
+      (ngModelChange)="toggleFilter()"
+      >Coordinator</mat-checkbox
+    >
+    <mat-checkbox
+      class="example-margin"
+      [(ngModel)]="deletedToggle"
+      (ngModelChange)="toggleFilter()"
+      >Show Deleted Accounts</mat-checkbox
+    >
+  </div>
+  <hr />
+  <div class="lower">
+    <div class="title">
+      <p>{{ selectedMode }} Accounts</p>
+      <div class="act">
+        <p>Actions</p>
+      </div>
+    </div>
+    <div class="group" *ngIf="selectedMode == 'Teachers'">
+      <div class="teacher-row" *ngFor="let teacher of filteredTeachers">
+        <div class="teachercard">
+          <div class="left">{{ teacher.ConsultantID }}</div>
+          <div class="info">
+            <p>Full Name: {{ teacher.first_name }} {{ teacher.last_name }}</p>
+            <p>Email: {{ teacher.Email }}</p>
+          </div>
+          <div class="teacher">
+            <p>
+              {{ teacher.department }}
+              {{ teacher.headteacher ? "Coordinator" : "Faculty Member" }}
+            </p>
+          </div>
+        </div>
+        <div class="action">
+          <button class="edit" (click)="editTeacher(teacher.ConsultantID)">
+            Edit
+          </button>
+          <button
+            class="delete"
+            (click)="
+              confirmDeleteTeacher(
+                teacher.ConsultantID,
+                teacher.first_name,
+                teacher.last_name
+              )
+            "
+          >
+            Delete
+          </button>
+        </div>
+      </div>
+      <button class="add-button" (click)="addTeacher()">
+        <i class="bx bxs-user-plus"></i>
+      </button>
+    </div>
+    <div class="group" *ngIf="selectedMode == 'Students'">
+      <div class="teacher-row" *ngFor="let student of filteredStudents">
+        <div class="teachercard">
+          <div class="left-student">{{ student.UserID }}</div>
+          <div class="info">
+            <p>Full Name: {{ student.FirstName }} {{ student.LastName }}</p>
+            <p>Email: {{ student.Email }}</p>
+          </div>
+          <div class="student">
+            <p>{{ student.Course }} {{ student.year }}{{ student.block }}</p>
+          </div>
+        </div>
+        <div class="action">
+          <button class="edit" (click)="editStudent(student.UserID)">
+            Edit
+          </button>
+          <button
+            class="delete"
+            (click)="
+              confirmDeleteStudent(
+                student.UserID,
+                student.FirstName,
+                student.LastName
+              )
+            "
+          >
+            Delete
+          </button>
+        </div>
+      </div>
+      <button class="add-button" (click)="addStudent()">
+        <i class="bx bxs-user-plus"></i>
+      </button>
+    </div>
+  </div>
 </div>

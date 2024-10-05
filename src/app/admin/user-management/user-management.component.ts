@@ -1,6 +1,6 @@
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Component, OnInit } from '@angular/core';
-import {MatSlideToggleModule} from '@angular/material/slide-toggle';
+import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { mainPort } from '../../app.component';
 import { Teacher } from '../../interfaces/Teacher';
 import { User } from '../../interfaces/User';
@@ -17,22 +17,26 @@ import { AddStudentComponent } from '../../matdialogs/add-student/add-student.co
 import { MatCheckbox } from '@angular/material/checkbox';
 import { FormsModule } from '@angular/forms';
 
-
 @Component({
   selector: 'app-user-management',
   standalone: true,
-  imports: [MatSlideToggleModule, NgFor, MatIcon, MatButton, MatTooltipModule, NgIf, MatCheckbox, FormsModule],
+  imports: [
+    MatSlideToggleModule,
+    NgFor,
+    MatIcon,
+    MatButton,
+    MatTooltipModule,
+    NgIf,
+    MatCheckbox,
+    FormsModule,
+  ],
   templateUrl: './user-management.component.html',
-  styleUrl: './user-management.component.css'
+  styleUrl: './user-management.component.css',
 })
-export class UserManagementComponent implements OnInit{
-  constructor(
-    private http: HttpClient,
-    private dialog: MatDialog
-  )
-  {}
+export class UserManagementComponent implements OnInit {
+  constructor(private http: HttpClient, private dialog: MatDialog) {}
   //Variables
-  selectedMode = "Teachers";
+  selectedMode = 'Teachers';
   teachers: Teacher[] = [];
   students: User[] = [];
   filteredTeachers: Teacher[] = [];
@@ -44,109 +48,146 @@ export class UserManagementComponent implements OnInit{
   coordinatorToggle: boolean = true;
   deletedToggle: boolean = false;
 
-  switchMode(mode: string){
+  switchMode(mode: string) {
     this.selectedMode = mode;
   }
 
   ngOnInit(): void {
     //Fetch Teachers
-    this.http.get<Teacher[]>(`${mainPort}/pdo/api/get_consultants`).subscribe(result=>{
-      this.teachers = result;
-      this.filteredTeachers = this.teachers.filter(teacher => teacher.Email !== null)
-    })
+    this.http
+      .get<Teacher[]>(`${mainPort}/pdo/api/get_consultants`)
+      .subscribe((result) => {
+        this.teachers = result;
+        this.filteredTeachers = this.teachers.filter(
+          (teacher) => teacher.Email !== null
+        );
+      });
     //Fetch Users
     const token = localStorage.getItem('token');
     const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
-    this.http.get<User[]>(`${mainPort}/pdo/api/get_users`, { headers }).subscribe(result=>{
-      this.students = result;
-      this.filteredStudents = this.students.filter(student => student.Email !== null)
-    })
+    this.http
+      .get<User[]>(`${mainPort}/pdo/api/get_users`, { headers })
+      .subscribe((result) => {
+        this.students = result;
+        this.filteredStudents = this.students.filter(
+          (student) => student.Email !== null
+        );
+      });
   }
 
   //Filter Deleted Accounts
-  toggleFilter(){
-    //Deleted Email Toggle
-    if(this.deletedToggle == true){
-      this.filteredStudents = this.students
-      this.filteredTeachers = this.teachers
+  toggleFilter() {
+    // Start with the full list of students and teachers
+    this.filteredStudents = [...this.students];
+    this.filteredTeachers = [...this.teachers];
+
+    // Filter out deleted accounts
+    if (!this.deletedToggle) {
+      this.filteredStudents = this.filteredStudents.filter(
+        (student) => student.Email !== null
+      );
+      this.filteredTeachers = this.filteredTeachers.filter(
+        (teacher) => teacher.Email !== null
+      );
     }
-    else{
-      this.filteredStudents = this.students.filter(student => student.Email !== null)
-      this.filteredTeachers = this.teachers.filter(teacher => teacher.Email !== null)
+
+    // Filter by BSCS
+    if (!this.bscsToggle) {
+      this.filteredStudents = this.filteredStudents.filter(
+        (student) => student.Course !== 'BSCS'
+      );
+      this.filteredTeachers = this.filteredTeachers.filter(
+        (teacher) => teacher.department !== 'BSCS'
+      );
     }
-    //BSCS
-    if(this.bscsToggle == false){
-      this.filteredStudents = this.students.filter(student => student.Course !== "BSCS")
-      this.filteredTeachers = this.teachers.filter(teacher => teacher.department !== "BSCS")  
+
+    // Filter by BSIT
+    if (!this.bsitToggle) {
+      this.filteredStudents = this.filteredStudents.filter(
+        (student) => student.Course !== 'BSIT'
+      );
+      this.filteredTeachers = this.filteredTeachers.filter(
+        (teacher) => teacher.department !== 'BSIT'
+      );
     }
-    //BSIT
-    if(this.bsitToggle == false){
-      this.filteredStudents = this.students.filter(student => student.Course !== "BSIT")
-      this.filteredTeachers = this.teachers.filter(teacher => teacher.department !== "BSIT")  
+
+    // Filter by BSEMC
+    if (!this.bsemcToggle) {
+      this.filteredStudents = this.filteredStudents.filter(
+        (student) => student.Course !== 'BSEMC'
+      );
+      this.filteredTeachers = this.filteredTeachers.filter(
+        (teacher) => teacher.department !== 'BSEMC'
+      );
     }
-    //BSEMC
-    if(this.bsemcToggle == false){
-      this.filteredStudents = this.students.filter(student => student.Course !== "BSEMC")
-      this.filteredTeachers = this.teachers.filter(teacher => teacher.department !== "BSEMC")  
-    }
-    //Coordinator
-    if(this.coordinatorToggle == false){
-      this.filteredTeachers = this.teachers.filter(teacher => teacher.headteacher == false)  
+
+    // Filter by coordinator
+    if (!this.coordinatorToggle) {
+      this.filteredTeachers = this.filteredTeachers.filter(
+        (teacher) => teacher.headteacher == false
+      );
     }
   }
 
   //Teacher Functions
   editTeacher(id: number) {
     const dialogRef = this.dialog.open(EditUserComponent, {
-        height: '50vh',
-        width: '40vw',
-        data: {
-            teacherid: id
-        }
+      height: '50vh',
+      width: '40vw',
+      data: {
+        teacherid: id,
+      },
     });
 
     dialogRef.afterClosed().subscribe(() => {
-        this.http.get<Teacher[]>(`${mainPort}/pdo/api/get_consultants`).subscribe(result => {
-            this.teachers = result;
-            this.toggleFilter();
+      this.http
+        .get<Teacher[]>(`${mainPort}/pdo/api/get_consultants`)
+        .subscribe((result) => {
+          this.teachers = result;
+          this.toggleFilter();
         });
     });
-}
-  confirmDeleteTeacher(id: number, fname:string, lstring:string) {
-    const  dialogRef = this.dialog.open(ConfirmationComponent, {
+  }
+  confirmDeleteTeacher(id: number, fname: string, lstring: string) {
+    const dialogRef = this.dialog.open(ConfirmationComponent, {
       data: {
-        title: "Delete this teacher?",
-        description: `Are you sure you want to delete ${fname} ${lstring}?`
-      }
+        title: 'Delete this teacher?',
+        description: `Are you sure you want to delete ${fname} ${lstring}?`,
+      },
     });
 
-    dialogRef.afterClosed().subscribe(result => {
-      if(result){
+    dialogRef.afterClosed().subscribe((result) => {
+      if (result) {
         this.deleteTeacher(id);
       }
     });
   }
-  deleteTeacher(id:number){
+  deleteTeacher(id: number) {
     console.log(localStorage.getItem('token'));
-    console.log(id)
+    console.log(id);
     const data = {
-      id:id,
-      key:localStorage.getItem('token')
-    }
-    this.http.post(`${mainPort}/pdo/api/delete_teacher`, data).subscribe(result=>{
-      if(result === true){
-        console.log('deleted')
-        this.http.get<Teacher[]>(`${mainPort}/pdo/api/get_consultants`).subscribe(result=>{
-          this.teachers = result;
-        })
-      }
-      else{
-        console.log('not')
-        this.http.get<Teacher[]>(`${mainPort}/pdo/api/get_consultants`).subscribe(result=>{
-          this.teachers = result;
-        })
-      }
-    })
+      id: id,
+      key: localStorage.getItem('token'),
+    };
+    this.http
+      .post(`${mainPort}/pdo/api/delete_teacher`, data)
+      .subscribe((result) => {
+        if (result === true) {
+          console.log('deleted');
+          this.http
+            .get<Teacher[]>(`${mainPort}/pdo/api/get_consultants`)
+            .subscribe((result) => {
+              this.teachers = result;
+            });
+        } else {
+          console.log('not');
+          this.http
+            .get<Teacher[]>(`${mainPort}/pdo/api/get_consultants`)
+            .subscribe((result) => {
+              this.teachers = result;
+            });
+        }
+      });
   }
 
   //Checkbox
@@ -155,106 +196,124 @@ export class UserManagementComponent implements OnInit{
     // Perform HTTP POST request here using isChecked value
     if (isChecked) {
       // Execute HTTP POST request
-      this.http.post<any>('your-post-endpoint', { checked: true }).subscribe(response => {
-        // Handle response if needed
-      });
+      this.http
+        .post<any>('your-post-endpoint', { checked: true })
+        .subscribe((response) => {
+          // Handle response if needed
+        });
     }
   }
 
   //Add Teacher
-  addTeacher(){
+  addTeacher() {
     const addTeacher = this.dialog.open(AddTeacherComponent, {
       width: '70vw',
       height: '75vh',
       data: {
-        title: 'Add Teacher'
-      }
-    })
+        title: 'Add Teacher',
+      },
+    });
 
-    addTeacher.afterClosed().subscribe(result => {
-      this.http.get<Teacher[]>(`${mainPort}/pdo/api/get_consultants`).subscribe(result=>{
-        this.teachers = result;
-      })
-    })
+    addTeacher.afterClosed().subscribe((result) => {
+      this.http
+        .get<Teacher[]>(`${mainPort}/pdo/api/get_consultants`)
+        .subscribe((result) => {
+          this.teachers = result;
+        });
+    });
   }
 
   //Student Management
-  addStudent(){
+  addStudent() {
     const addTeacher = this.dialog.open(AddStudentComponent, {
       width: '70vw',
       height: '75vh',
       data: {
-        title: 'Add Student'
-      }
-    })
+        title: 'Add Student',
+      },
+    });
 
-    addTeacher.afterClosed().subscribe(result => {
+    addTeacher.afterClosed().subscribe((result) => {
       const token = localStorage.getItem('token');
       const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
-      this.http.get<User[]>(`${mainPort}/pdo/api/get_users`, { headers }).subscribe(result=>{
-        this.students = result;
-      })
-    })
+      this.http
+        .get<User[]>(`${mainPort}/pdo/api/get_users`, { headers })
+        .subscribe((result) => {
+          this.students = result;
+        });
+    });
   }
 
   editStudent(id: number) {
-      const dialogRef = this.dialog.open(EditStudentComponent, {
-          height: '50vh',
-          width: '40vw',
-          data: {
-              studentid: id
-          }
-      });
-  
-      dialogRef.afterClosed().subscribe(() => {
-        const token = localStorage.getItem('token');
-        const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
-        this.http.get<User[]>(`${mainPort}/pdo/api/get_users`, { headers }).subscribe(result=>{
-          this.students = result;
-          this.toggleFilter();
-        })
-      });
-  }
-
-  confirmDeleteStudent(id: number, fname:string, lstring:string) {
-    const  dialogRef = this.dialog.open(ConfirmationComponent, {
+    const dialogRef = this.dialog.open(EditStudentComponent, {
+      height: '50vh',
+      width: '40vw',
       data: {
-        title: "Delete this student?",
-        description: `Are you sure you want to delete ${fname} ${lstring}?`
-      }
+        studentid: id,
+      },
     });
 
-    dialogRef.afterClosed().subscribe(result => {
-      if(result){
+    dialogRef.afterClosed().subscribe(() => {
+      const token = localStorage.getItem('token');
+      const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
+      this.http
+        .get<User[]>(`${mainPort}/pdo/api/get_users`, { headers })
+        .subscribe((result) => {
+          this.students = result;
+          this.toggleFilter();
+        });
+    });
+  }
+
+  confirmDeleteStudent(id: number, fname: string, lstring: string) {
+    const dialogRef = this.dialog.open(ConfirmationComponent, {
+      data: {
+        title: 'Delete this student?',
+        description: `Are you sure you want to delete ${fname} ${lstring}?`,
+      },
+    });
+
+    dialogRef.afterClosed().subscribe((result) => {
+      if (result) {
         this.deleteStudent(id);
       }
     });
   }
-  deleteStudent(id:number){
+  deleteStudent(id: number) {
     console.log(localStorage.getItem('token'));
-    console.log(id)
+    console.log(id);
     const data = {
-      id:id,
-      key:localStorage.getItem('token')
-    }
-    this.http.post(`${mainPort}/pdo/api/delete_student`, data).subscribe(result=>{
-      if(result === true){
-        console.log('deleted')
-        const token = localStorage.getItem('token');
-        const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
-        this.http.get<User[]>(`${mainPort}/pdo/api/get_users`, { headers }).subscribe(result=>{
-          this.students = result;
-        })
-      }
-      else{
-        console.log('not')
-        const token = localStorage.getItem('token');
-        const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
-        this.http.get<User[]>(`${mainPort}/pdo/api/get_users`, { headers }).subscribe(result=>{
-          this.students = result;
-        })
-      }
-    })
+      id: id,
+      key: localStorage.getItem('token'),
+    };
+    this.http
+      .post(`${mainPort}/pdo/api/delete_student`, data)
+      .subscribe((result) => {
+        if (result === true) {
+          console.log('deleted');
+          const token = localStorage.getItem('token');
+          const headers = new HttpHeaders().set(
+            'Authorization',
+            `Bearer ${token}`
+          );
+          this.http
+            .get<User[]>(`${mainPort}/pdo/api/get_users`, { headers })
+            .subscribe((result) => {
+              this.students = result;
+            });
+        } else {
+          console.log('not');
+          const token = localStorage.getItem('token');
+          const headers = new HttpHeaders().set(
+            'Authorization',
+            `Bearer ${token}`
+          );
+          this.http
+            .get<User[]>(`${mainPort}/pdo/api/get_users`, { headers })
+            .subscribe((result) => {
+              this.students = result;
+            });
+        }
+      });
   }
-
 }
