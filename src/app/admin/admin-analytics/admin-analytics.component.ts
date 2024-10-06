@@ -1,24 +1,35 @@
-import { DatePipe, formatDate, NgClass, NgFor, NgIf } from '@angular/common';
+import { NgClass, NgFor, NgIf } from '@angular/common';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
-import { Component, OnInit, QueryList, ViewChildren } from '@angular/core';
-import { Router } from '@angular/router';
+import {
+  AfterViewInit,
+  Component,
+  OnInit,
+  QueryList,
+  ViewChild,
+  ViewChildren,
+} from '@angular/core';
 import { BaseChartDirective } from 'ng2-charts';
 import { Observable } from 'rxjs';
 import { mainPort } from '../../app.component';
-import { Appointment } from '../../interfaces/Appointment';
-import { Queue } from '../../interfaces/Queue';
 import { FormsModule, NgModel } from '@angular/forms';
-import { Teacher } from '../../interfaces/Teacher';
 import { Actionlog } from '../../interfaces/ActionLog';
-import { Action } from '@fullcalendar/core/internal';
 import { Loginlog } from '../../interfaces/LoginLog';
-import { l } from 'vite/dist/node/types.d-aGj9QkWt';
 import { Chart } from 'chart.js';
+import { MatPaginator, MatPaginatorModule } from '@angular/material/paginator';
+import { MatTableDataSource, MatTableModule } from '@angular/material/table';
 
 @Component({
   selector: 'app-admin-analytics',
   standalone: true,
-  imports: [FormsModule, BaseChartDirective, NgClass, NgFor, NgIf],
+  imports: [
+    FormsModule,
+    BaseChartDirective,
+    NgClass,
+    NgFor,
+    NgIf,
+    MatTableModule,
+    MatPaginatorModule,
+  ],
   templateUrl: './admin-analytics.component.html',
   styleUrl: './admin-analytics.component.css',
 })
@@ -66,6 +77,10 @@ export class AdminAnalyticsComponent implements OnInit {
       .get<Actionlog[]>(`${mainPort}/pdo/api/get_action_logs`)
       .subscribe((result) => {
         this.actionLogs = result;
+        this.dataSource = new MatTableDataSource<Actionlog>(this.actionLogs);
+        if (this.paginator) {
+          this.dataSource.paginator = this.paginator;
+        }
       });
   }
   getLoginLogs() {
@@ -74,6 +89,13 @@ export class AdminAnalyticsComponent implements OnInit {
       .subscribe((result) => {
         this.loginLogs = result;
       });
+  }
+  getDailyLoginLogsCount(): Observable<any> {
+    const token = localStorage.getItem('token');
+    const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
+    return this.http.get<any>(`${mainPort}/pdo/api/get_daily_login_count`, {
+      headers,
+    });
   }
   getDailyActionLogsCount(): Observable<any> {
     const token = localStorage.getItem('token');
@@ -166,6 +188,7 @@ export class AdminAnalyticsComponent implements OnInit {
         ],
       },
       options: {
+        responsive: true,
         plugins: {
           legend: {
             display: false,
@@ -183,6 +206,58 @@ export class AdminAnalyticsComponent implements OnInit {
             title: {
               display: true,
               text: 'Appointments',
+            },
+            ticks: {
+              stepSize: 1,
+              precision: 0,
+            },
+          },
+        },
+      },
+    });
+  }
+  createLoginLogsChart(data: any) {
+    const labels = data.map((item: any) => item.login_date);
+    const counts = data.map((item: any) => item.login_count);
+
+    const loginLogsChart = new Chart('dailyLoginLogsChart', {
+      type: 'line',
+      data: {
+        labels: labels,
+        datasets: [
+          {
+            label: '',
+            data: counts,
+            borderColor: 'rgba(75, 192, 192, 1)',
+            borderWidth: 2,
+            fill: false,
+            tension: 0.1,
+          },
+        ],
+      },
+      options: {
+        responsive: true,
+        plugins: {
+          legend: {
+            display: false,
+          },
+        },
+        scales: {
+          x: {
+            title: {
+              display: false,
+              text: 'Date',
+            },
+          },
+          y: {
+            beginAtZero: true,
+            title: {
+              display: true,
+              text: 'Login',
+            },
+            ticks: {
+              stepSize: 1,
+              precision: 0,
             },
           },
         },
@@ -209,6 +284,7 @@ export class AdminAnalyticsComponent implements OnInit {
         ],
       },
       options: {
+        responsive: true,
         plugins: {
           legend: {
             display: false,
@@ -227,10 +303,22 @@ export class AdminAnalyticsComponent implements OnInit {
               display: true,
               text: 'Appointments',
             },
+            ticks: {
+              stepSize: 1,
+              precision: 0,
+            },
           },
         },
       },
     });
+  }
+
+  dataSource = new MatTableDataSource<Actionlog>(this.actionLogs);
+
+  @ViewChild(MatPaginator) paginator!: MatPaginator;
+
+  ngAfterViewInit() {
+    this.dataSource.paginator = this.paginator;
   }
 
   ngOnInit(): void {
@@ -240,6 +328,9 @@ export class AdminAnalyticsComponent implements OnInit {
     this.getStudentCount();
     this.getActionLogs();
     this.getLoginLogs();
+    this.getDailyLoginLogsCount().subscribe((data) => {
+      this.createLoginLogsChart(data);
+    });
     this.getAppointmentDaily().subscribe((data) => {
       this.createBarChart(data);
     });

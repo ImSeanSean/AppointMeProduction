@@ -885,7 +885,9 @@ class Get
     {
         try {
             // SQL query to get all action logs
-            $sql = "SELECT * FROM action_logs ORDER BY action_time DESC";
+            $sql = "SELECT *, DATE_FORMAT(action_time, '%m/%d/%Y %H:%i') AS action_time 
+            FROM action_logs 
+            ORDER BY action_time DESC";
             $stmt = $this->pdo->prepare($sql);
             $stmt->execute();
 
@@ -936,6 +938,29 @@ class Get
             return "Error retrieving action logs: " . $e->getMessage();
         }
     }
+
+    public function getLoginCountPerDay()
+    {
+        try {
+            // SQL query to get login count per day
+            $sql = "SELECT DATE(login_time) AS login_date, COUNT(*) AS login_count
+                FROM admin_login_logs
+                GROUP BY login_date
+                ORDER BY login_date DESC";
+            $stmt = $this->pdo->prepare($sql);
+            $stmt->execute();
+
+            // Fetch the results
+            $loginCounts = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+            return $loginCounts;
+        } catch (PDOException $e) {
+            // Handle the exception (e.g., log error, return error message)
+            error_log("Database error: " . $e->getMessage());
+            return "Error retrieving login counts: " . $e->getMessage();
+        }
+    }
+
     public function getAllLoginLogs()
     {
         try {

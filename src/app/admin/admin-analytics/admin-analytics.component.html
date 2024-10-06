@@ -53,14 +53,71 @@
         </div>
       </div>
       <div class="right">
-        <div class="appointment-box">
-          <h2>Action Logs</h2>
-          <div class="logs" *ngFor="let log of actionLogs">
-            <p>{{ log.action_time }}</p>
-            <h4 *ngIf="log.user_id != null">{{ log.details }}</h4>
-          </div>
+        <div class="column">
+          <h2>Daily User Login</h2>
+          <canvas id="dailyLoginLogsChart" baseChart="loginLogsChart"></canvas>
         </div>
       </div>
+    </div>
+  </div>
+  <div class="title">
+    <h2>Action Logs</h2>
+  </div>
+  <div class="content">
+    <div class="content">
+      <table mat-table [dataSource]="dataSource" class="mat-elevation-z8">
+        <!-- Define your columns here -->
+        <ng-container matColumnDef="consultant_id">
+          <th mat-header-cell *matHeaderCellDef>Consultant ID</th>
+          <td mat-cell *matCellDef="let element">
+            {{ element.consultant_id }}
+          </td>
+        </ng-container>
+        <ng-container matColumnDef="userId">
+          <th mat-header-cell *matHeaderCellDef>User ID</th>
+          <td mat-cell *matCellDef="let element">{{ element.user_id }}</td>
+        </ng-container>
+        <ng-container matColumnDef="actionType">
+          <th mat-header-cell *matHeaderCellDef>Details</th>
+          <td mat-cell *matCellDef="let element">{{ element.details }}</td>
+        </ng-container>
+        <ng-container matColumnDef="actionTime">
+          <th mat-header-cell *matHeaderCellDef>Time</th>
+          <td mat-cell *matCellDef="let element">{{ element.action_time }}</td>
+        </ng-container>
+        <ng-container matColumnDef="actions">
+          <th mat-header-cell *matHeaderCellDef>Actions</th>
+          <td mat-cell *matCellDef="let element">test</td>
+        </ng-container>
+        <tr
+          mat-header-row
+          *matHeaderRowDef="[
+            'consultant_id',
+            'userId',
+            'actionType',
+            'actionTime',
+            'actions'
+          ]"
+        ></tr>
+        <tr
+          mat-row
+          *matRowDef="
+            let row;
+            columns: [
+              'consultant_id',
+              'userId',
+              'actionType',
+              'actionTime',
+              'actions'
+            ]
+          "
+        ></tr>
+      </table>
+
+      <mat-paginator
+        [pageSizeOptions]="[10, 20, 30]"
+        showFirstLastButtons
+      ></mat-paginator>
     </div>
   </div>
   <div class="title">

@@ -670,9 +670,9 @@ class Post extends FPDF
             $appointment_id = $this->pdo->lastInsertId();
 
             // Log the action
-            $actionType = 'appointment_created';
+            $actionType = 'Appointment Created';
             $actionDetails = "Appointment ID $appointment_id created by teacher ID $teacher_id";
-            $this->logAction(null, $teacher_id, $actionType, $actionDetails);
+            $this->logAction($user_id, $teacher_id, $actionType, $actionDetails);
 
             // Optionally, return success response or handle accordingly
             return $appointment_id;
@@ -719,7 +719,7 @@ class Post extends FPDF
                 $jwt = $data->key;
                 $key = JWT::decode($jwt, new Key($this->secretKey, 'HS256'));
                 $userId = ($key->type === 'teacher') ? $key->user_id : null;
-                $actionType = 'appointment_confirmed';
+                $actionType = 'Appointment Confirmed';
                 $actionDetails = "Appointment ID $appointmentId confirmed by consultant ID $userId";
 
                 $this->logAction($userId, $consultantId, $actionType, $actionDetails);
@@ -762,7 +762,7 @@ class Post extends FPDF
                 $key = JWT::decode($jwt, new Key($this->secretKey, 'HS256'));
                 $userId = ($key->type === 'teacher') ? $key->user_id : null;
                 $consultantId = null; // Assuming that consultant ID is not relevant in this context
-                $actionType = 'appointment_rejected';
+                $actionType = 'Appointment Rejected';
                 $actionDetails = "Appointment ID $appointmentId rejected and deleted by consultant ID $userId";
 
                 $this->logAction($userId, $consultantId, $actionType, $actionDetails);
@@ -815,7 +815,7 @@ class Post extends FPDF
                 $stmtUpdate->execute();
 
                 // Log the action
-                $actionType = 'appointment_completed';
+                $actionType = 'Appointment Completed';
                 $actionDetails = "Appointment ID $appointmentId marked as completed by consultant ID $userId";
                 $this->logAction($userId, $consultantId, $actionType, $actionDetails);
 
@@ -872,7 +872,7 @@ class Post extends FPDF
             $stmt->execute();
 
             // Log the action
-            $actionType = 'summary_provided';
+            $actionType = 'Information Provided';
             $actionDetails = "Appointment ID $appointmentId information updated by consultant ID $userId";
             $this->logAction($userId, $consultantId, $actionType, $actionDetails);
 
@@ -926,7 +926,7 @@ class Post extends FPDF
             $stmt->execute();
 
             // Log the action
-            $actionType = 'summary_provided';
+            $actionType = 'Summary Provided';
             $actionDetails = "Appointment ID $appointmentId summary updated by consultant ID $userId";
             $this->logAction($userId, $consultantId, $actionType, $actionDetails);
 
@@ -991,7 +991,7 @@ class Post extends FPDF
             $stmt->execute();
 
             // Log the action
-            $actionType = 'appointment_rated';
+            $actionType = 'Appointment Rated';
             $actionDetails = "Appointment ID $appointmentId rated by student ID $userId with ratings (Helpfulness: $appointmentRating, Empathy: $appointmentRating2, Clarity: $appointmentRating3, Engagement: $appointmentRating4) and remarks: $appointmentRemarks";
             $this->logAction($userId, $consultantId, $actionType, $actionDetails);
 
@@ -1061,7 +1061,7 @@ class Post extends FPDF
 
             if ($stmt->execute()) {
                 // Log the action
-                $actionType = 'queue_added';
+                $actionType = 'Queue Added';
                 $actionDetails = "Student ID $student_id added to queue for Teacher ID $teacher_id with title '$title'";
                 $this->logAction($student_id, $teacher_id, $actionType, $actionDetails);
                 return '0'; // Success
@@ -1130,7 +1130,7 @@ class Post extends FPDF
 
             if ($stmt->execute()) {
                 // Log the action
-                $actionType = 'queue_added_by_teacher';
+                $actionType = 'Queue Added by Teacher';
                 $actionDetails = "Teacher ID $teacher_id added Student ID $student_id to queue";
                 $this->logAction($student_id, $teacher_id, $actionType, $actionDetails);
                 return '0'; // Success
@@ -1198,7 +1198,7 @@ class Post extends FPDF
             $stmt->bindParam(':reason', $reason, PDO::PARAM_STR);
 
             if ($stmt->execute()) {
-                $actionType = 'queue_added_by_teacher';
+                $actionType = 'Queue Added by Teacher';
                 $actionDetails = "Teacher ID $teacher_id added Student ID $student_id to queue";
                 $this->logAction($student_id, $teacher_id, $actionType, $actionDetails);
                 return '0';
@@ -1259,7 +1259,7 @@ class Post extends FPDF
 
             // Check if the update was successful
             if ($result) {
-                $actionType = 'queue_updated';
+                $actionType = 'Queue Updated';
                 $actionDetails = "Student ID $key->user_id updated Queue ID $queue_id values.";
                 $this->logAction($key->user_id, null, $actionType, $actionDetails);
                 return "Queue updated successfully.";
@@ -1302,12 +1302,12 @@ class Post extends FPDF
             // Optionally, return success response or handle accordingly
             if ($stmt->rowCount() > 0) {
                 if ($key->type == 'teacher') {
-                    $actionType = 'queue_deleted';
+                    $actionType = 'Queue Deleted';
                     $actionDetails = "Teacher ID $key->user_id deleted Queue ID $queueId.";
                     $this->logAction(null, $key->user_id, $actionType, $actionDetails);
                     return "Queue updated successfully.";
                 } else if ($key->type == 'student') {
-                    $actionType = 'queue_deleted';
+                    $actionType = 'Queue Deleted';
                     $actionDetails = "Student ID $key->user_id deleted Queue ID $queueId.";
                     $this->logAction($key->user_id, null, $actionType, $actionDetails);
                     return "Queue updated successfully.";

@@ -107,6 +107,7 @@
   width: 50%;
   height: 100%;
   padding: 20px;
+  display: grids;
 }
 .appointment-box {
   height: 100%;
@@ -397,4 +398,9 @@ canvas {
   background-color: #ffefd1;
   font-size: 17px;
   padding: 10px 20px;
+}
+
+/*Table*/
+th {
+  font-weight: bold;
 }

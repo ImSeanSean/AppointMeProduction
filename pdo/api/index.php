@@ -142,6 +142,9 @@ switch ($_SERVER['REQUEST_METHOD']) {
             case 'get_login_logs':
                 echo json_encode($get->getAllLoginLogs());
                 break;
+            case 'get_daily_login_count':
+                echo json_encode($get->getLoginCountPerDay());
+                break;
             default:
                 http_response_code(403);
                 break;
