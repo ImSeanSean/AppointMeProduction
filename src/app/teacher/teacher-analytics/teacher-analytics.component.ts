@@ -8,6 +8,8 @@ import { mainPort } from '../../app.component';
 import { BaseChartDirective } from 'ng2-charts';
 import { FormsModule } from '@angular/forms';
 import { Queue } from '../../interfaces/Queue';
+import html2canvas from 'html2canvas'; // Import html2canvas
+import jsPDF from 'jspdf'; // Import jsPDF
 
 @Component({
     selector: 'app-teacher-analytics',
@@ -488,7 +490,89 @@ updateAppointmentBarChart(appointments: any[]){
   });
   }
 }
+analytics_overviewPdf() {
+  const element = document.querySelector('.content'); // You can target a specific div if needed, e.g., document.getElementById('content')
+  
+  // Use html2canvas to capture the current view
+  html2canvas(element as HTMLElement).then((canvas: { toDataURL: (arg0: string) => any; height: number; width: number; }) => {
+    const imgData = canvas.toDataURL('image/png');
+    
+    const pdf = new jsPDF('l', 'mm', 'a4'); 
+    
+    const pageWidth = pdf.internal.pageSize.getWidth();
+    const pageHeight = pdf.internal.pageSize.getHeight();
+    
+    pdf.addImage(imgData, 'PNG', 0, 0, pageWidth, pageHeight);
+    pdf.save('analytics_overview.pdf'); 
+  });
+}
 
+performance_analyticsPdf() {
+  const element = document.querySelector(".two-column");
+  // Use html2canvas to capture the current view
+  html2canvas(element as HTMLElement).then((canvas: { toDataURL: (arg0: string) => any; height: number; width: number; }) => {
+    const imgData = canvas.toDataURL('image/png');
+    
+    const pdf = new jsPDF('l', 'mm', 'a4'); 
+    
+    const pageWidth = pdf.internal.pageSize.getWidth();
+    const pageHeight = pdf.internal.pageSize.getHeight();
+    
+    pdf.addImage(imgData, 'PNG', 0, 0, pageWidth, pageHeight);
+    pdf.save('performance_analytics.pdf'); 
+  });
+}
+
+appointment_analyticsPdf() {
+  const element = document.querySelector('body > app-root > app-dashboard-teacher > div > div.main > app-teacher-analytics > div > div:nth-child(6) > div');
+  
+  html2canvas(element as HTMLElement).then((canvas: { toDataURL: (arg0: string) => any; height: number; width: number; }) => {
+    const imgData = canvas.toDataURL('image/png');
+    
+    const pdf = new jsPDF('l', 'mm', 'a4');
+    
+    const pageWidth = pdf.internal.pageSize.getWidth();
+    const pageHeight = pdf.internal.pageSize.getHeight();
+    
+    // Force image to cover the full page, even if it distorts the aspect ratio
+    pdf.addImage(imgData, 'PNG', 0, 0, pageWidth, pageHeight);
+    
+    pdf.save('appointment_analytics.pdf'); 
+  });
+}
+
+generatePdfall() {
+  // Select all content sections (you can use any specific class or element)
+  const elements = document.querySelectorAll('.content'); // Adjust the selector if needed
+
+  const pdf = new jsPDF('p', 'mm', 'a4'); // Create new PDF, portrait, A4 size
+  const pageHeight = 295; // A4 page height in mm
+  const imgWidth = 190; // Image width in mm
+  let position = 0; // Starting Y position for the first image
+
+  // Convert each section to canvas one by one
+  let promises = Array.from(elements).map(element => {
+    return html2canvas(element as HTMLElement, { scale: 2 });
+  });
+
+  Promise.all(promises).then(canvases => {
+    canvases.forEach((canvas, index) => {
+      const imgData = canvas.toDataURL('image/png'); // Convert canvas to image data
+      const imgHeight = canvas.height * imgWidth / canvas.width; // Maintain aspect ratio
+
+      if (position + imgHeight > pageHeight) {
+        pdf.addPage(); // Add new page if the current page doesn't fit
+        position = 0; // Reset position to top of the new page
+      }
+
+      pdf.addImage(imgData, 'PNG', 10, position, imgWidth, imgHeight); // Add image to PDF
+      position += imgHeight; // Update Y position for next image
+    });
+
+    // Download the generated PDF
+    pdf.save('teacher-analytics.pdf');
+  });
+}
   ngOnInit(): void {
     if(this.usertype == "user"){
       this.getAppointment().subscribe(

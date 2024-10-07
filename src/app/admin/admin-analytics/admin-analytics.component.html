@@ -58,70 +58,75 @@
           <canvas id="dailyLoginLogsChart" baseChart="loginLogsChart"></canvas>
         </div>
       </div>
+      <button (click)="analytics_overviewPdf()">Generate PDF</button>
     </div>
   </div>
   <div class="title">
     <h2>Action Logs</h2>
+    <i class='bx bx-download' (click)="action_logsPdf()"></i>
   </div>
+  
   <div class="content">
-    <div class="content">
-      <table mat-table [dataSource]="dataSource" class="mat-elevation-z8">
-        <!-- Define your columns here -->
-        <ng-container matColumnDef="consultant_id">
-          <th mat-header-cell *matHeaderCellDef>Consultant ID</th>
-          <td mat-cell *matCellDef="let element">
-            {{ element.consultant_id }}
-          </td>
-        </ng-container>
-        <ng-container matColumnDef="userId">
-          <th mat-header-cell *matHeaderCellDef>User ID</th>
-          <td mat-cell *matCellDef="let element">{{ element.user_id }}</td>
-        </ng-container>
-        <ng-container matColumnDef="actionType">
-          <th mat-header-cell *matHeaderCellDef>Details</th>
-          <td mat-cell *matCellDef="let element">{{ element.details }}</td>
-        </ng-container>
-        <ng-container matColumnDef="actionTime">
-          <th mat-header-cell *matHeaderCellDef>Time</th>
-          <td mat-cell *matCellDef="let element">{{ element.action_time }}</td>
-        </ng-container>
-        <ng-container matColumnDef="actions">
-          <th mat-header-cell *matHeaderCellDef>Actions</th>
-          <td mat-cell *matCellDef="let element">test</td>
-        </ng-container>
-        <tr
-          mat-header-row
-          *matHeaderRowDef="[
+    <table mat-table [dataSource]="dataSource" class="mat-elevation-z8">
+      <!-- Define your columns here -->
+      <ng-container matColumnDef="consultant_id">
+        <th mat-header-cell *matHeaderCellDef>Consultant ID</th>
+        <td mat-cell *matCellDef="let element">
+          {{ element.consultant_id }}
+        </td>
+      </ng-container>
+      <ng-container matColumnDef="userId">
+        <th mat-header-cell *matHeaderCellDef>User ID</th>
+        <td mat-cell *matCellDef="let element">{{ element.user_id }}</td>
+      </ng-container>
+      <ng-container matColumnDef="actionType">
+        <th mat-header-cell *matHeaderCellDef>Details</th>
+        <td mat-cell *matCellDef="let element">{{ element.details }}</td>
+      </ng-container>
+      <ng-container matColumnDef="actionTime">
+        <th mat-header-cell *matHeaderCellDef>Time</th>
+        <td mat-cell *matCellDef="let element">{{ element.action_time }}</td>
+      </ng-container>
+      <ng-container matColumnDef="actions">
+        <th mat-header-cell *matHeaderCellDef>Actions</th>
+        <td mat-cell *matCellDef="let element">test</td>
+      </ng-container>
+      <tr
+        mat-header-row
+        *matHeaderRowDef="[
+          'consultant_id',
+          'userId',
+          'actionType',
+          'actionTime',
+          'actions'
+        ]"
+      ></tr>
+      <tr
+        mat-row
+        *matRowDef="
+          let row;
+          columns: [
             'consultant_id',
             'userId',
             'actionType',
             'actionTime',
             'actions'
-          ]"
-        ></tr>
-        <tr
-          mat-row
-          *matRowDef="
-            let row;
-            columns: [
-              'consultant_id',
-              'userId',
-              'actionType',
-              'actionTime',
-              'actions'
-            ]
-          "
-        ></tr>
-      </table>
+          ]
+        "
+      ></tr>
+    </table>
 
-      <mat-paginator
-        [pageSizeOptions]="[10, 20, 30]"
-        showFirstLastButtons
-      ></mat-paginator>
-    </div>
+    <mat-paginator
+      [pageSizeOptions]="[10, 20, 30]"
+      showFirstLastButtons
+    ></mat-paginator>
   </div>
+    
+  
   <div class="title">
     <h2>Appointment Analytics</h2>
+    <i class='bx bx-download' (click)="appointment_analyticsPdf()"></i>
+    <button (click)="generatePdfall()">Generate ALL PDF</button>
   </div>
   <div class="content">
     <div class="two-column">
@@ -142,6 +147,7 @@
           ></canvas>
         </div>
       </div>
+      
     </div>
   </div>
 </div>

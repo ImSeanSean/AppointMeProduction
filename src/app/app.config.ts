@@ -16,6 +16,6 @@ export const appConfig: ApplicationConfig = {
     provideHttpClient(withFetch()), 
     DatePipe, 
     provideAnimationsAsync(),
-    {provide: LocationStrategy, useClass: HashLocationStrategy}, provideCharts(withDefaultRegisterables())
+    {provide: LocationStrategy, useClass: HashLocationStrategy}, provideCharts(withDefaultRegisterables()), provideAnimationsAsync()
   ]
 };
