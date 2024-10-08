@@ -1,6 +1,9 @@
 <div class="main">
   <div class="title">
-    <h2>Analytics Overview</h2>
+    <h2>
+      Analytics Overview
+      <i class="bx bx-download" (click)="generatePdfall()"></i>
+    </h2>
   </div>
   <div class="content">
     <div class="top">
@@ -58,14 +61,13 @@
           <canvas id="dailyLoginLogsChart" baseChart="loginLogsChart"></canvas>
         </div>
       </div>
-      <button (click)="analytics_overviewPdf()">Generate PDF</button>
     </div>
   </div>
   <div class="title">
     <h2>Action Logs</h2>
-    <i class='bx bx-download' (click)="action_logsPdf()"></i>
+    <i class="bx bx-download" (click)="action_logsPdf()"></i>
   </div>
-  
+
   <div class="content">
     <table mat-table [dataSource]="dataSource" class="mat-elevation-z8">
       <!-- Define your columns here -->
@@ -121,12 +123,10 @@
       showFirstLastButtons
     ></mat-paginator>
   </div>
-    
-  
+
   <div class="title">
     <h2>Appointment Analytics</h2>
-    <i class='bx bx-download' (click)="appointment_analyticsPdf()"></i>
-    <button (click)="generatePdfall()">Generate ALL PDF</button>
+    <i class="bx bx-download" (click)="appointment_analyticsPdf()"></i>
   </div>
   <div class="content">
     <div class="two-column">
@@ -147,7 +147,6 @@
           ></canvas>
         </div>
       </div>
-      
     </div>
   </div>
 </div>

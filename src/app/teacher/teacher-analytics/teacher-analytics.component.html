@@ -1,262 +1,352 @@
 <div class="main">
-    <div class="title">
-        <h2>Analytics Overview</h2>
-    </div>
-    <div class="content">
-        <div class="top">
-            <div class="large-box">
-                <div class="number">
-                    <h1>{{getPending()}}</h1> 
-                </div>
-                <div class="details">
-                    <h2>QUEUE</h2>
-                </div>
-            </div>
-            <div class="large-box">
-                <div class="number">
-                    <h1>{{getConfirmed()}}</h1> 
-                </div>
-                <div class="details">
-                    <h2>CONFIRMED</h2>
-                </div>
-            </div>
-            <div class="large-box">
-                <div class="number">
-                    <h1>{{getCompleted()}}</h1> 
-                </div>
-                <div class="details">
-                    <h2>COMPLETED<br>APPOINMENTS</h2>
-                </div>
-            </div>
-            <div class="large-box-green">
-                <div class="number">
-                    <h1>{{getRating()}}</h1> 
-                </div>
-                <div class="details">
-                    <h2>OVERALL RATING</h2>
-                </div>
-            </div>
-            <div class="large-box-green">
-                <div class="number">
-                    <h1>{{getRatingForWeek()}}</h1> 
-                </div>
-                <div class="details">
-                    <h2>WEEKLY RATING</h2>
-                </div>
-            </div>
-
-            <i class='bx bx-download' (click)="analytics_overviewPdf()"></i>
+  <div class="title">
+    <h2>
+      Analytics Overview
+      <i class="bx bx-download" (click)="generatePdfall()"></i>
+    </h2>
+  </div>
+  <div class="content">
+    <div class="top">
+      <div class="large-box">
+        <div class="number">
+          <h1>{{ getPending() }}</h1>
         </div>
-        <div class="main-content">
-            <div class="left">
-                <div class="appointment-box">
-                    <div class="app-box-top">
-                        <div class="app-box-top-left">
-                            <h1>Appointments</h1>
-                            <label>Scheduled for the Week</label>
-                        </div>
-                        <div class="app-box-top-right">
-                            <h2>{{getAppointmentsThisWeek()}}</h2>
-                            <label>Total</label>
-                        </div>
-                    </div>
-                    <div class="app-box-content">
-                        <ul>
-                            <li>
-                                <h3>Monday</h3> 
-                                <p>{{getAppointmentsForDayOfWeek(0)}} Total Appointments</p>
-                                <a (click)="changeDay(0)">See More</a>
-                            </li>
-                            <li>
-                                <h3>Tuesday</h3> 
-                                <p>{{getAppointmentsForDayOfWeek(1)}} Total Appointments</p>
-                                <a (click)="changeDay(1)">See More</a>
-                            </li>
-                            <li>
-                                <h3>Wednesday</h3> 
-                                <p>{{getAppointmentsForDayOfWeek(2)}} Total Appointments</p>
-                                <a (click)="changeDay(2)">See More</a>
-                            </li>
-                            <li>
-                                <h3>Thursday</h3> 
-                                <p>{{getAppointmentsForDayOfWeek(3)}} Total Appointments</p>
-                                <a (click)="changeDay(3)">See More</a>
-                            </li>
-                            <li>
-                                <h3>Friday</h3> 
-                                <p>{{getAppointmentsForDayOfWeek(4)}} Total Appointments</p>
-                                <a (click)="changeDay(4)">See More</a>
-                            </li>
-                            <li>
-                                <h3>Saturday</h3> 
-                                <p>{{getAppointmentsForDayOfWeek(5)}} Total Appointments</p>
-                                <a (click)="changeDay(5)">See More</a>
-                            </li>
-                        </ul>
-                    </div>
-                </div>
-            </div>
-            <div class="right">
-                <div class="appointment-box">
-                    <div class="appointment-list">
-                        <div class="second-box-top">
-                            <h3>{{selectedDay}} Appointments</h3>
-                        </div>
-                        <div class="card-container">
-                            <div class="appointment-card" *ngFor="let appointment of filterAppointments(appointments)" (click)="changeRoute(appointment.AppointmentID, appointment.Completed, appointment.Status)" 
-                            [ngClass]="{'pending': appointment.Status === 0}">
-                                <div class="box"></div>
-                                <div class="Text">
-                                    <div class="appointment-card-title">
-                                        <p>{{appointment.appointment_title}}</p>
-                                    </div>
-                                    <div class="mid">
-                                        <p>Date: {{getFormattedDate(appointment.AppointmentDate)}}</p>
-                                        <p>Time: {{getFormattedTime(appointment.AppointmentDate)}}</p>
-                                    </div>
-                                    <div class="bottom">
-                                        <p>Teacher: {{appointment.ConsultantFirstName}} {{appointment.ConsultantLastName}}</p>
-                                        <p>Student: {{appointment.UserName}} {{appointment.UserLastName}}</p>
-                                    </div>
-                                    <div class="extra">
-                                        <p>Mode: {{appointment.mode}}</p>
-                                        <p >Urgency: <label [ngClass]="{'urgent-appointment': appointment.urgency == 'Urgent'}">{{appointment.urgency}}</label></p>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
+        <div class="details">
+          <h2>QUEUE</h2>
         </div>
-    </div>
-    <div class="title">
-        <h2>Performance Analytics</h2>
-    </div>
-    <div class="content">
-        <div class="two-column">
-            <div class="column">
-                <h2>{{ratingMode}} Rating</h2>
-                <canvas baseChart type="line" [data]="ratingData" [options]="ratingOptions" ></canvas>
-            </div>
-            <div class="info">
-                <div class="radio">
-                    <input class="radio__input" type="radio" value="Monthly" name="mode" id="monthly" [(ngModel)]="ratingMode" (click)="mapRatingsMonthly()">
-                    <label class="radio__label" for="monthly">Monthly</label>
-                    <input class="radio__input" type="radio" value="Weekly" name="mode" id="weekly" [(ngModel)]="ratingMode" (click)="mapRatingsWeekly()">
-                    <label class="radio__label" for="weekly">Weekly</label>
-                    <input class="radio__input" type="radio" value="Daily" name="mode" id="daily" [(ngModel)]="ratingMode" (click)="mapRatingsDaily()">
-                    <label class="radio__label" for="daily">Daily</label>
-
-                    <i class='bx bx-download' (click)="performance_analyticsPdf()"></i>
-                </div>
-                <div class="total-rating">
-                    <div class="heading">
-                        <h2>Total Rating</h2>
-                    </div>
-                    <div class="ratings">
-                        <div class="indiv-rating">
-                            <div class="stars">
-                                <i class='bx bxs-star'></i>
-                                <i class='bx bxs-star'></i>
-                                <i class='bx bxs-star'></i>
-                                <i class='bx bxs-star'></i>
-                                <i class='bx bxs-star'></i>
-                            </div>
-                            <div class="empty-bar">
-                                <div class="bar" [style.width.%]="rating5Percentage">
-                                </div>
-                                <p>{{rating5Percentage}}% ({{rating5}})</p>
-                            </div>
-                        </div>
-                        <div class="indiv-rating">
-                            <div class="stars">
-                                <i class='bx bxs-star'></i>
-                                <i class='bx bxs-star'></i>
-                                <i class='bx bxs-star'></i>
-                                <i class='bx bxs-star'></i>
-                            </div>
-                            <div class="empty-bar">
-                                <div class="bar" [style.width.%]="rating4Percentage">
-                                </div>
-                                <p>{{rating4Percentage}}% ({{rating4}})</p>
-                            </div>
-                        </div>
-                        <div class="indiv-rating">
-                            <div class="stars">
-                                <i class='bx bxs-star'></i>
-                                <i class='bx bxs-star'></i>
-                                <i class='bx bxs-star'></i>
-                            </div>
-                            <div class="empty-bar">
-                                <div class="bar" [style.width.%]="rating3Percentage"></div>
-                                <p>{{rating3Percentage}}% ({{rating3}})</p>
-                            </div>
-                        </div>
-                        <div class="indiv-rating">
-                            <div class="stars">
-                                <i class='bx bxs-star'></i>
-                                <i class='bx bxs-star'></i>
-                            </div>
-                            <div class="empty-bar">
-                                <div class="bar" [style.width.%]="rating2Percentage"></div>
-                                <p>{{rating2Percentage}}% ({{rating2}})</p>
-                            </div>
-                        </div>
-                        <div class="indiv-rating">
-                            <div class="stars">
-                                <i class='bx bxs-star'></i>
-                            </div>
-                            <div class="empty-bar">
-                                <div class="bar" [style.width.%]="rating1Percentage">
-                                </div>
-                                <p>{{rating1Percentage}}% ({{rating1}})</p>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="heading">
-                        <h2>Rated Appointments</h2>
-                        <div class="ratings">
-                            <div class="indiv-rating">
-                                <div class="empty-bar">
-                                    <div class="bar" [style.width.%]="ratedTotal/appointmentTotal * 100"></div>
-                                </div>
-                            </div>
-                            <p>{{ratedTotal}}/{{appointmentTotal}} Appointments have been rated.</p>
-                        </div>
-                    </div>
-                </div>
-            </div>
+      </div>
+      <div class="large-box">
+        <div class="number">
+          <h1>{{ getConfirmed() }}</h1>
         </div>
-    </div>
-    <div class="title">
-        <h2>Appointment Analytics</h2>
-    </div>
-    <div class="content">
-        <div class="two-column">
-            <div class="column">
-                <h2>{{appointmentMode}} Appointments</h2>
-                <canvas baseChart type="bar" [data]="barChartData"></canvas>
-            </div>
-            <div class="info">
-                <div class="radio">
-                    <input class="radio__input" type="radio" value="Monthly" [(ngModel)]="appointmentMode" (click)="mapAppointmentBarChartMonthly()" name="modeBar" id="monthly-2">
-                    <label class="radio__label" for="monthly-2">Monthly</label>
-                    <input class="radio__input" type="radio" value="Weekly" [(ngModel)]="appointmentMode" (click)="mapAppointmentBarChartWeekly()" name="modeBar" id="weekly-2">
-                    <label class="radio__label" for="weekly-2">Weekly</label>
-                    <input class="radio__input" type="radio" value="Daily" [(ngModel)]="appointmentMode" (click)="mapAppointmentBarChartDaily()" name="modeBar" id="daily-2">
-                    <label class="radio__label" for="daily-2">Daily</label>
-
-                    <i class='bx bx-download' (click)="appointment_analyticsPdf()"></i>
-                </div>
-                <div class="pie">
-                    <h2>Appointment Overview</h2>
-                    <canvas #AppointmentPieChart baseChart type="pie" [data]="appointmentPieChartData" > </canvas>
-                </div>
-            </div>
+        <div class="details">
+          <h2>CONFIRMED</h2>
         </div>
+      </div>
+      <div class="large-box">
+        <div class="number">
+          <h1>{{ getCompleted() }}</h1>
+        </div>
+        <div class="details">
+          <h2>COMPLETED<br />APPOINMENTS</h2>
+        </div>
+      </div>
+      <div class="large-box-green">
+        <div class="number">
+          <h1>{{ getRating() }}</h1>
+        </div>
+        <div class="details">
+          <h2>OVERALL RATING</h2>
+        </div>
+      </div>
+      <div class="large-box-green">
+        <div class="number">
+          <h1>{{ getRatingForWeek() }}</h1>
+        </div>
+        <div class="details">
+          <h2>WEEKLY RATING</h2>
+        </div>
+      </div>
     </div>
+    <div class="main-content">
+      <div class="left">
+        <div class="appointment-box">
+          <div class="app-box-top">
+            <div class="app-box-top-left">
+              <h1>Appointments</h1>
+              <label>Scheduled for the Week</label>
+            </div>
+            <div class="app-box-top-right">
+              <h2>{{ getAppointmentsThisWeek() }}</h2>
+              <label>Total</label>
+            </div>
+          </div>
+          <div class="app-box-content">
+            <ul>
+              <li>
+                <h3>Monday</h3>
+                <p>{{ getAppointmentsForDayOfWeek(0) }} Total Appointments</p>
+                <a (click)="changeDay(0)">See More</a>
+              </li>
+              <li>
+                <h3>Tuesday</h3>
+                <p>{{ getAppointmentsForDayOfWeek(1) }} Total Appointments</p>
+                <a (click)="changeDay(1)">See More</a>
+              </li>
+              <li>
+                <h3>Wednesday</h3>
+                <p>{{ getAppointmentsForDayOfWeek(2) }} Total Appointments</p>
+                <a (click)="changeDay(2)">See More</a>
+              </li>
+              <li>
+                <h3>Thursday</h3>
+                <p>{{ getAppointmentsForDayOfWeek(3) }} Total Appointments</p>
+                <a (click)="changeDay(3)">See More</a>
+              </li>
+              <li>
+                <h3>Friday</h3>
+                <p>{{ getAppointmentsForDayOfWeek(4) }} Total Appointments</p>
+                <a (click)="changeDay(4)">See More</a>
+              </li>
+              <li>
+                <h3>Saturday</h3>
+                <p>{{ getAppointmentsForDayOfWeek(5) }} Total Appointments</p>
+                <a (click)="changeDay(5)">See More</a>
+              </li>
+            </ul>
+          </div>
+        </div>
+      </div>
+      <div class="right">
+        <div class="appointment-box">
+          <div class="appointment-list">
+            <div class="second-box-top">
+              <h3>{{ selectedDay }} Appointments</h3>
+            </div>
+            <div class="card-container">
+              <div
+                class="appointment-card"
+                *ngFor="let appointment of filterAppointments(appointments)"
+                (click)="
+                  changeRoute(
+                    appointment.AppointmentID,
+                    appointment.Completed,
+                    appointment.Status
+                  )
+                "
+                [ngClass]="{ pending: appointment.Status === 0 }"
+              >
+                <div class="box"></div>
+                <div class="Text">
+                  <div class="appointment-card-title">
+                    <p>{{ appointment.appointment_title }}</p>
+                  </div>
+                  <div class="mid">
+                    <p>
+                      Date: {{ getFormattedDate(appointment.AppointmentDate) }}
+                    </p>
+                    <p>
+                      Time: {{ getFormattedTime(appointment.AppointmentDate) }}
+                    </p>
+                  </div>
+                  <div class="bottom">
+                    <p>
+                      Teacher: {{ appointment.ConsultantFirstName }}
+                      {{ appointment.ConsultantLastName }}
+                    </p>
+                    <p>
+                      Student: {{ appointment.UserName }}
+                      {{ appointment.UserLastName }}
+                    </p>
+                  </div>
+                  <div class="extra">
+                    <p>Mode: {{ appointment.mode }}</p>
+                    <p>
+                      Urgency:
+                      <label
+                        [ngClass]="{
+                          'urgent-appointment': appointment.urgency == 'Urgent'
+                        }"
+                        >{{ appointment.urgency }}</label
+                      >
+                    </p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="title">
+    <h2>
+      Performance Analytics
+      <i class="bx bx-download" (click)="performance_analyticsPdf()"></i>
+    </h2>
+  </div>
+  <div class="content">
+    <div class="two-column">
+      <div class="column">
+        <h2>{{ ratingMode }} Rating</h2>
+        <canvas
+          baseChart
+          type="line"
+          [data]="ratingData"
+          [options]="ratingOptions"
+        ></canvas>
+      </div>
+      <div class="info">
+        <div class="radio">
+          <input
+            class="radio__input"
+            type="radio"
+            value="Monthly"
+            name="mode"
+            id="monthly"
+            [(ngModel)]="ratingMode"
+            (click)="mapRatingsMonthly()"
+          />
+          <label class="radio__label" for="monthly">Monthly</label>
+          <input
+            class="radio__input"
+            type="radio"
+            value="Weekly"
+            name="mode"
+            id="weekly"
+            [(ngModel)]="ratingMode"
+            (click)="mapRatingsWeekly()"
+          />
+          <label class="radio__label" for="weekly">Weekly</label>
+          <input
+            class="radio__input"
+            type="radio"
+            value="Daily"
+            name="mode"
+            id="daily"
+            [(ngModel)]="ratingMode"
+            (click)="mapRatingsDaily()"
+          />
+          <label class="radio__label" for="daily">Daily</label>
+        </div>
+        <div class="total-rating">
+          <div class="heading">
+            <h2>Total Rating</h2>
+          </div>
+          <div class="ratings">
+            <div class="indiv-rating">
+              <div class="stars">
+                <i class="bx bxs-star"></i>
+                <i class="bx bxs-star"></i>
+                <i class="bx bxs-star"></i>
+                <i class="bx bxs-star"></i>
+                <i class="bx bxs-star"></i>
+              </div>
+              <div class="empty-bar">
+                <div class="bar" [style.width.%]="rating5Percentage"></div>
+                <p>{{ rating5Percentage }}% ({{ rating5 }})</p>
+              </div>
+            </div>
+            <div class="indiv-rating">
+              <div class="stars">
+                <i class="bx bxs-star"></i>
+                <i class="bx bxs-star"></i>
+                <i class="bx bxs-star"></i>
+                <i class="bx bxs-star"></i>
+              </div>
+              <div class="empty-bar">
+                <div class="bar" [style.width.%]="rating4Percentage"></div>
+                <p>{{ rating4Percentage }}% ({{ rating4 }})</p>
+              </div>
+            </div>
+            <div class="indiv-rating">
+              <div class="stars">
+                <i class="bx bxs-star"></i>
+                <i class="bx bxs-star"></i>
+                <i class="bx bxs-star"></i>
+              </div>
+              <div class="empty-bar">
+                <div class="bar" [style.width.%]="rating3Percentage"></div>
+                <p>{{ rating3Percentage }}% ({{ rating3 }})</p>
+              </div>
+            </div>
+            <div class="indiv-rating">
+              <div class="stars">
+                <i class="bx bxs-star"></i>
+                <i class="bx bxs-star"></i>
+              </div>
+              <div class="empty-bar">
+                <div class="bar" [style.width.%]="rating2Percentage"></div>
+                <p>{{ rating2Percentage }}% ({{ rating2 }})</p>
+              </div>
+            </div>
+            <div class="indiv-rating">
+              <div class="stars">
+                <i class="bx bxs-star"></i>
+              </div>
+              <div class="empty-bar">
+                <div class="bar" [style.width.%]="rating1Percentage"></div>
+                <p>{{ rating1Percentage }}% ({{ rating1 }})</p>
+              </div>
+            </div>
+          </div>
+          <div class="heading">
+            <h2>Rated Appointments</h2>
+            <div class="ratings">
+              <div class="indiv-rating">
+                <div class="empty-bar">
+                  <div
+                    class="bar"
+                    [style.width.%]="(ratedTotal / appointmentTotal) * 100"
+                  ></div>
+                </div>
+              </div>
+              <p>
+                {{ ratedTotal }}/{{ appointmentTotal }} Appointments have been
+                rated.
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="title">
+    <h2>
+      Appointment Analytics
+      <i class="bx bx-download" (click)="appointment_analyticsPdf()"></i>
+    </h2>
+  </div>
+  <div class="content">
+    <div class="two-column">
+      <div class="column">
+        <h2>{{ appointmentMode }} Appointments</h2>
+        <canvas baseChart type="bar" [data]="barChartData"></canvas>
+      </div>
+      <div class="info">
+        <div class="radio">
+          <input
+            class="radio__input"
+            type="radio"
+            value="Monthly"
+            [(ngModel)]="appointmentMode"
+            (click)="mapAppointmentBarChartMonthly()"
+            name="modeBar"
+            id="monthly-2"
+          />
+          <label class="radio__label" for="monthly-2">Monthly</label>
+          <input
+            class="radio__input"
+            type="radio"
+            value="Weekly"
+            [(ngModel)]="appointmentMode"
+            (click)="mapAppointmentBarChartWeekly()"
+            name="modeBar"
+            id="weekly-2"
+          />
+          <label class="radio__label" for="weekly-2">Weekly</label>
+          <input
+            class="radio__input"
+            type="radio"
+            value="Daily"
+            [(ngModel)]="appointmentMode"
+            (click)="mapAppointmentBarChartDaily()"
+            name="modeBar"
+            id="daily-2"
+          />
+          <label class="radio__label" for="daily-2">Daily</label>
+        </div>
+        <div class="pie">
+          <h2>Appointment Overview</h2>
+          <canvas
+            #AppointmentPieChart
+            baseChart
+            type="pie"
+            [data]="appointmentPieChartData"
+          >
+          </canvas>
+        </div>
+      </div>
+    </div>
+  </div>
 </div>
-
-<button (click)="generatePdfall()">Generate PDF</button>
-

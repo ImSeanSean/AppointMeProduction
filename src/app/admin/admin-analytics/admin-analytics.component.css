@@ -19,6 +19,12 @@
   padding-left: 30px;
   color: #000000;
   font-size: 30px;
+  margin-right: 20px;
+}
+
+.main .title i {
+  font-size: 25px;
+  cursor: pointer;
 }
 
 .content {
